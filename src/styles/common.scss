@@ -1,0 +1,41 @@
+@import "mixin";
+
+body, div, span, header, footer, nav, section, aside, article, ul, dl, dt, dd, li, a, p, h1, h2, h3, h4, h5, h6, i, b, textarea, button, input, select, figure, figcaption {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  font-style: normal;
+  text-decoration: none;
+  border: none;
+  font-family: "Microsoft Yahei";
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+  &:hover {
+    outline: none;
+  }
+}
+input[type="button"], input[type="submit"], input[type="search"], input[type="reset"] {
+  -webkit-appearance: none;
+}
+
+textarea {
+  -webkit-appearance: none;
+}
+html, body {
+  height: 100%;
+  width: 100%;
+}
+body {
+  font: 14px/20px "Microsoft Yahei", 'Hiragino Sans GB', arial, '\5b8b\4f53', sans-serif;
+}
+.Center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.Top-Center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
