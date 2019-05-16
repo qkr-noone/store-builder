@@ -14,6 +14,9 @@ body, div, span, header, footer, nav, section, aside, article, ul, dl, dt, dd, l
   &:hover {
     outline: none;
   }
+  &:focus {
+    outline: none;
+  }
 }
 input[type="button"], input[type="submit"], input[type="search"], input[type="reset"] {
   -webkit-appearance: none;
@@ -27,7 +30,7 @@ html, body {
   width: 100%;
 }
 body {
-  font: 14px/20px "Microsoft Yahei", 'Hiragino Sans GB', arial, '\5b8b\4f53', sans-serif;
+  font: 14px/1.5 "Microsoft Yahei", 'Hiragino Sans GB', arial, '\5b8b\4f53', sans-serif;
 }
 .Center {
   display: flex;
@@ -38,4 +41,10 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+.Up-Center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
