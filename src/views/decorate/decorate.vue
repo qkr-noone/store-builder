@@ -5,10 +5,15 @@
       <section class="content">
         <aside>
           <section class="manager-sidebar" ref="nav">
+            <!-- PC/无线 -->
             <div class="switchEditor">
               <span class="PC active">PC</span>
-              <span class="mobile">无线</span>
+              <el-tooltip effect="dark" placement="bottom">
+                <div slot="content">尚未支持无线端</div>
+                <span class="mobile">无线</span>
+              </el-tooltip>
             </div>
+            <!-- 页面背景 -->
             <div class="manager-wrap" :class="{'panel-active': switchNav==='bg'}" @click="switchNav='bg'">
               <a class="manager-link">
                 <i>页面背景</i>
@@ -209,6 +214,7 @@
                 </el-tabs>
               </div>
             </div>
+            <!-- 产品 -->
             <div class="manager-wrap" :class="{'panel-active': switchNav==='goods'}" @click="switchNav='goods'">
               <a class="manager-link">
                 <i class="next-icon" :class="goods.icon"></i>
@@ -218,19 +224,19 @@
                 <div class="m-detail-title">
                   <span>添加产品</span>
                   <el-tooltip effect="dark" placement="bottom">
-                    <div slot="content" style="width: 230px;">Bottom Center提示文字1111111111111111111111提示文字1111111111111111111111</div>
+                    <div slot="content" style="max-width: 230px;">包含橱窗产品、带类目产品、重点推荐、智能单品推荐等多种产品推荐样式，用于公司核心产品推荐、自定义营销分类的产品推荐，如“新品推荐”、“库存促销”、“圣诞专供”等。</div>
                     <el-button size="mini"><i class="el-icon-info"></i></el-button>
                   </el-tooltip>
-                  <el-select v-model="panlSelect" size="mini" placeholder="请选择">
+                  <el-select v-model="panlSelect" size="mini" placeholder="请选择" @change="layoutSelect(goods.id, panlSelect)">
                     <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
                     </el-option>
                   </el-select>
                 </div>
                 <div class="m-detail-con">
-                  <div class="m-item" :class="{'game_over': list.usedNum===list.totalNum}" v-for="list in goods.templateList" :key="list.id" :data-moduleId="list.id">
-                    <div class="m-item-outside" draggable="true" @dragstart="dragstart($event, list.id)" @dragend="dragend()">
-                      <div class="m-item-shadow"></div>
-                      <div class="item-icon"><i :class="list.icon"></i></div>
+                  <div class="m-item" :class="{'game_over': list.usedNum===list.totalNum}" v-for="list in handleLayout(goods.templateList)" :key="list.id" :data-moduleId="list.id">
+                    <div class="m-item-outside">
+                      <div class="m-item-shadow" v-show="list.usedNum<list.totalNum" draggable="true" @dragstart="dragstart($event, list.id, list)" @dragend="dragend()"></div>
+                      <div class="item-icon"><i :class="list.icon" class="iconfont"></i></div>
                       <div><span>{{list.usedNum}}</span><span>/{{list.totalNum}}</span></div>
                       <div>{{list.templateName}}</div>
                     </div>
@@ -238,6 +244,7 @@
                 </div>
               </div>
             </div>
+            <!-- 图文 -->
             <div class="manager-wrap" :class="{'panel-active': switchNav==='picWord'}" @click="switchNav='picWord'">
               <a class="manager-link">
                 <i class="next-icon" :class="picWord.icon"></i>
@@ -247,19 +254,19 @@
                 <div class="m-detail-title">
                   <span>添加图文</span>
                   <el-tooltip effect="dark" placement="bottom">
-                    <div slot="content" style="width: 230px;">Bottom Center提示文字1111111111111111111111提示文字1111111111111111111111</div>
+                    <div slot="content" style="max-width: 230px;">包含图文相关模块</div>
                     <el-button size="mini"><i class="el-icon-info"></i></el-button>
                   </el-tooltip>
-                  <el-select v-model="panlSelect" size="mini" placeholder="请选择">
+                  <el-select v-model="panlSelect" size="mini" placeholder="请选择" @change="layoutSelect(picWord.id, panlSelect)">
                     <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
                     </el-option>
                   </el-select>
                 </div>
                 <div class="m-detail-con">
-                  <div class="m-item" :class="{'game_over': list.usedNum===list.totalNum}" v-for="list in picWord.templateList" :key="list.id" :data-moduleId="list.id">
+                  <div class="m-item" :class="{'game_over': list.usedNum===list.totalNum}" v-for="list in handleLayout(picWord.templateList)" :key="list.id" :data-moduleId="list.id">
                     <div class="m-item-outside">
                       <div class="m-item-shadow" v-show="list.usedNum<list.totalNum" draggable="true" @dragstart="dragstart($event, list.id, list)" @dragend="dragend()"></div>
-                      <div class="item-icon"><i :class="list.icon"></i></div>
+                      <div class="item-icon"><i :class="list.icon" class="iconfont"></i></div>
                       <div><span>{{list.usedNum}}</span><span>/{{list.totalNum}}</span></div>
                       <div>{{list.templateName}}</div>
                     </div>
@@ -267,6 +274,7 @@
                 </div>
               </div>
             </div>
+            <!-- 视频 -->
             <div class="manager-wrap" :class="{'panel-active': switchNav==='video'}" @click="switchNav='video'">
               <a class="manager-link">
                 <i class="next-icon" :class="video.icon"></i>
@@ -276,19 +284,19 @@
                 <div class="m-detail-title">
                   <span>添加视频</span>
                   <el-tooltip effect="dark" placement="bottom">
-                    <div slot="content" style="width: 230px;">Bottom Center提示文字1111111111111111111111提示文字1111111111111111111111</div>
+                    <div slot="content" style="max-width: 230px;">包含数字化相关模块</div>
                     <el-button size="mini"><i class="el-icon-info"></i></el-button>
                   </el-tooltip>
-                  <el-select v-model="panlSelect" size="mini" placeholder="请选择">
+                  <el-select v-model="panlSelect" size="mini" placeholder="请选择" @change="layoutSelect(video.id, panlSelect)">
                     <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
                     </el-option>
                   </el-select>
                 </div>
                 <div class="m-detail-con">
-                  <div class="m-item" :class="{'game_over': list.usedNum===list.totalNum}" v-for="list in video.templateList" :key="list.id" :data-moduleId="list.id">
-                    <div class="m-item-outside" draggable="true" @dragstart="dragstart($event, list.id)" @dragend="dragend()">
-                      <div class="m-item-shadow"></div>
-                      <div class="item-icon"><i :class="list.icon"></i></div>
+                  <div class="m-item" :class="{'game_over': list.usedNum===list.totalNum}" v-for="list in handleLayout(video.templateList)" :key="list.id" :data-moduleId="list.id">
+                    <div class="m-item-outside">
+                      <div class="m-item-shadow" v-show="list.usedNum<list.totalNum" draggable="true" @dragstart="dragstart($event, list.id, list)" @dragend="dragend()"></div>
+                      <div class="item-icon"><i :class="list.icon" class="iconfont"></i></div>
                       <div><span>{{list.usedNum}}</span><span>/{{list.totalNum}}</span></div>
                       <div>{{list.templateName}}</div>
                     </div>
@@ -296,6 +304,7 @@
                 </div>
               </div>
             </div>
+            <!-- 营销 -->
             <div class="manager-wrap" :class="{'panel-active': switchNav==='sell'}" @click="switchNav='sell'">
               <a class="manager-link">
                 <i class="next-icon" :class="sell.icon"></i>
@@ -305,19 +314,19 @@
                 <div class="m-detail-title">
                   <span>添加营销</span>
                   <el-tooltip effect="dark" placement="bottom">
-                    <div slot="content" style="width: 230px;">Bottom Center提示文字1111111111111111111111提示文字1111111111111111111111</div>
+                    <div slot="content" style="max-width: 230px;">包含轮播banner、自定义模块、多语言快链、客服模块等多种营销模块，用于企业形象宣传、产品及活动推广等一系列营销宣传或个性化展示。</div>
                     <el-button size="mini"><i class="el-icon-info"></i></el-button>
                   </el-tooltip>
-                  <el-select v-model="panlSelect" size="mini" placeholder="请选择">
+                  <el-select v-model="panlSelect" size="mini" placeholder="请选择" @change="layoutSelect(sell.id, panlSelect)">
                     <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
                     </el-option>
                   </el-select>
                 </div>
                 <div class="m-detail-con">
-                  <div class="m-item" :class="{'game_over': list.usedNum===list.totalNum}" v-for="list in sell.templateList" :key="list.id" :data-moduleId="list.id">
-                    <div class="m-item-outside" draggable="true" @dragstart="dragstart($event, list.id)" @dragend="dragend()">
-                      <div class="m-item-shadow"></div>
-                      <div class="item-icon"><i :class="list.icon"></i></div>
+                  <div class="m-item" :class="{'game_over': list.usedNum===list.totalNum}" v-for="list in handleLayout(sell.templateList)" :key="list.id" :data-moduleId="list.id">
+                    <div class="m-item-outside">
+                      <div class="m-item-shadow" v-show="list.usedNum<list.totalNum" draggable="true" @dragstart="dragstart($event, list.id, list)" @dragend="dragend()"></div>
+                      <div class="item-icon"><i :class="list.icon" class="iconfont"></i></div>
                       <div><span>{{list.usedNum}}</span><span>/{{list.totalNum}}</span></div>
                       <div>{{list.templateName}}</div>
                     </div>
@@ -325,6 +334,7 @@
                 </div>
               </div>
             </div>
+            <!-- 公司 -->
             <div class="manager-wrap" :class="{'panel-active': switchNav==='office'}" @click="switchNav='office'">
               <a class="manager-link">
                 <i class="next-icon" :class="office.icon"></i>
@@ -334,19 +344,19 @@
                 <div class="m-detail-title">
                   <span>添加公司</span>
                   <el-tooltip effect="dark" placement="bottom">
-                    <div slot="content" style="width: 230px;">Bottom Center提示文字1111111111111111111111提示文字1111111111111111111111</div>
+                    <div slot="content" style="max-width: 230px;">包含公司简介、能力描述、公司名片等模块，可以通过图片、文字简介、视频等多种方式向买家直观地展现您公司在制造加工、产品研发、贸易服务等一系列的企业实力。</div>
                     <el-button size="mini"><i class="el-icon-info"></i></el-button>
                   </el-tooltip>
-                  <el-select v-model="panlSelect" size="mini" placeholder="请选择">
+                  <el-select v-model="panlSelect" size="mini" placeholder="请选择" @change="layoutSelect(office.id, panlSelect)">
                     <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
                     </el-option>
                   </el-select>
                 </div>
                 <div class="m-detail-con">
-                  <div class="m-item" :class="{'game_over': list.usedNum===list.totalNum}" v-for="list in office.templateList" :key="list.id" :data-moduleId="list.id">
-                    <div class="m-item-outside" draggable="true" @dragstart="dragstart($event, list.id)" @dragend="dragend()">
-                      <div class="m-item-shadow"></div>
-                      <div class="item-icon"><i :class="list.icon"></i></div>
+                  <div class="m-item" :class="{'game_over': list.usedNum===list.totalNum}" v-for="list in handleLayout(office.templateList)" :key="list.id" :data-moduleId="list.id">
+                    <div class="m-item-outside">
+                      <div class="m-item-shadow" v-show="list.usedNum<list.totalNum" draggable="true" @dragstart="dragstart($event, list.id, list)" @dragend="dragend()"></div>
+                      <div class="item-icon"><i :class="list.icon" class="iconfont"></i></div>
                       <div><span>{{list.usedNum}}</span><span>/{{list.totalNum}}</span></div>
                       <div>{{list.templateName}}</div>
                     </div>
@@ -364,23 +374,29 @@
                 <div class="layout_page" data-id="hc"></div>
                 <div class="layout_page" data-id="hd"></div>
                 <div class="layout_page" data-id="page-main">
-                  <div class="layout_m" v-show="!isAddDom">
+                  <div class="layout_m" v-show="layoutType.pass==='1'">
                     <div class="pre_item_wrap drag_wrap">
-                      <div class="view_100 Up-Center"  module-type="3"  @dragover.prevent="dragover($event, 100)" @dragleave="dragleave()" @drop="drop($event)" :class="[overView===100 ? 'drop_view' : '']">
-                        <i class="el-icon-plus"></i>
-                        <a>在此添加</a>
+                      <div class="view_100">
+                        <div class="Up-Center"  module-type="3"  @dragover.prevent="dragover($event, 100)" @dragleave="dragleave()" @drop="drop($event)" :class="[overView===100 ? 'drop_view' : '']">
+                          <i class="el-icon-plus"></i>
+                          <a>在此添加</a>
+                        </div>
                       </div>
                     </div>
                   </div>
-                  <div class="layout_m">
+                  <div class="layout_m" v-show="layoutType.narrow==='1' || layoutType.wide==='1'">
                     <div class="pre_item_wrap drag_wrap" >
-                      <div class="view_20 Up-Center" module-type="1" @dragover.prevent="dragover($event,20)" @dragleave="dragleave()" @drop="drop($event)" :class="[overView===20 ? 'drop_view' : '']">
-                        <i class="el-icon-plus"></i>
-                        <a>在此添加</a>
+                      <div class="view_20">
+                        <div class="Up-Center" module-type="1" v-show="layoutType.narrow==='1'" @dragover.prevent="dragover($event,20)" @dragleave="dragleave()" @drop="drop($event)" :class="[overView===20 ? 'drop_view' : '']">
+                          <i class="el-icon-plus"></i>
+                          <a>在此添加</a>
+                        </div>
                       </div>
-                      <div class="view_80 Up-Center" module-type="2" @dragover.prevent="dragover($event,80)" @dragleave="dragleave()" @drop="drop($event)" :class="[overView===80 ? 'drop_view' : '']">
-                        <i class="el-icon-plus"></i>
-                        <a>在此添加</a>
+                      <div class="view_80">
+                        <div class="Up-Center" module-type="2" v-show="layoutType.wide==='1'"  @dragover.prevent="dragover($event,80)" @dragleave="dragleave()" @drop="drop($event)" :class="[overView===80 ? 'drop_view' : '']">
+                          <i class="el-icon-plus"></i>
+                          <a>在此添加</a>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -403,6 +419,12 @@
                       </div>
                       <div class="pre_module">
                         <div class="pre_module_con" v-html="list.template">
+                        </div>
+                        <div class="pre_module_con not_html_data" v-if="!list.template">
+                          <div class="not_html_placeholder">
+                            <i class="el-icon-error"></i>
+                            <div>还未添加数据, 请点击编辑数据</div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -447,38 +469,57 @@ export default {
     return {
       options: [
         {
-          value: '选项1',
-          label: '黄金糕'
+          value: 0,
+          label: '全部'
         },
         {
-          value: '选项2',
-          label: '双皮奶'
+          value: 1,
+          label: '窄栏'
         },
         {
-          value: '选项3',
-          label: '蚵仔煎'
+          value: 2,
+          label: '宽栏'
         },
         {
-          value: '选项4',
-          label: '龙须面'
-        },
-        {
-          value: '选项5',
-          label: '北京烤鸭'
+          value: 3,
+          label: '通栏'
         }
       ],
-      goods: [],
-      picWord: [],
-      video: [],
-      sell: [],
-      office: [],
-      switchNav: '',
-      panlSelect: '',
+      goods: [], // 产品
+      picWord: [], // 图文
+      video: [], // 视频
+      sell: [], // 营销
+      office: [], // 公司
+      switchNav: '', // 切换当前菜单面板
+      panlSelect: 0, // 当前面板的的布局状态
+      layoutType: {}, // 布局种类
+      // 保存每个菜单面板的布局
+      savePanlSelect: [
+        {
+          id: null,
+          status: 0
+        },
+        {
+          id: null,
+          status: 0
+        },
+        {
+          id: null,
+          status: 0
+        },
+        {
+          id: null,
+          status: 0
+        },
+        {
+          id: null,
+          status: 0
+        }
+      ],
       themeColor: '#dddddd',
       bgShowStatus: '隐藏', // 页面背景图片显示状态
       bgLayStatus: '平铺', // 页面背景平铺状态
       bgAlignStatus: '平铺', // 页面背景对齐状态
-      isAddDom: false,
       overView: 0,
       isEditPanel: '', // 显示编辑面板
       isLoading: false,
@@ -496,10 +537,15 @@ export default {
     this.API.homeNav().then(res => {
       let navData = res.data
       this.goods = navData[0]
+      this.savePanlSelect[0].id = this.goods.id
       this.picWord = navData[1]
+      this.savePanlSelect[1].id = this.picWord.id
       this.video = navData[2]
+      this.savePanlSelect[2].id = this.video.id
       this.sell = navData[3]
+      this.savePanlSelect[3].id = this.sell.id
       this.office = navData[4]
+      this.savePanlSelect[4].id = this.office.id
     })
     document.addEventListener('click', this.handlePackUp)
     document.body.ondragover = e => {
@@ -514,7 +560,6 @@ export default {
   methods: {
     ...mapMutations(['BUILD_TREE']),
     handleClick (val) {
-      console.log(val)
     },
     // 收起菜单
     handlePackUp (e) {
@@ -525,9 +570,36 @@ export default {
         }
       }
     },
+    // 过滤布局
+    handleLayout (data) {
+      let tem = []
+      tem = data && data.filter(item => {
+        if (this.panlSelect === 1) {
+          return item.narrow === '1'
+        } else if (this.panlSelect === 2) {
+          return item.wide === '1'
+        } else if (this.panlSelect === 3) {
+          return item.pass === '1'
+        } else {
+          return item
+        }
+      })
+      return tem
+    },
+    // 布局改变触发事件
+    layoutSelect (id, status) {
+      for (let item of this.savePanlSelect) {
+        if (item.id === id) {
+          item.status = status
+          break
+        }
+      }
+    },
     dragstart (event, componentId, module) {
-      // TODO 图文测试 vuex数据改变  isAddDom
-      console.log(event, 1000, module)
+      this.layoutType = {}
+      this.layoutType.narrow = module.narrow
+      this.layoutType.wide = module.wide
+      this.layoutType.pass = module.pass
       event.dataTransfer.setData('text', componentId)
     },
     dragover (event, ratioNum) {
@@ -538,7 +610,6 @@ export default {
     },
     drop (event) {
       let moduleTypeId = event.target.getAttribute('module-type')
-      console.log(moduleTypeId)
       this.isLoading = true
       let componentId = event.dataTransfer.getData('text')
       this.API.getTemplate({ templateId: componentId }).then(res => {
@@ -548,7 +619,6 @@ export default {
         this.tree.splice(0, 0, component)
         this.BUILD_TREE(this.tree)
         this.isLoading = false
-        console.log('drop', this.tree)
       }).catch(() => {
         this.isLoading = false
       })
@@ -556,19 +626,17 @@ export default {
     dragend () {
       event.dataTransfer.clearData()
       this.overView = 0
-      console.log('dragend')
+      this.layoutType = {}
     },
     // 组件上移
     componentUp (component, index) {
       this.$set(this.tree, index, this.tree[index - 1])
       this.$set(this.tree, index - 1, component)
-      console.log(this.tree, 'move')
     },
     // 组件下移
     componentDowm (component, index) {
       this.$set(this.tree, index, this.tree[index + 1])
       this.$set(this.tree, index + 1, component)
-      console.log(this.tree, 'move')
     },
     // 组件删除
     componentDelete (component, index) {
@@ -590,6 +658,26 @@ export default {
   watch: {
     isEditPanel (val) {
       if (val) this.currentComponent = this.tree.find(item => item.id === val)
+    },
+    switchNav (val) {
+      for (let item of this.savePanlSelect) {
+        if (val === 'goods' && this.goods.id === item.id) {
+          this.panlSelect = item.status
+          break
+        } else if (val === 'picWord' && this.picWord.id === item.id) {
+          this.panlSelect = item.status
+          break
+        } else if (val === 'video' && this.video.id === item.id) {
+          this.panlSelect = item.status
+          break
+        } else if (val === 'sell' && this.sell.id === item.id) {
+          this.panlSelect = item.status
+          break
+        } else if (val === 'office' && this.office.id === item.id) {
+          this.panlSelect = item.status
+          break
+        }
+      }
     }
   }
 }
@@ -773,6 +861,10 @@ $aside-theme-color: #ef7026;
               font-size: 20px;
               padding: 0;
               border: none;
+              color: #e6e6e6;
+              &:hover {
+                background-color: transparent;
+              }
             }
 
             .el-select {
@@ -876,7 +968,7 @@ $aside-theme-color: #ef7026;
           /* background-image: url(//sc01.alicdn.com/kf/HTB1z.roUOLaK1RjSZFxq6ymPFXaW.jpg); */
           background-repeat: no-repeat;
           background-position: center top;
-          zoom: 0.783034;
+          zoom: 0.783035;
           /* ==> 960 */
         }
 
@@ -1259,34 +1351,54 @@ $aside-theme-color: #ef7026;
           position: relative;
 
           .pre_module_con {
-            zoom: 0.783034;
+            zoom: 0.783035;
+          }
+          .not_html_data {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 120px 38px;
+            background: #fff;
+            .not_html_placeholder {
+              text-align: center;
+              i {
+                color: #666;
+                font-size: 30px;
+              }
+              div {
+                margin-top: 5px;
+              }
+            }
           }
         }
       }
       .drag_wrap{
         width: 100%;
-        min-height: 60px;
+        height: 60px;
         display: flex;
         justify-content: space-between;
-        div{
+
+        .view_20>div, .view_80>div, .view_100>div{
           border: 1px solid #999;
           background-color: rgba(0, 0, 0, 0.2);
+          height: 100%;
+          &.drop_view {
+            border-color: yellow;
+            color: yellow;
+          }
         }
+
         .view_20 {
-          width: 23%;
+          width: 17.945%;
           height: 100%;
         }
         .view_80 {
-          width: 70%;
+          width: calc(100% - 17.945% - 20px);
           height: 100%;
         }
         .view_100 {
           width: 100%;
           height: 100%;
-        }
-        .view_20.drop_view, .view_80.drop_view, .view_100.drop_view{
-          border-color: yellow;
-          color: yellow;
         }
       }
     }

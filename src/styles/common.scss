@@ -21,7 +21,9 @@ body, div, span, header, footer, nav, section, aside, article, ul, dl, dt, dd, l
 input[type="button"], input[type="submit"], input[type="search"], input[type="reset"] {
   -webkit-appearance: none;
 }
-
+table, tr, td {
+  border-spacing: 0;
+}
 textarea {
   -webkit-appearance: none;
 }

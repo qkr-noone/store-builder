@@ -7,6 +7,8 @@ import ElementUI from 'element-ui'
 import store from './store'
 import 'element-ui/lib/theme-chalk/index.css'
 import './styles/common.scss'
+// import './assets/font_store_builder/iconfont.js'
+// import './assets/font_store_builder/iconfont.css'
 import VueCookies from 'vue-cookies'
 import API from './utils/api'
 

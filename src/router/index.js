@@ -10,6 +10,11 @@ router = new Router({
       path: '/',
       name: 'decorate',
       component: resolve => require(['@/views/decorate/decorate'], resolve)
+    },
+    {
+      path: '/preview_pc',
+      name: 'preview_pc',
+      component: resolve => require(['@/views/preview/preview_pc'], resolve)
     }
   ]
 })
