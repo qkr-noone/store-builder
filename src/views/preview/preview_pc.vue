@@ -15,6 +15,8 @@
     <dynamic></dynamic>
     <live></live>
     <threeD></threeD>
+    <customer></customer>
+    <customerN></customerN>
   </div>
 </template>
 
@@ -36,12 +38,14 @@ import banner from '@/components/picWord/banner'
 import dynamic from '@/components/video/dynamic'
 import live from '@/components/video/live'
 import threeD from '@/components/video/3D'
+import customer from '@/components/office/customer'
+import customerN from '@/components/office/customer_n'
 
 export default {
   data () {
     return {}
   },
-  components: { pingpuP, pingpuW, pingpuN, chuchuangP, chuchuangW, daileimuP, zhongdiantuijianP, danpinP, zhuyingleimuP, chanpinfenleiN, industry, fullScreen, banner, dynamic, live, threeD }
+  components: { pingpuP, pingpuW, pingpuN, chuchuangP, chuchuangW, daileimuP, zhongdiantuijianP, danpinP, zhuyingleimuP, chanpinfenleiN, industry, fullScreen, banner, dynamic, live, threeD, customer, customerN }
 }
 </script>
 

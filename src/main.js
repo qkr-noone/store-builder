@@ -16,6 +16,8 @@ Vue.prototype.API = API
 Vue.config.productionTip = false
 
 Vue.use(ElementUI, VueCookies)
+// 上传文件 或者需要在页面中拿到全部的接口  也可以放到页面中
+// console.log(process.env.BASE_API)
 
 // 用户手动刷新页面，vuex 中的信息会重设，需重新新增
 let isValue = localStorage.getItem('build_tree')

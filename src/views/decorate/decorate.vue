@@ -368,12 +368,33 @@
         </aside>
         <section class="manager_right">
           <div class="previewer_wrap">
-            <div class="previewer_bg" :style="'background-color:'+ themeColor"></div>
+            <div :style="'background-color:'+ themeColor"></div>
             <div class="previewer_limit">
               <div class="root_page">
                 <div class="layout_page" data-id="hc"></div>
-                <div class="layout_page" data-id="hd"></div>
+                <div class="layout_page" data-id="hd" id="store_header">
+                  <div class="store_sign_nav_bg" data-title="店铺招牌导航栏背景"></div>
+                  <div class="layout_m" data-title="店铺招牌">
+                    <div class="store_signature">
+                      <div class="pre_module store_sign_nav_box">
+                        <span data-store_sign_top="店铺平台其他信息"></span>
+                        <div class="store_sign_con">
+                          <div class="store_sign_bg"></div>
+                          <h3 class="store_sign_info">店铺首页</h3>
+                        </div>
+                      </div>
+                      <div class="pre_module store_sign_nav_box shop_nav m-nav-content">
+                        <ul class="menu-box">
+                          <li class="menu-item menu-item-li" v-for="list in menuList" :key="list.menuname" ref="storeMenuname" @mouseenter="enterNav($event, list.menuname)" @mouseleave="leaveNav()">
+                            <a class="menu-a" href="javascript:;"><span>{{list.menuname}}</span><i class="el-icon-arrow-down menu-more" v-if="list.sonMenunameList.length"></i></a>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 <div class="layout_page" data-id="page-main">
+                  <div class="content_bg" data-title="内容主体背景"></div>
                   <div class="layout_m" v-show="layoutType.pass==='1'">
                     <div class="pre_item_wrap drag_wrap">
                       <div class="view_100">
@@ -456,13 +477,39 @@
       <footer class="footer"></footer>
     </div>
     <div class="loading_wrap" v-show="isLoading"><i class="el-icon-loading"></i></div>
+    <div class="m-nav-content" ref="storeMenuShow">
+      <ul class="menu-box">
+        <li class="menu-item menu-item-li" v-for="list in menuList" v-if="list.sonMenunameList.length" :key="list.menuname">
+          <a class="menu-a" href="javascript:;"><span>{{list.menuname}}</span><i class="el-icon-arrow-down menu-more" v-if="list.sonMenunameList.length"></i></a>
+          <div class="menu-two-box" v-if="list.sonMenunameList.length">
+            <div class="visible"></div>
+            <ul class="menu-two">
+              <li class="menu-item menu-two-li" v-for="item in list.sonMenunameList" :key="item.menuname">
+                <a class="menu-a menu-two-a" href="javascript:;"><span>{{item.menuname}}</span><i class="el-icon-caret-right menu-more" v-if="item.sonMenunameList.length"></i></a>
+                <shopsNav v-if="item.sonMenunameList.length" :list="item.sonMenunameList"></shopsNav>
+              </li>
+            </ul>
+          </div>
+        </li>
+      </ul>
+    </div>
   </div>
+  <!-- <div class="menu-two-box" v-if="list.sonMenunameList.length">
+    <div class="visible"></div>
+    <ul class="menu-two">
+      <li class="menu-item menu-two-li" v-for="item in list.sonMenunameList" :key="item.menuname">
+        <a class="menu-a menu-two-a" href="javascript:;"><span>{{item.menuname}}</span><i class="el-icon-caret-right menu-more" v-if="item.sonMenunameList.length"></i></a>
+        <shopsNav v-if="item.sonMenunameList.length" :list="item.sonMenunameList"></shopsNav>
+      </li>
+    </ul>
+  </div> -->
 </template>
 <script>
 import testCom from '@/components/test'
 // 随机id
 import GUID from '@/utils/guid'
 import { mapState, mapMutations } from 'vuex'
+import shopsNav from '@/components/goods/shopsNav'
 export default {
   name: 'decorate',
   data () {
@@ -523,10 +570,128 @@ export default {
       overView: 0,
       isEditPanel: '', // 显示编辑面板
       isLoading: false,
-      currentComponent: [] // 当前编辑的组件
+      currentComponent: [], // 当前编辑的组件
+      menuList: [
+        {
+          'menuname': '所有商品',
+          'sonMenunameList': [
+            {
+              'menuname': '一级商品1',
+              'sonMenunameList': [
+                {
+                  'menuname': '二级商品1',
+                  'sonMenunameList': [
+                    {
+                      'menuname': '三级商品1',
+                      'sonMenunameList': []
+                    }
+                  ]
+                },
+                {
+                  'menuname': '二级商品2',
+                  'sonMenunameList': []
+                },
+                {
+                  'menuname': '二级商品3',
+                  'sonMenunameList': []
+                },
+                {
+                  'menuname': '二级商品4',
+                  'sonMenunameList': []
+                },
+                {
+                  'menuname': '二级商品5',
+                  'sonMenunameList': []
+                },
+                {
+                  'menuname': '二级商品6',
+                  'sonMenunameList': []
+                },
+                {
+                  'menuname': '二级商品7',
+                  'sonMenunameList': []
+                },
+                {
+                  'menuname': '二级商品8',
+                  'sonMenunameList': []
+                },
+                {
+                  'menuname': '二级商品9',
+                  'sonMenunameList': []
+                }
+              ]
+            },
+            {
+              'menuname': '一级商品2',
+              'sonMenunameList': [
+                {
+                  'menuname': '二级商品1',
+                  'sonMenunameList': []
+                },
+                {
+                  'menuname': '二级商品2',
+                  'sonMenunameList': []
+                },
+                {
+                  'menuname': '二级商品3',
+                  'sonMenunameList': []
+                },
+                {
+                  'menuname': '二级商品4',
+                  'sonMenunameList': []
+                },
+                {
+                  'menuname': '二级商品5',
+                  'sonMenunameList': []
+                },
+                {
+                  'menuname': '二级商品6',
+                  'sonMenunameList': []
+                },
+                {
+                  'menuname': '二级商品7',
+                  'sonMenunameList': []
+                },
+                {
+                  'menuname': '二级商品8',
+                  'sonMenunameList': []
+                },
+                {
+                  'menuname': '二级商品9',
+                  'sonMenunameList': []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          'menuname': '分类1',
+          'sonMenunameList': []
+        },
+        {
+          'menuname': '分类2',
+          'sonMenunameList': []
+        },
+        {
+          'menuname': '分类3',
+          'sonMenunameList': []
+        },
+        {
+          'menuname': '分类4',
+          'sonMenunameList': []
+        },
+        {
+          'menuname': '分类5',
+          'sonMenunameList': []
+        },
+        {
+          'menuname': '分类6',
+          'sonMenunameList': []
+        }
+      ]
     }
   },
-  components: { testCom },
+  components: { testCom, shopsNav },
   computed: {
     ...mapState({
       tree: state => state.tree
@@ -553,6 +718,10 @@ export default {
       this.switchNav = ''
       e.preventDefault()
     }
+    // 请求得到导航栏信息
+    // this.API.storeMenu().then(res => {}) storeMenuShow
+    // let { left, top } = this.$refs.storeMenuname.getBoundingClientRect()
+    // console.log(left, top, this.$refs.storeMenuname.getBoundingClientRect())
   },
   destroyed () {
     document.removeEventListener('click', this.handlePackUp)
@@ -653,7 +822,20 @@ export default {
       this.isEditPanel = ''
     },
     // 保存编辑
-    save () {}
+    save () {},
+    // 店招导航栏 移入时
+    enterNav (event, id) {
+      console.log(1000)
+      // let { left, top } = event.getBoundingClientRect()
+      // TODO: event??
+      console.log(this.$refs.storeMenuname[0].getBoundingClientRect())
+      this.$refs.storeMenuShow.style.position = 'absolute'
+      this.$refs.storeMenuShow.style.left = '100px'
+      this.$refs.storeMenuShow.style.top = '100px'
+    },
+    leaveNav () {
+      console.log('leave')
+    }
   },
   watch: {
     isEditPanel (val) {
@@ -956,22 +1138,6 @@ $aside-theme-color: #ef7026;
         overflow: auto;
         position: relative;
 
-        .previewer_bg {
-          position: absolute;
-          left: 0;
-          top: 0;
-          width: 100%;
-          min-height: 100%;
-          z-index: 1;
-          background-color: rgb(253, 253, 253);
-          background-image: url(/static/img/tem.jpeg);
-          /* background-image: url(//sc01.alicdn.com/kf/HTB1z.roUOLaK1RjSZFxq6ymPFXaW.jpg); */
-          background-repeat: no-repeat;
-          background-position: center top;
-          zoom: 0.783035;
-          /* ==> 960 */
-        }
-
         .previewer_limit {
           margin: 0 auto;
           position: relative;
@@ -1257,6 +1423,7 @@ $aside-theme-color: #ef7026;
 .root_page {
   .layout_page {
     width: 100%;
+    position: relative;
 
     .layout_m {
       width: 960px;
@@ -1404,6 +1571,146 @@ $aside-theme-color: #ef7026;
     }
   }
 }
+.content_bg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  min-height: 100%;
+  z-index: 1;
+  background-color: rgb(253, 253, 253);
+  background-image: url(//sc01.alicdn.com/kf/HTB1z.roUOLaK1RjSZFxq6ymPFXaW.jpg);
+  background-repeat: no-repeat;
+  background-position: center top;
+  zoom: 0.783035;
+}
+
+/* 店铺招牌 */
+  #store_header {
+    max-height: 280px;
+    margin-bottom: 0px;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+  }
+  .store_sign_nav_bg {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    min-height: 100%;
+    background-color: rgb(253, 253, 253);
+    background-image: url(/static/img/shop_default_bg.jpg);
+    background-repeat: repeat;
+    background-position: center top;
+    zoom: 0.783035;
+  }
+  .store_signature {
+    width: 100%;
+    max-height: 280px;
+    overflow: hidden;
+    zoom: 0.783035;
+  }
+  .store_sign_nav_box {
+    min-height: 1px;
+  }
+  .store_sign_bg {
+    /* background: url(//gdp.alicdn.com/tps/TB1hYBhJXXXXXciXpXXXXXXXXXX-950-120.png) no-repeat 0 0 !important; */
+    height: 240px !important;
+  }
+  .store_sign_con {
+    position: relative;
+  }
+  .store_sign_info {
+    position: absolute;
+    left: 20px;
+    top: calc(50% - 25px);
+    background: rgba(244, 177, 90, 0.1);
+    border-radius: 8px;
+    line-height: 30px;
+    color: #333;
+    padding: 10px 40px;
+    font-size: 24px;
+    font-weight: 400;
+  }
+/* nav 导航栏菜单 */
+  .shop_nav {
+    position: relative;
+    height: 40px;
+    background-color: #ef7026;
+  }
+ .m-nav-content {
+    width: 1226px;
+    margin: 0 auto;
+  }
+  .menu-box {
+    display: flex;
+  }
+  .menu-item {
+    position: relative;
+  }
+  .menu-item-li {
+    height: 40px;
+    line-height: 40px;
+  }
+  .menu-item-li>a.menu-a {
+    height: 40px;
+    line-height: 40px;
+  }
+  .menu-a {
+    height: 40px;
+    line-height: 40px;
+    padding: 0 20px;
+    color: #000;
+    font-size: 14px;
+    border-radius: 4px;
+  }
+  .menu-more {
+    padding-left: 5px;
+    transition: 0.2s;
+  }
+  .visible {
+    height: 4px;
+    width: 4px;
+    background: transparent;
+  }
+  .menu-two {
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0px 0px 3px 1px #eee;
+    min-width: 150px;
+    padding: 4px 0 10px 0;
+  }
+  .menu-two-a {
+    padding: 0 16px;
+  }
+  .menu-two-li {
+    padding: 0 4px;
+  }
+  .menu-two-li .menu-a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .menu-two-box {
+    position: absolute;
+    top: 100%;
+    display: none;
+    z-index: 20;
+  }
+  .menu-box>.menu-item:hover>.menu-a>.menu-more{
+    transform-origin: 62% 50%;
+    transform: rotate(0.5turn);
+  }
+  .menu-two-li>.menu-two-a:hover {
+    background-color: #ededef;
+  }
+  .menu-box>.menu-item:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  .menu-item:hover>.menu-two-box {
+    display: block;
+  }
 
 .loading_wrap {
   position: fixed;

@@ -3,7 +3,7 @@
     <div class="dynamic_box">
       <div class="dynamic_player">
         <div class="dynamic_player_bg">
-          <video preload="metadata" autoplay style="width: 100%; height: 100%; display: block; background-color: #000;" src="//cloud.video.alibaba.com/play/u/2153292369/p/1/e/6/t/1/d/hd/210692166549.mp4"></video>
+          <video preload="metadata" muted width="100%" height="100%" loop="false" style="display: block; background-color: #000;" src="//cloud.video.alibaba.com/play/u/2153292369/p/1/e/6/t/1/d/hd/210692166549.mp4" controls></video>
         </div>
       </div>
       <div class="dynamic_desc">
