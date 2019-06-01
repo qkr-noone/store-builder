@@ -38,7 +38,6 @@ export default {
 /* 主题颜色 #141414 */
   #chuchuang_w {
     width: 986px;
-    margin: 0 auto;
   }
   .chuchuang_head {
     display: flex;

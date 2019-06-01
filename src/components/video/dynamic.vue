@@ -29,7 +29,6 @@ export default {
   #dynamic {
     max-width: 1226px;
     width: 100%;
-    margin: 0 auto 20px;
   }
   .dynamic_box {
     height: 460px;

@@ -4,12 +4,12 @@
       <div class="pro_n_box">
         <div class="pro_n_limit">
           <div class="pro_n_ul" ref="sroll">
-            <div class="pro_n_item" v-for="index in length" :key="index">
-              <a href="" class="pro_n_img" target="_blank"><img class="pro_n_img_con" :src="list.img"></a>
+            <div class="pro_n_item" v-for="item in list" :key="item.id">
+              <a href="" class="pro_n_img" target="_blank"><img class="pro_n_img_con" :src="item.smallPic"></a>
               <div class="pro_n_info">
-                <a class="pro_n_title" href="" :title="list.title" target="_blank"><span>{{list.title}}</span></a>
-                <div class="pro_n_price" :title="list.price"><span>{{list.price}}元</span></div>
-                <div class="pro_n_price pro_n_sale">已售出<span>{{list.sale}}</span>笔</div>
+                <router-link :to="{path: '/detail', query: { goodsId: item.id }}" class="pro_n_title"  :title="item.goodsName" target="_blank"><span>{{item.goodsName}}</span></router-link>
+                <div class="pro_n_price" :title="item.priceShow"><span>{{item.priceShow}}元</span></div>
+                <!-- <div class="pro_n_price pro_n_sale">已售出<span>{{list.sale}}</span>笔</div> -->
               </div>
             </div>
           </div>
@@ -29,10 +29,14 @@
 <script>
 export default {
   name: 'pingpu_n',
+  props: {
+    list: {
+      type: Array
+    }
+  },
   data () {
     return {
-      list: { img: 'static/img/tem.jpeg', title: 'tilstadsadsdtilstilssasstilstadsadsdsass', price: 12.00, sale: 11222 },
-      length: 4,
+      length: this.list.length,
       isBottom: this.length > 4 ? 0 : 1
     }
   },

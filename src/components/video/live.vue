@@ -26,7 +26,6 @@ export default {
   #live {
     max-width: 1226px;
     width: 100%;
-    margin: 0 auto 20px;
   }
   .live_box {
   }

@@ -193,24 +193,28 @@ export default {
       }
     }
   }
-</style>
-<style>
-  .el-carousel__arrow--left, .el-carousel__arrow--right {
-    font-size: 30px;
-    line-height: 30px;
-    background-color: rgba(245, 247, 250, 0.13);
-    color: #ef7026;
+  /deep/ .el-carousel__arrow--left {
+    left: 0px;
   }
-  .el-carousel__arrow--right:hover, .el-carousel__arrow--left:hover {
+  /deep/ .el-carousel__arrow--right {
+    right: 0px;
+  }
+  /deep/ .el-carousel__arrow--right:hover, /deep/ .el-carousel__arrow--left:hover {
     background-color: transparent;
   }
-  .el-carousel__indicators--horizontal{
+  /deep/ .el-carousel__indicators--horizontal{
     border-radius: 8px;
   }
-  .el-carousel__button {
+  /deep/ .el-carousel__button {
     background-color: #ef7026;
     width: 8px;
     height: 8px;
     border-radius: 50%;
+  }
+  /deep/ .el-carousel__arrow--left, /deep/ .el-carousel__arrow--right {
+    font-size: 38px;
+    line-height: 30px;
+    background-color: rgba(245, 247, 250, 0.13);
+    color: #ef7026;
   }
 </style>

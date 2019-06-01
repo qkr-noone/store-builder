@@ -32,7 +32,6 @@ export default {
   #customer {
     max-width: 1226px;
     width: 100%;
-    margin: 0 auto 20px;
   }
   .customer_box {
     display: flex;

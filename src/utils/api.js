@@ -12,5 +12,17 @@ export default {
   // 根据id 获取模板
   getTemplate: data => http.get('/shop/decoration/findTemplateItemByTemplateId', data),
   // 店铺首页的导航栏菜单信息
-  storeMenu: data => http.get('', data)
+  storeMenu: data => http.get('', data),
+  // 根据版本获取店铺装修数据
+  getStoreModule: data => http.get('/shop/decoration/getHomeComponent', data),
+  // 拖入保存店铺装修模块
+  saveTemplateGetData: data => http.post('/shop/decoration/saveOfflineHome', data),
+  // 获取商品列表
+  getGoodsList: data => http.post('/shop/decoration/findTilGoods', data),
+  // 获取店铺装修模块的数据
+  getTemplateData: data => http.post('/shop/decoration/getDataList', data),
+  // 修改店铺页面模块顺序
+  setTemplateSort: data => http.get('/shop/decoration/modifySort', data),
+  // 删除店铺页面模块
+  deleteTemplate: data => http.get('/shop/decoration/deleteOfflineHome', data)
 }

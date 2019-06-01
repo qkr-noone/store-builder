@@ -36,12 +36,11 @@ export default {
 /* #141414 样式*/
   #chanpinfenlei_n {
     width: 220px;
+    border: 1px solid #dbe3ef;
     border-top: 2px solid;
     background: #fff;
     border-top-color: #141414;
     .pro_cate {
-      border: 1px solid #dbe3ef;
-      border-top: none;
       .pro_cate_header {
         line-height: 30px;
         padding: 12px 20px;

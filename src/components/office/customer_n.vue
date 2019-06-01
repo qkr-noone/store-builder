@@ -48,7 +48,6 @@ export default {
   #customer_n {
     max-width: 220px;
     width: 100%;
-    margin: 0 auto 20px;
     border-top: 2px solid;
     background: #fff;
     border-top-color: #141414;

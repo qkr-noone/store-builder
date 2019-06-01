@@ -1,17 +1,17 @@
 <template>
   <div id="pingpu_p">
-    <div class="product_item" :class="{'has_bottom': length>4}" v-for="index in length" :key="index">
+    <div class="product_item" :class="{'has_bottom': list.length>4}" v-for="item in list" :key="item.id">
       <div class="product_cart">
-        <a href="" class="product_img" target="_blank">
+        <router-link :to="{path:'/detail', query: {goodsId: item.id }}" :data-title="item.goodsName" class="product_img" target="_blank">
           <div class="product_img_box">
-            <img class="product_img_con" :src="list.img">
+            <img class="product_img_con" :src="item.smallPic">
           </div>
-        </a>
+        </router-link>
         <div class="product_info">
           <div class="product_title">
-            <a class="product_word" href=""><span>{{list.title}}</span></a>
+            <a class="product_word" href=""><span>{{item.goodsName}}</span></a>
           </div>
-          <div class="product_price">{{list.price}}元</div>
+          <div class="product_price">{{item.priceShow}}元</div>
           <!-- <del class="product_price">{{list.price+5}}元</del> -->
         </div>
       </div>
@@ -21,10 +21,9 @@
 <script>
 export default {
   name: 'pingpu_p',
-  data () {
-    return {
-      length: 8,
-      list: { img: 'static/img/tem.jpeg', title: '121212212222222121212212222222121212212222222121212212222222121212212222', price: 12.00, sale: 11222 }
+  props: {
+    list: {
+      type: Array
     }
   }
 }
@@ -35,7 +34,6 @@ export default {
     display: flex;
     flex-wrap: wrap;
     width: 1226px;
-    margin: 0 auto;
     border: 1px solid #dbe3ef;
   }
   .product_item {

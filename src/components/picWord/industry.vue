@@ -25,7 +25,6 @@ export default {
   #industry {
     max-width: 1226px;
     width: 100%;
-    margin: 0 auto 20px;
   }
   .industry_box {
   }

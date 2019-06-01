@@ -19,12 +19,6 @@ Vue.use(ElementUI, VueCookies)
 // 上传文件 或者需要在页面中拿到全部的接口  也可以放到页面中
 // console.log(process.env.BASE_API)
 
-// 用户手动刷新页面，vuex 中的信息会重设，需重新新增
-let isValue = localStorage.getItem('build_tree')
-if (isValue) {
-  let tree = JSON.parse(isValue)
-  store.commit('BUILD_TREE', tree)
-}
 // 测试用例
 VueCookies.set('token', 'MkTail-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJiYWlkdTEyMyIsImV4cCI6MTU4NTAyMDAzMiwiaWF0IjoxNTUzNDg0MDMyfQ.ZFEvTHIWYrCyujdAzOIJElDRm9wK75T3_rzz7KQmQA3Fg4UWXyphBj4ReeSZeRlrk62bc5KF4oxOSKtn3YERgw')
 

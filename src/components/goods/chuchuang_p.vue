@@ -5,16 +5,16 @@
       <a class="chuchuang_more" href="" title="更多产品">更多产品 <i class="el-icon-d-arrow-right"></i></a>
     </div>
     <div class="chuchuang_con">
-      <div class="product_item" :class="{has_bottom: length>4, has_bottom2: length>10 && index >3 && (length-4)%6 >0 && (length - (length-4)%6 >= index) || (length>10 && index >3 && (length-4)%6 ===0 && (parseInt((length-4)/6)*6)>index+1)}" v-for="index in length" :key="index">
+      <div class="product_item" :class="{has_bottom: length>4, has_bottom2: length>10 && index >3 && (length-4)%6 >0 && (length - (length-4)%6 >= index) || (length>10 && index >3 && (length-4)%6 ===0 && (parseInt((length-4)/6)*6)>index+1)}" v-for="(item, index) in list" :key="index">
         <div class="product_cart">
-          <a href="" class="product_img" target="_blank">
+          <router-link :to="{path: '/detail' , query: {goodsId: item.id}}" class="product_img" target="_blank">
             <div class="product_img_box">
-              <img class="product_img_con" :src="list.img">
+              <img class="product_img_con" :src="item.smallPic">
             </div>
-          </a>
+          </router-link>
           <div class="product_info">
             <div class="product_title">
-              <a class="product_word" href=""><span>{{list.title}}</span></a>
+              <a class="product_word" href=""><span>{{item.goodsName}}</span></a>
             </div>
           </div>
         </div>
@@ -25,10 +25,14 @@
 <script>
 export default {
   name: 'chuchuang_p',
+  props: {
+    list: {
+      type: Array
+    }
+  },
   data () {
     return {
-      length: 10,
-      list: { img: 'static/img/tem.jpeg', title: 'tilstadsadsdtilstilssasstilstadsadsdsass', price: 12.00, sale: 11222 }
+      length: this.list.length
     }
   }
 }
@@ -38,7 +42,6 @@ export default {
 /* 主题颜色 #141414 */
   #chuchuang_p {
     width: 1226px;
-    margin: 0 auto;
   }
   .chuchuang_head {
     display: flex;

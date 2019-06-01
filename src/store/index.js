@@ -13,7 +13,6 @@ const store = new Vuex.Store({
   mutations: {
     [BUILD_TREE]: (state, tree) => {
       state.tree = tree
-      localStorage.build_tree = JSON.stringify(tree)
     }
   },
 

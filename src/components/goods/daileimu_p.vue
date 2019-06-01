@@ -77,7 +77,6 @@ export default {
   #daileimu_p {
     width: 1226px;
     border: 1px solid #dbe3ef;
-    margin: 0 auto;
     display: flex;
     flex-wrap: nowrap;
     .col_item{

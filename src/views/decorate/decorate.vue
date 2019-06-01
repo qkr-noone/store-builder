@@ -1,7 +1,7 @@
 <template>
   <div id="decorate" name="data-reactroot">
     <div class="container">
-      <header class="header"></header>
+      <storeHeader></storeHeader>
       <section class="content">
         <aside>
           <section class="manager-sidebar" ref="nav">
@@ -235,7 +235,7 @@
                 <div class="m-detail-con">
                   <div class="m-item" :class="{'game_over': list.usedNum===list.totalNum}" v-for="list in handleLayout(goods.templateList)" :key="list.id" :data-moduleId="list.id">
                     <div class="m-item-outside">
-                      <div class="m-item-shadow" v-show="list.usedNum<list.totalNum" draggable="true" @dragstart="dragstart($event, list.id, list)" @dragend="dragend()"></div>
+                      <div class="m-item-shadow" v-show="list.usedNum<list.totalNum" draggable="true" @dragstart="dragstart($event, list)" @dragend="dragend()"></div>
                       <div class="item-icon"><i :class="list.icon" class="iconfont"></i></div>
                       <div><span>{{list.usedNum}}</span><span>/{{list.totalNum}}</span></div>
                       <div>{{list.templateName}}</div>
@@ -265,7 +265,7 @@
                 <div class="m-detail-con">
                   <div class="m-item" :class="{'game_over': list.usedNum===list.totalNum}" v-for="list in handleLayout(picWord.templateList)" :key="list.id" :data-moduleId="list.id">
                     <div class="m-item-outside">
-                      <div class="m-item-shadow" v-show="list.usedNum<list.totalNum" draggable="true" @dragstart="dragstart($event, list.id, list)" @dragend="dragend()"></div>
+                      <div class="m-item-shadow" v-show="list.usedNum<list.totalNum" draggable="true" @dragstart="dragstart($event, list)" @dragend="dragend()"></div>
                       <div class="item-icon"><i :class="list.icon" class="iconfont"></i></div>
                       <div><span>{{list.usedNum}}</span><span>/{{list.totalNum}}</span></div>
                       <div>{{list.templateName}}</div>
@@ -295,7 +295,7 @@
                 <div class="m-detail-con">
                   <div class="m-item" :class="{'game_over': list.usedNum===list.totalNum}" v-for="list in handleLayout(video.templateList)" :key="list.id" :data-moduleId="list.id">
                     <div class="m-item-outside">
-                      <div class="m-item-shadow" v-show="list.usedNum<list.totalNum" draggable="true" @dragstart="dragstart($event, list.id, list)" @dragend="dragend()"></div>
+                      <div class="m-item-shadow" v-show="list.usedNum<list.totalNum" draggable="true" @dragstart="dragstart($event, list)" @dragend="dragend()"></div>
                       <div class="item-icon"><i :class="list.icon" class="iconfont"></i></div>
                       <div><span>{{list.usedNum}}</span><span>/{{list.totalNum}}</span></div>
                       <div>{{list.templateName}}</div>
@@ -325,7 +325,7 @@
                 <div class="m-detail-con">
                   <div class="m-item" :class="{'game_over': list.usedNum===list.totalNum}" v-for="list in handleLayout(sell.templateList)" :key="list.id" :data-moduleId="list.id">
                     <div class="m-item-outside">
-                      <div class="m-item-shadow" v-show="list.usedNum<list.totalNum" draggable="true" @dragstart="dragstart($event, list.id, list)" @dragend="dragend()"></div>
+                      <div class="m-item-shadow" v-show="list.usedNum<list.totalNum" draggable="true" @dragstart="dragstart($event, list)" @dragend="dragend()"></div>
                       <div class="item-icon"><i :class="list.icon" class="iconfont"></i></div>
                       <div><span>{{list.usedNum}}</span><span>/{{list.totalNum}}</span></div>
                       <div>{{list.templateName}}</div>
@@ -355,7 +355,7 @@
                 <div class="m-detail-con">
                   <div class="m-item" :class="{'game_over': list.usedNum===list.totalNum}" v-for="list in handleLayout(office.templateList)" :key="list.id" :data-moduleId="list.id">
                     <div class="m-item-outside">
-                      <div class="m-item-shadow" v-show="list.usedNum<list.totalNum" draggable="true" @dragstart="dragstart($event, list.id, list)" @dragend="dragend()"></div>
+                      <div class="m-item-shadow" v-show="list.usedNum<list.totalNum" draggable="true" @dragstart="dragstart($event, list)" @dragend="dragend()"></div>
                       <div class="item-icon"><i :class="list.icon" class="iconfont"></i></div>
                       <div><span>{{list.usedNum}}</span><span>/{{list.totalNum}}</span></div>
                       <div>{{list.templateName}}</div>
@@ -370,7 +370,7 @@
           <div class="previewer_wrap">
             <div :style="'background-color:'+ themeColor"></div>
             <div class="previewer_limit">
-              <div class="root_page">
+              <div class="root_page" id="root">
                 <div class="layout_page" data-id="hc"></div>
                 <div class="layout_page" data-id="hd" id="store_header">
                   <div class="store_sign_nav_bg" data-title="店铺招牌导航栏背景"></div>
@@ -380,12 +380,12 @@
                         <span data-store_sign_top="店铺平台其他信息"></span>
                         <div class="store_sign_con">
                           <div class="store_sign_bg"></div>
-                          <h3 class="store_sign_info">店铺首页</h3>
+                          <h3 class="store_sign_info" @click="pagePreview()">店铺首页</h3>
                         </div>
                       </div>
-                      <div class="pre_module store_sign_nav_box shop_nav m-nav-content">
-                        <ul class="menu-box">
-                          <li class="menu-item menu-item-li" v-for="list in menuList" :key="list.menuname" ref="storeMenuname" @mouseenter="enterNav($event, list.menuname)" @mouseleave="leaveNav()">
+                      <div class="pre_module store_sign_nav_box shop_nav m-nav-content" ref="storeMenuname">
+                        <ul class="menu-box" slot="reference">
+                          <li class="menu-item menu-item-li" v-for="list in menuList" :key="list.menuname" @mouseenter="enterNav($event, list.menuname)" @mouseleave="leaveNav()">
                             <a class="menu-a" href="javascript:;"><span>{{list.menuname}}</span><i class="el-icon-arrow-down menu-more" v-if="list.sonMenunameList.length"></i></a>
                           </li>
                         </ul>
@@ -398,7 +398,7 @@
                   <div class="layout_m" v-show="layoutType.pass==='1'">
                     <div class="pre_item_wrap drag_wrap">
                       <div class="view_100">
-                        <div class="Up-Center"  module-type="3"  @dragover.prevent="dragover($event, 100)" @dragleave="dragleave()" @drop="drop($event)" :class="[overView===100 ? 'drop_view' : '']">
+                        <div class="Up-Center"  data-module-type="3"  @dragover.prevent="dragover($event, 100)" @dragleave="dragleave()" @drop="drop($event)" :class="[overView===100 ? 'drop_view' : '']">
                           <i class="el-icon-plus"></i>
                           <a>在此添加</a>
                         </div>
@@ -408,22 +408,23 @@
                   <div class="layout_m" v-show="layoutType.narrow==='1' || layoutType.wide==='1'">
                     <div class="pre_item_wrap drag_wrap" >
                       <div class="view_20">
-                        <div class="Up-Center" module-type="1" v-show="layoutType.narrow==='1'" @dragover.prevent="dragover($event,20)" @dragleave="dragleave()" @drop="drop($event)" :class="[overView===20 ? 'drop_view' : '']">
+                        <div class="Up-Center" data-module-type="1" v-show="layoutType.narrow==='1'" @dragover.prevent="dragover($event,20)" @dragleave="dragleave()" @drop="drop($event)" :class="[overView===20 ? 'drop_view' : '']">
                           <i class="el-icon-plus"></i>
                           <a>在此添加</a>
                         </div>
                       </div>
                       <div class="view_80">
-                        <div class="Up-Center" module-type="2" v-show="layoutType.wide==='1'"  @dragover.prevent="dragover($event,80)" @dragleave="dragleave()" @drop="drop($event)" :class="[overView===80 ? 'drop_view' : '']">
+                        <div class="Up-Center" data-module-type="2" v-show="layoutType.wide==='1'"  @dragover.prevent="dragover($event,80)" @dragleave="dragleave()" @drop="drop($event)" :class="[overView===80 ? 'drop_view' : '']">
                           <i class="el-icon-plus"></i>
                           <a>在此添加</a>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div class="layout_m" v-for="(list, index) in tree" :key="list.id" :data-key="list.id">
+                  <div class="layout_m" v-for="(list, index) in tree" :key="index">
                     <div class="pre_item_wrap">
-                      <div class="pre_item_mask">
+                      <!-- 组件最外操作层 -->
+                      <div class="pre_item_mask" v-if="list.passModuleDataList.length">
                         <div class="handle_wrap" data-attr="上下移动">
                           <div class="handle_com">
                             <div>
@@ -434,18 +435,76 @@
                             <div><i class="el-icon-delete-solid" @click="componentDelete(list, index)"></i></div>
                           </div>
                         </div>
-                        <div class="pre_item_overlay" @click="isEditPanel=list.id">
-                          <div class="previewer_title">自定义内容区</div>
+                        <div class="pre_item_overlay" @click="isEditPanel=list.passModuleDataList[0].id">
+                          <div class="previewer_title">{{list.passModuleDataList[0].templateName}}</div>
                         </div>
                       </div>
-                      <div class="pre_module">
-                        <div class="pre_module_con" v-html="list.template">
+                      <!-- 组件内容...窄栏 -->
+                      <div class="pre_module" style="z-index: 2;" v-if="!list.passModuleDataList.length">
+                        <!-- 窄栏数据遍历 -->
+                        <div class="pre_module_con" v-for="item in list.narrowModuleDataList" :key="item.id" :data-template="item.templateName">
+                          <!-- 窄栏项操作层 -->
+                          <div class="pre_item_mask">
+                            <div class="handle_wrap" data-attr="上下移动">
+                              <div class="handle_com">
+                                <div><i class="el-icon-news"></i></div>
+                                <div><i class="el-icon-delete-solid" @click="componentDelete(item)"></i></div>
+                              </div>
+                            </div>
+                            <div class="pre_item_overlay" @click="isEditPanel=item.id">
+                              <div class="previewer_title">{{item.templateName}}</div>
+                            </div>
+                          </div>
+                          <!-- 窄栏项模板>>组件 -->
+                          <component :is="item.template" :list="item.dataList"></component>
                         </div>
-                        <div class="pre_module_con not_html_data" v-if="!list.template">
+                        <!-- 窄栏拖放框 -->
+                        <div class="width_20" v-show="layoutType.narrow==='1'">
+                          <div class="Up-Center" data-module-type="1" @dragover.prevent="dragover($event,20)" @dragleave="dragleave()" @drop="drop($event, list.componentId)" :class="[overView===20 ? 'drop_view' : '']">
+                            <i class="el-icon-plus"></i>
+                            <a>在此添加</a>
+                          </div>
+                        </div>
+                        <!-- <div class="pre_module_con not_html_data" v-if="!list.dataList.length">
                           <div class="not_html_placeholder">
                             <i class="el-icon-error"></i>
                             <div>还未添加数据, 请点击编辑数据</div>
                           </div>
+                        </div> -->
+                      </div>
+                      <!-- 组件内容...宽栏 -->
+                      <div class="pre_module" v-if="!list.passModuleDataList.length">
+                        <!-- 宽栏数据遍历 -->
+                        <div class="pre_module_con"  v-for="item in list.widthModuleDataList" :key="item.id" :data-template="item.templateName">
+                          <!-- 宽栏项操作层 -->
+                          <div class="pre_item_mask">
+                            <div class="handle_wrap" data-attr="上下移动">
+                              <div class="handle_com">
+                                <div><i class="el-icon-news"></i></div>
+                                <div><i class="el-icon-delete-solid" @click="componentDelete(item)"></i></div>
+                              </div>
+                            </div>
+                            <div class="pre_item_overlay" @click="isEditPanel=item.id">
+                              <div class="previewer_title">{{item.templateName}}</div>
+                            </div>
+                          </div>
+                          <!-- 宽栏项模板>>组件 -->
+                          <component :is="item.template" :list="item.dataList"></component>
+                        </div>
+                        <!-- 宽栏拖放框 -->
+                        <div class="width_80" v-show="layoutType.wide==='1'">
+                          <div class="Up-Center" data-module-type="2"  @dragover.prevent="dragover($event,80)" @dragleave="dragleave()" @drop="drop($event, list.componentId)" :class="[overView===80 ? 'drop_view' : '']">
+                            <i class="el-icon-plus"></i>
+                            <a>在此添加</a>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- 组件内容...通栏 -->
+                      <div class="pre_module" style="width: 100%;" v-if="list.passModuleDataList.length">
+                        <!-- 通栏数据遍历 -->
+                        <div class="pre_module_con" v-for="item in list.passModuleDataList" :key="item.id" :data-template="item.templateName">
+                          <!-- 通栏项模板=>>组件 -->
+                          <component :is="item.template" :list="item.dataList"></component>
                         </div>
                       </div>
                     </div>
@@ -465,7 +524,30 @@
               <span class="editor_title">产品推荐name</span>
               <span class="editor_second_title">平铺排列方式</span>
             </div>
-            <div class="editor_panel_con"></div>
+            <div class="editor_panel_con">
+              <div>
+                <!-- 产品推荐 -->
+                <div class="rec_goods_box">
+                  <div>产品推荐</div>
+                  <div class="rec_goods_select_cate">
+                    <label class="goods_label">
+                      <span class="sub_input_box" :class="{checked: picked==='auto'}">
+                        <span class="radio_inner"></span>
+                        <input type="radio" name="auto" value="auto" v-model="picked">
+                      </span>
+                      <span class="goods_label_text">自动选择</span>
+                    </label>
+                    <label class="goods_label">
+                      <span class="sub_input_box" :class="{checked: picked==='manual'}">
+                        <span class="radio_inner"></span>
+                        <input type="radio" name="manual" value="manual" v-model="picked">
+                      </span>
+                      <span class="goods_label_text">手动选择</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div class="editor_panel_booth"></div>
             <div class="editor_panel_btn">
               <button class="editor_btn_button" @click="cancle()">取消</button>
@@ -477,7 +559,7 @@
       <footer class="footer"></footer>
     </div>
     <div class="loading_wrap" v-show="isLoading"><i class="el-icon-loading"></i></div>
-    <div class="m-nav-content" ref="storeMenuShow">
+    <div class="m-nav-content menu_pupper" ref="storeMenuShow">
       <ul class="menu-box">
         <li class="menu-item menu-item-li" v-for="list in menuList" v-if="list.sonMenunameList.length" :key="list.menuname">
           <a class="menu-a" href="javascript:;"><span>{{list.menuname}}</span><i class="el-icon-arrow-down menu-more" v-if="list.sonMenunameList.length"></i></a>
@@ -505,11 +587,9 @@
   </div> -->
 </template>
 <script>
-import testCom from '@/components/test'
 // 随机id
-import GUID from '@/utils/guid'
+// import GUID from '@/utils/guid'
 import { mapState, mapMutations } from 'vuex'
-import shopsNav from '@/components/goods/shopsNav'
 export default {
   name: 'decorate',
   data () {
@@ -688,16 +768,54 @@ export default {
           'menuname': '分类6',
           'sonMenunameList': []
         }
-      ]
+      ],
+      // 配置内容 自动/手动选择
+      picked: 'auto',
+      // 当前页面基本信息
+      currentPageInfo: {
+        version: this.$route.query.version,
+        pageName: this.$route.query.pageName
+      },
+      cooommm: []
     }
   },
-  components: { testCom, shopsNav },
+  components: {
+    /* 本页面的组件 */
+    storeHeader: () => import('@/components/storeHeader'),
+    /* 菜单和模板 */
+    shopsNav: () => import('@/components/goods/shopsNav'),
+    pingpuP: () => import('@/components/goods/pingpu_p'),
+    pingpuW: () => import('@/components/goods/pingpu_w'),
+    pingpuN: () => import('@/components/goods/pingpu_n'),
+    chuchuangP: () => import('@/components/goods/chuchuang_p'),
+    chuchuangW: () => import('@/components/goods/chuchuang_w'),
+    daileimuP: () => import('@/components/goods/daileimu_p'),
+    // 智能产品与重点推荐一样布局
+    zhongdiantuijianP: () => import('@/components/goods/zhongdiantuijian_p'),
+    danpinP: () => import('@/components/goods/danpin_p'),
+    zhuyingleimuP: () => import('@/components/goods/zhuyingleimu_p'),
+    smart: () => import('@/components/goods/zhongdiantuijian_p'),
+    chanpinfenleiN: () => import('@/components/goods/chanpinfenlei_n'),
+    industry: () => import('@/components/picWord/industry'),
+    fullScreen: () => import('@/components/picWord/fullScreen'),
+    banner: () => import('@/components/picWord/banner'),
+    dynamic: () => import('@/components/video/dynamic'),
+    live: () => import('@/components/video/live'),
+    threeD: () => import('@/components/video/3D'),
+    // 客服模块 通栏 宽栏一样布局
+    customer: () => import('@/components/office/customer'),
+    customerN: () => import('@/components/office/customer_n')
+  },
   computed: {
     ...mapState({
+      // 组件树
       tree: state => state.tree
     })
   },
   mounted () {
+    if (!this.currentPageInfo.version || !this.currentPageInfo.pageName) {
+      this.$message.error('数据请求有误！')
+    }
     // 请求得到数据拖拽列表信息
     this.API.homeNav().then(res => {
       let navData = res.data
@@ -712,16 +830,71 @@ export default {
       this.office = navData[4]
       this.savePanlSelect[4].id = this.office.id
     })
+    this.API.getStoreModule({ pagePosition: 'HOME', version: 1 }).then(res => {
+      console.log(res.data, 'mounted')
+      // let tem = res.data
+      // let arr = []
+      // for (let i = 0; i < tem.length; i++) {
+      //   let obj = {
+      //     componentId: tem[i].componentId,
+      //     pass: [],
+      //     width: [],
+      //     narrow: []
+      //   }
+      //   if (i === 0) {
+      //     if (tem[i].type === '1') {
+      //       obj.narrow.push(tem[i])
+      //     } else if (tem[i].type === '2') {
+      //       obj.width.push(tem[i])
+      //     } else {
+      //       obj.pass.push(tem[i])
+      //     }
+      //     arr.push(obj)
+      //   } else {
+      //     if ((tem[i].componentId === tem[ i - 1 ].componentId)) {
+      //       for (let j = 0; j < arr.length; j++) {
+      //         if (arr[j].componentId === tem[i].componentId) {
+      //           if (tem[i].type === '1') {
+      //             arr[j].narrow.push(tem[i])
+      //           } else if (tem[i].type === '2') {
+      //             arr[j].width.push(tem[i])
+      //           } else {
+      //             arr[j].pass.push(tem[i])
+      //           }
+      //         }
+      //       }
+      //     } else {
+      //       if (tem[i].type === '1') {
+      //         obj.narrow.push(tem[i])
+      //       } else if (tem[i].type === '2') {
+      //         obj.width.push(tem[i])
+      //       } else {
+      //         obj.pass.push(tem[i])
+      //       }
+      //       arr.push(obj)
+      //     }
+      //   }
+      // }
+      // console.log(arr)
+      // this.cooommm = arr
+      this.BUILD_TREE(res.data)
+    })
     document.addEventListener('click', this.handlePackUp)
     document.body.ondragover = e => {
       e.dataTransfer.dropEffect = 'move'
       this.switchNav = ''
       e.preventDefault()
     }
-    // 请求得到导航栏信息
-    // this.API.storeMenu().then(res => {}) storeMenuShow
-    // let { left, top } = this.$refs.storeMenuname.getBoundingClientRect()
-    // console.log(left, top, this.$refs.storeMenuname.getBoundingClientRect())
+    this.$nextTick(() => {
+      // 解决头部组件导入时序问题，影响storeMenuShow位置定位
+      setTimeout(() => {
+        let { left, top } = this.$refs.storeMenuname.getBoundingClientRect()
+        this.$refs.storeMenuShow.style.position = 'absolute'
+        this.$refs.storeMenuShow.style.left = left + 'px'
+        this.$refs.storeMenuShow.style.top = top + 40 + 'px'
+        this.$refs.storeMenuShow.style.zoom = 0.783035
+      }, 1000)
+    })
   },
   destroyed () {
     document.removeEventListener('click', this.handlePackUp)
@@ -764,12 +937,13 @@ export default {
         }
       }
     },
-    dragstart (event, componentId, module) {
+    dragstart (event, module) {
       this.layoutType = {}
       this.layoutType.narrow = module.narrow
       this.layoutType.wide = module.wide
       this.layoutType.pass = module.pass
-      event.dataTransfer.setData('text', componentId)
+      let mode = JSON.stringify({ moduleId: module.id, text: module.templateName })
+      event.dataTransfer.setData('text', mode)
     },
     dragover (event, ratioNum) {
       this.overView = ratioNum
@@ -777,17 +951,39 @@ export default {
     dragleave () {
       this.overView = 0
     },
-    drop (event) {
-      let moduleTypeId = event.target.getAttribute('module-type')
+    drop (event, componentId) {
+      let moduleTypeId = event.target.getAttribute('data-module-type') || event.target.parentNode.getAttribute('data-module-type')
+      console.log(moduleTypeId, 100)
       this.isLoading = true
-      let componentId = event.dataTransfer.getData('text')
-      this.API.getTemplate({ templateId: componentId }).then(res => {
+      let fox = JSON.parse(event.dataTransfer.getData('text'))
+      this.API.getTemplate({ templateId: fox.moduleId }).then(res => {
         let component = res.data.find(item => item.type === moduleTypeId)
-        delete component.id
-        Object.assign(component, { id: GUID() })
-        this.tree.splice(0, 0, component)
-        this.BUILD_TREE(this.tree)
-        this.isLoading = false
+        let config = {
+          componentId: componentId || null,
+          config: '',
+          createTime: '',
+          data: '',
+          dataSources: 1,
+          pagePosition: this.currentPageInfo.pageName,
+          sellerId: '',
+          sort: 1,
+          template: component.template,
+          templateContext: '',
+          templateId: component.templateId,
+          templateName: fox.text,
+          type: component.type,
+          updateTime: '',
+          version: this.currentPageInfo.version
+        }
+        this.API.saveTemplateGetData(config).then(rtn => {
+          console.log(rtn.data)
+          this.tree.splice(0, 0, rtn.data)
+          console.log(this.tree)
+          this.BUILD_TREE(this.tree)
+          this.isLoading = false
+        }).catch(() => {
+          this.isLoading = false
+        })
       }).catch(() => {
         this.isLoading = false
       })
@@ -799,13 +995,21 @@ export default {
     },
     // 组件上移
     componentUp (component, index) {
-      this.$set(this.tree, index, this.tree[index - 1])
-      this.$set(this.tree, index - 1, component)
+      this.API.setTemplateSort({ id: component.id, target: index }).then(res => {
+        if (res.code === 2000) {
+          this.$set(this.tree, index, this.tree[index - 1])
+          this.$set(this.tree, index - 1, component)
+        }
+      })
     },
     // 组件下移
     componentDowm (component, index) {
-      this.$set(this.tree, index, this.tree[index + 1])
-      this.$set(this.tree, index + 1, component)
+      this.API.setTemplateSort({ id: component.id, target: index + 2 }).then(res => {
+        if (res.code === 2000) {
+          this.$set(this.tree, index, this.tree[index + 1])
+          this.$set(this.tree, index + 1, component)
+        }
+      })
     },
     // 组件删除
     componentDelete (component, index) {
@@ -813,8 +1017,10 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         center: true
-      }).then(async () => {
-        this.tree.splice(index, 1)
+      }).then(() => {
+        this.API.deleteTemplate({ id: component.id }).then(res => {
+          if (res.code === 2000) this.tree.splice(index, 1)
+        })
       }).catch(() => {})
     },
     // 取消编辑
@@ -825,16 +1031,14 @@ export default {
     save () {},
     // 店招导航栏 移入时
     enterNav (event, id) {
-      console.log(1000)
-      // let { left, top } = event.getBoundingClientRect()
-      // TODO: event??
-      console.log(this.$refs.storeMenuname[0].getBoundingClientRect())
-      this.$refs.storeMenuShow.style.position = 'absolute'
-      this.$refs.storeMenuShow.style.left = '100px'
-      this.$refs.storeMenuShow.style.top = '100px'
+      this.$refs.storeMenuShow.style.visibility = 'visible'
     },
+    // 店招导航栏 移出时
     leaveNav () {
-      console.log('leave')
+      this.$refs.storeMenuShow.style.visibility = 'hidden'
+    },
+    // 预览
+    pagePreview () {
     }
   },
   watch: {
@@ -867,18 +1071,88 @@ export default {
 </script>
 <style lang="scss" scoped>
 $aside-theme-color: #ef7026;
+.rec_goods_box {
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgb(225, 225, 225);
+  margin-top: 16px;
+  margin: 10px 0;
+}
+.rec_goods_select_cate {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 10px 0;
+  overflow: hidden;
+  flex-wrap: wrap;
+}
+.goods_label {
+  min-width: 80px;
+  margin-bottom: 5px;
+  display: flex;
+  flex: 1;
+  align-items: center;
+}
+/* 重新设置input---raido UI */
+  .sub_input_box {
+    overflow: hidden;
+    line-height: 1.28571;
+    position: relative;
+    width: 16px;
+    height: 16px;
+  }
+  .sub_input_box input[type=radio] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    opacity: 0;
+  }
+  .radio_inner {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    border-radius: 50%;
+    border: 1px solid #c4c6cf;
+    transition: all .3s ease 0s
+  }
+  .checked .radio_inner {
+    border-color: $aside-theme-color;
+  }
+  .radio_inner::after {
+    content: '';
+    transform: scale(0);
+    position: absolute;
+    border-radius: 50%;
+    top: 50%;
+    margin-top: -4px;
+    left: 50%;
+    margin-left: -4px;
+    background: #fff;
+    transition: all .3s ease 0s;
+  }
+  .checked .radio_inner::after {
+    width: 8px;
+    height: 8px;
+    font-weight: 700;
+    background: $aside-theme-color;
+    transform: scale(1);
+  }
+.goods_label_text {
+  font-size: 12px;
+  color: #666;
+  line-height: 1.28571;
+  margin: 0 5px;
+}
+
 .container {
   display: flex;
   flex-flow: column nowrap;
   width: 100%;
   height: 100%;
   position: fixed;
-
-  header {
-    width: 100%;
-    height: 100px;
-    background-color: #ddd;
-  }
 
   .content {
     overflow: hidden;
@@ -1142,7 +1416,7 @@ $aside-theme-color: #ef7026;
           margin: 0 auto;
           position: relative;
           width: 100%;
-          font: 14px/20px "Microsoft Yahei", 'Hiragino Sans GB', arial, '\5B8B\4F53', sans-serif;
+          font: 14px/1.5 "Microsoft Yahei", 'Hiragino Sans GB', arial, '\5B8B\4F53', sans-serif;
         }
       }
     }
@@ -1439,7 +1713,8 @@ $aside-theme-color: #ef7026;
         margin-bottom: 20px;
         min-height: 50px;
         z-index: 1;
-
+        display: flex;
+        justify-content: space-between;
         .pre_item_mask {
           width: 100%;
           height: 100%;
@@ -1449,6 +1724,7 @@ $aside-theme-color: #ef7026;
           cursor: pointer;
           z-index: 2;
           border: 1px solid transparent;
+          background: none !important;
 
           &:hover {
             background-color: rgba(239, 112, 38, .1);
@@ -1513,12 +1789,15 @@ $aside-theme-color: #ef7026;
 
         .pre_module {
           height: auto;
-          background-color: rgba(0, 0, 0, .5);
           z-index: 1;
           position: relative;
 
           .pre_module_con {
+            position: relative;
             zoom: 0.783035;
+            &>:nth-child(n) {
+              background: #fff;
+            }
           }
           .not_html_data {
             display: flex;
@@ -1571,6 +1850,18 @@ $aside-theme-color: #ef7026;
     }
   }
 }
+/* 组件显示添加的框 */
+.width_20, .width_80, .width_100 {
+  width: 100%;
+  height: 60px;
+  border: 1px solid #999;
+  background-color: rgba(0, 0, 0, 0.2);
+  &.drop_view {
+    border-color: yellow;
+    color: yellow;
+  }
+}
+
 .content_bg {
   position: absolute;
   left: 0;
@@ -1579,7 +1870,7 @@ $aside-theme-color: #ef7026;
   min-height: 100%;
   z-index: 1;
   background-color: rgb(253, 253, 253);
-  background-image: url(//sc01.alicdn.com/kf/HTB1z.roUOLaK1RjSZFxq6ymPFXaW.jpg);
+  /* background-image: url(//sc01.alicdn.com/kf/HTB1z.roUOLaK1RjSZFxq6ymPFXaW.jpg); */
   background-repeat: no-repeat;
   background-position: center top;
   zoom: 0.783035;
@@ -1637,11 +1928,14 @@ $aside-theme-color: #ef7026;
   .shop_nav {
     position: relative;
     height: 40px;
-    background-color: #ef7026;
+    background-color: #aside-theme-color;
   }
  .m-nav-content {
     width: 1226px;
     margin: 0 auto;
+  }
+  .menu_pupper {
+    visibility: hidden;
   }
   .menu-box {
     display: flex;
@@ -1720,45 +2014,35 @@ $aside-theme-color: #ef7026;
   font-size: 30px;
   color: $aside-theme-color;
 }
-
-</style>
-<style lang="scss">
-  $aside-theme-color: #ef7026;
-
-  .el-tabs__active-bar {
+/* 修改插件样式 未启用？ */
+  /deep/ .el-color-picker__panel.el-color-dropdown {
+    left: 118px !important;
+  }
+  /deep/ .el-tabs__active-bar {
     background-color: $aside-theme-color;
     height: 1px;
   }
 
-  .el-tabs__item.is-active {
+  /deep/ .el-tabs__item.is-active {
     color: $aside-theme-color;
   }
 
-  .el-tabs__item:hover {
+  /deep/ .el-tabs__item:hover {
     color: $aside-theme-color;
     cursor: pointer;
   }
 
-  .el-tabs__nav-wrap::after {
+  /deep/ .el-tabs__nav-wrap::after {
     height: 1px;
   }
-  .bg-purple {
+  /deep/ .bg-purple {
     background: #d3dce6;
   }
-  .grid-content {
+  /deep/ .grid-content {
     border-radius: 4px;
     min-height: 36px;
   }
-
-</style>
-<style>
-  .el-color-picker__panel {
-    left: 118px !important;
-    /*display: block !important;
-    top: 364px !important;
-    box-shadow: none !important;
-    border: none !important;*/
-  }
+/* 暂时的页面主题色相关 */
   .saturation-white {
     background: -webkit-linear-gradient(to right, #fff, rgba(255, 255, 255, 0));
     background: linear-gradient(to right, #fff, rgba(255, 255, 255, 0));
