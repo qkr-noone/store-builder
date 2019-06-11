@@ -16,8 +16,8 @@ const service = axios.create({
 // 添加请求拦截器
 service.interceptors.request.use(request => {
   // 若有做鉴权token，需要请求头自动加上token
-  if (VueCookies.get('token')) {
-    request.headers.Authorization = VueCookies.get('token')
+  if (VueCookies.get('st_token')) {
+    request.headers.Authorization = VueCookies.get('st_token')
   }
   if (request.data && (request.headers['Content-Type'].indexOf('application/x-www-form-urlencoded') !== -1)) {
     request.data = qs.stringify(request.data)
@@ -47,7 +47,7 @@ service.interceptors.response.use(res => {
     })
     if (result.code === 4001) {
       // token 失效返回到登录页面中 清除数据
-      localStorage.removeItem('token')
+      localStorage.removeItem('st_token')
       localStorage.removeItem('build_tree')
       // 需修改
       window.location.href = `http://192.168.1.100:9002/#/login?redirect=`

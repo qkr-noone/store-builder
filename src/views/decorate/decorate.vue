@@ -372,21 +372,28 @@
             <div class="previewer_limit">
               <div class="root_page" id="root">
                 <div class="layout_page" data-id="hc"></div>
+                <!-- 店铺头部 -->
                 <div class="layout_page" data-id="hd" id="store_header">
-                  <div class="store_sign_nav_bg" data-title="店铺招牌导航栏背景"></div>
+                  <div class="store_sign_nav_bg" data-title="店铺招牌导航栏背景" ref="bgStoreSign"></div>
                   <div class="layout_m" data-title="店铺招牌">
                     <div class="store_signature">
+                      <!-- 店招 -->
                       <div class="pre_module store_sign_nav_box">
                         <span data-store_sign_top="店铺平台其他信息"></span>
                         <div class="store_sign_con">
                           <div class="store_sign_bg"></div>
-                          <h3 class="store_sign_info" @click="pagePreview()">店铺首页</h3>
+                        </div>
+                        <div class="handle_wrap handle_store_sign_box" @click="currentComponent=JSON.parse(JSON.stringify(storeSign))" data-attr="上下移动">
+                          <div class="handle_com">
+                            <div><i class="el-icon-edit-outline"></i></div>
+                          </div>
                         </div>
                       </div>
-                      <div class="pre_module store_sign_nav_box shop_nav m-nav-content" ref="storeMenuname">
+                      <!-- 导航栏 -->
+                      <div class="pre_module store_sign_nav_box shop_nav m-nav-content">
                         <ul class="menu-box" slot="reference">
-                          <li class="menu-item menu-item-li" v-for="list in menuList" :key="list.menuname" @mouseenter="enterNav($event, list.menuname)" @mouseleave="leaveNav()">
-                            <a class="menu-a" href="javascript:;"><span>{{list.menuname}}</span><i class="el-icon-arrow-down menu-more" v-if="list.sonMenunameList.length"></i></a>
+                          <li class="menu-item menu-item-li" v-for="(list, tip) in menuNavBar" :key="list.id" ref="navBar" @mouseenter="tip===1 &&resetMenuPosition()">
+                            <router-link :to="{path: '/shops'}" target="_blank" class="menu-a"><span>{{list.navigationName}}</span><i class="el-icon-arrow-down menu-more" v-if="tip===1"></i></router-link>
                           </li>
                         </ul>
                       </div>
@@ -428,14 +435,14 @@
                         <div class="handle_wrap" data-attr="上下移动">
                           <div class="handle_com">
                             <div>
-                              <i class="el-icon-caret-top" @click="index > 0 && componentUp(list, index)" :class="{'notToday':index<=0}"></i></div>
+                              <i class="el-icon-caret-top" @click="index > 0 && upComponent(list, index)" :class="{'notToday':index<=0}"></i></div>
                             <div>
-                              <i class="el-icon-caret-bottom" @click="index < tree.length - 1 && componentDowm(list, index)" :class="{'notToday':index >= tree.length - 1}"></i>
+                              <i class="el-icon-caret-bottom" @click="index < tree.length - 1 && downComponent(list, index)" :class="{'notToday':index >= tree.length - 1}"></i>
                             </div>
-                            <div><i class="el-icon-delete-solid" @click="componentDelete(list, index)"></i></div>
+                            <div><i class="el-icon-delete-solid" @click="deleteComponent(list.componentId, index)"></i></div>
                           </div>
                         </div>
-                        <div class="pre_item_overlay" @click="isEditPanel=list.passModuleDataList[0].id">
+                        <div class="pre_item_overlay" @click="isEditPanelId=list.passModuleDataList[0].id">
                           <div class="previewer_title">{{list.passModuleDataList[0].templateName}}</div>
                         </div>
                       </div>
@@ -448,10 +455,10 @@
                             <div class="handle_wrap" data-attr="上下移动">
                               <div class="handle_com">
                                 <div><i class="el-icon-news"></i></div>
-                                <div><i class="el-icon-delete-solid" @click="componentDelete(item)"></i></div>
+                                <div><i class="el-icon-delete-solid" @click="deleteTemplate(item, index, list)"></i></div>
                               </div>
                             </div>
-                            <div class="pre_item_overlay" @click="isEditPanel=item.id">
+                            <div class="pre_item_overlay" @click="isEditPanelId=item.id">
                               <div class="previewer_title">{{item.templateName}}</div>
                             </div>
                           </div>
@@ -460,7 +467,7 @@
                         </div>
                         <!-- 窄栏拖放框 -->
                         <div class="width_20" v-show="layoutType.narrow==='1'">
-                          <div class="Up-Center" data-module-type="1" @dragover.prevent="dragover($event,20)" @dragleave="dragleave()" @drop="drop($event, list.componentId)" :class="[overView===20 ? 'drop_view' : '']">
+                          <div class="Up-Center" data-module-type="1" @dragover.prevent="dragover($event,20)" @dragleave="dragleave()" @drop="drop($event, list.componentId, list.sort)" :class="[overView===20 ? 'drop_view' : '']">
                             <i class="el-icon-plus"></i>
                             <a>在此添加</a>
                           </div>
@@ -481,10 +488,10 @@
                             <div class="handle_wrap" data-attr="上下移动">
                               <div class="handle_com">
                                 <div><i class="el-icon-news"></i></div>
-                                <div><i class="el-icon-delete-solid" @click="componentDelete(item)"></i></div>
+                                <div><i class="el-icon-delete-solid" @click="deleteTemplate(item, index, list)"></i></div>
                               </div>
                             </div>
-                            <div class="pre_item_overlay" @click="isEditPanel=item.id">
+                            <div class="pre_item_overlay" @click="isEditPanelId=item.id">
                               <div class="previewer_title">{{item.templateName}}</div>
                             </div>
                           </div>
@@ -493,7 +500,7 @@
                         </div>
                         <!-- 宽栏拖放框 -->
                         <div class="width_80" v-show="layoutType.wide==='1'">
-                          <div class="Up-Center" data-module-type="2"  @dragover.prevent="dragover($event,80)" @dragleave="dragleave()" @drop="drop($event, list.componentId)" :class="[overView===80 ? 'drop_view' : '']">
+                          <div class="Up-Center" data-module-type="2"  @dragover.prevent="dragover($event,80)" @dragleave="dragleave()" @drop="drop($event, list.componentId, list.sort)" :class="[overView===80 ? 'drop_view' : '']">
                             <i class="el-icon-plus"></i>
                             <a>在此添加</a>
                           </div>
@@ -517,17 +524,17 @@
           </div>
         </section>
       </section>
-      <section class="handle_component_edit" v-show="isEditPanel">
-        <section class="edit_panel" :class="{'transform': isEditPanel }">
+      <section class="handle_component_edit" v-show="isEditPanelId">
+        <section class="edit_panel" :class="{'transform': isEditPanelId }">
           <div class="editor_panel_container">
             <div class="editor_panel_title">
-              <span class="editor_title">产品推荐name</span>
-              <span class="editor_second_title">平铺排列方式</span>
+              <span class="editor_title">信息配置</span>
+              <span class="editor_second_title">{{currentComponent.templateName || ''}}</span>
             </div>
             <div class="editor_panel_con">
               <div>
                 <!-- 产品推荐 -->
-                <div class="rec_goods_box">
+                <!-- <div class="rec_goods_box bottom">
                   <div>产品推荐</div>
                   <div class="rec_goods_select_cate">
                     <label class="goods_label">
@@ -545,6 +552,51 @@
                       <span class="goods_label_text">手动选择</span>
                     </label>
                   </div>
+                </div> -->
+                <div class="rec_goods_box hidden_border" v-if="currentComponent.isGoods">
+                  <button class="editor_btn_button set_button select_goods" @click="cropperGoods=isEditPanelId">选择商品{{ !Object.keys(currentComponent).length || (currentComponent.data && currentComponent.data.split(',').length) || 0}}/8</button>
+                </div>
+                <!-- 隐藏下边距  -->
+                <!-- <div class="rec_goods_box hidden_border">
+                  <div class="rec_goods_select_cate">
+                    <label class="goods_label">
+                      <span class="sub_input_box" :class="{checked: picked==='auto'}">
+                        <span class="radio_inner"><i class="el-icon-check"></i></span>
+                        <input type="checkbox" name="auto" value="auto" v-model="picked">
+                      </span>
+                      <span class="goods_label_text">隐藏下边距</span>
+                    </label>
+                  </div>
+                </div> -->
+                <div class="rec_goods_box hidden_border" v-if="currentComponent.isVideo">
+                  <button class="editor_btn_button set_button">选择视频</button>
+                  <p class="set_desc">请上传比例为16:9的高质量视频</p>
+                </div>
+                <!-- <div class="rec_goods_box bottom">
+                  <div>图片高度<sup class="set_sup">*</sup></div>
+                  <div class="rec_goods_select_cate">
+                    <label class="goods_label">
+                      <span class="sub_input_box" :class="{checked: picked==='auto'}">
+                        <span class="radio_inner"></span>
+                        <input type="radio" name="auto" value="auto" v-model="picked">
+                      </span>
+                      <span class="goods_label_text">1920*550</span>
+                    </label>
+                    <label class="goods_label">
+                      <span class="sub_input_box" :class="{checked: picked==='manual'}">
+                        <span class="radio_inner"></span>
+                        <input type="radio" name="manual" value="manual" v-model="picked">
+                      </span>
+                      <span class="goods_label_text">1920*650</span>
+                    </label>
+                  </div>
+                </div> -->
+                <div class="rec_goods_box hidden_border" v-if="currentComponent.isBanner">
+                  <div>图片设置<sup class="set_sup">*</sup></div>
+                  <button class="editor_btn_button set_button select_goods set_banner" @click="frontBanner()">上传并编辑图片</button>
+                  <div class="set_img_show">
+                    <img v-for="tip in currentComponent.dataList" :key="tip.id" :src="tip.url">
+                  </div>
                 </div>
               </div>
             </div>
@@ -556,40 +608,250 @@
           </div>
         </section>
       </section>
+      <!-- 店招配置 -->
+      <section class="handle_component_edit" data-title="店招配置" v-show="currentComponent.isSign">
+        <section class="edit_panel transform">
+          <div class="editor_panel_container">
+            <div class="editor_panel_title">
+              <span class="editor_title">信息配置</span>
+              <span class="editor_second_title">店铺招牌</span>
+            </div>
+            <div class="editor_panel_con">
+              <div>
+                <div class="rec_goods_box hidden_border">
+                  <p class="set_desc">店招背景高度 210px, 导航栏高度 40px, 店招背景图片高度可以设置为250px, 可覆盖导航栏
+                  <br>背景图片建议设置为1920 * 250, 仅支持 jpg/png/jpeg 格式</p>
+                </div>
+                <div class="rec_goods_box hidden_border">
+                  <div>设置背景图片<sup class="set_sup">*</sup></div>
+                  <div class="set_con_banner_cell_img_upload">
+                    <input type="file" id="uploadBg" ref="uploadBg" accept="image/png, image/jpeg, image/jpg" style="position: absolute; left: -9999px;"  @change="uploadBgFile()" value="">
+                    <div v-if="currentComponent.image" class="set_con_banner_cell_img_upload_con">
+                      <img :src="currentComponent.image">
+                      <label class="set_con_banner_cell_img_upload_reUpload" for="uploadBg">
+                        <i class="el-icon-edit"></i>
+                      </label>
+                    </div>
+                    <label v-else class="set_con_banner_cell_img_upload_text" for="uploadBg">
+                      <i class="el-icon-plus"></i>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="editor_panel_booth"></div>
+            <div class="editor_panel_btn">
+              <button class="editor_btn_button" @click="cancleSignConfig()">取消</button>
+              <button class="editor_btn_button" @click="saveSignConfig()">保存</button>
+            </div>
+          </div>
+        </section>
+      </section>
       <footer class="footer"></footer>
     </div>
+    <!-- 加载loading -->
     <div class="loading_wrap" v-show="isLoading"><i class="el-icon-loading"></i></div>
+    <!-- 导航栏菜单下拉 -->
     <div class="m-nav-content menu_pupper" ref="storeMenuShow">
       <ul class="menu-box">
-        <li class="menu-item menu-item-li" v-for="list in menuList" v-if="list.sonMenunameList.length" :key="list.menuname">
-          <a class="menu-a" href="javascript:;"><span>{{list.menuname}}</span><i class="el-icon-arrow-down menu-more" v-if="list.sonMenunameList.length"></i></a>
-          <div class="menu-two-box" v-if="list.sonMenunameList.length">
-            <div class="visible"></div>
-            <ul class="menu-two">
-              <li class="menu-item menu-two-li" v-for="item in list.sonMenunameList" :key="item.menuname">
-                <a class="menu-a menu-two-a" href="javascript:;"><span>{{item.menuname}}</span><i class="el-icon-caret-right menu-more" v-if="item.sonMenunameList.length"></i></a>
-                <shopsNav v-if="item.sonMenunameList.length" :list="item.sonMenunameList"></shopsNav>
-              </li>
-            </ul>
-          </div>
-        </li>
+        <ul class="menu-two">
+          <li class="menu-item menu-two-li" v-for="item in menuCate" :key="item.id">
+            <router-link :to="{path: '/category', query:{cateId: item.id}}" class="menu-a menu-two-a"><span>{{item.name}}</span><i class="el-icon-arrow-right menu-more" v-if="item.children.length"></i></router-link>
+            <shopsNav v-if="item.children.length" :list="item.children"></shopsNav>
+          </li>
+        </ul>
       </ul>
     </div>
+    <!-- 弹框banner -->
+    <div v-if="cropperBanner">
+      <!-- 遮罩层 -->
+      <div class="wrapper"></div>
+      <div class="set_con_banner">
+        <div>
+          <div class="set_con_banner_box">
+            <i class="el-icon-close" @click="cancleCropperBanner()"></i>
+            <div class="set_con_banner_title">上传/编辑图片</div>
+            <div class="set_con_banner_info">
+              <div class="set_con_banner_row">
+                <div class="set_con_banner_cell_img">图片缩略图</div>
+                <div class="set_con_banner_cell_url">设置链接</div>
+                <div class="set_con_banner_cell_set">操作</div>
+              </div>
+              <!-- <div class="set_con_banner_row set_con_banner_row_con">
+                <div class="set_con_banner_cell_img"></div>
+                <div class="set_con_banner_cell_url">
+                  <el-popover
+                    placement="bottom"
+                    title="标题"
+                    width="200"
+                    trigger="hover"
+                    content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
+                    <el-button slot="reference">hover 激活</el-button>
+                  </el-popover>
+                </div>
+                <div class="set_con_banner_cell_set"></div>
+              </div> -->
+              <div class="set_con_banner_row set_con_banner_row_con" v-for="(tip, index) in markList" :key="tip.id">
+                <div class="set_con_banner_cell_img">
+                  <div>
+                    <div class="set_con_banner_cell_img_upload">
+                      <input type="file" id="uploadID" ref="uploadID" accept="image/png, image/jpeg, image/jpg" style="position: absolute; left: -9999999px;"  @change="handleFilesUpload()" value="">
+                      <div v-if="Object.keys(tip).length" class="set_con_banner_cell_img_upload_con">
+                        <img :src="tip.url">
+                        <label class="set_con_banner_cell_img_upload_reUpload" for="uploadID" @click="markIndex=index">
+                          <i class="el-icon-edit"></i>
+                        </label>
+                      </div>
+                      <label v-else class="set_con_banner_cell_img_upload_text" for="uploadID" @click="markIndex=index">
+                        <i class="el-icon-plus"></i>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div class="set_con_banner_cell_url">
+                  <div class="set_con_banner_cell_url_action">
+                    <span class="set_con_banner_cell_url_con"><input type="text" disabled :value="tip.link"></span>
+                    <el-popover
+                      placement="bottom"
+                      title="选择链接页面类型"
+                      width="250"
+                      trigger="hover"
+                      class="set_con_banner_cell_url_popper">
+                      <ul>
+                        <li>
+                          <a class="set_con_banner_cell_url_popper_a" href="javascript:;" @click="cropperBannerGoods(index)">商品详情页</a>
+                        </li>
+                        <li>
+                          <a class="set_con_banner_cell_url_popper_a" href="javascript:;">店内类目商品列表页</a>
+                        </li>
+                      </ul>
+                      <el-button slot="reference" size="mini"><i class="el-icon-menu"></i></el-button>
+                    </el-popover>
+                  </div>
+                </div>
+                <div class="set_con_banner_cell_set">
+                  <div class="set_con_banner_cell_set_action">
+                    <span class="set_con_banner_cell_set_action_btn action_btn_active" @click="index > 0 && upBannerImg(tip, index)" :class="{'notToday':index<=0}"><i class="el-icon-arrow-up"></i></span>
+                    <span class="set_con_banner_cell_set_action_btn action_btn_active" @click="index < markList.length - 1 && downBannerImg(tip, index)" :class="{'notToday':index>=markList.length - 1}"><i class="el-icon-arrow-down"></i></span>
+                    <span class="set_con_banner_cell_set_action_btn action_btn_active" @click="markList.length>1 && deleteBannerImg(index)" :class="{'notToday':markList.length<=1}"><i class="el-icon-delete"></i></span>
+                  </div>
+                </div>
+              </div>
+              <div class="set_con_banner_add_btn">
+                <button class="editor_btn_button" @click="addCropBanner()" :class="{disabled: markList.length===markNum}">新增</button>
+                <span class="set_con_banner_upload_tip">{{markList.length}}/{{markNum}}</span>
+              </div>
+              <span class="set_con_banner_upload_tip">图片建议上传尺寸&nbsp;≧&nbsp;1920X650像素，仅支持JPG/JPEG/PNG格式。</span>
+            </div>
+            <div class="set_con_banner_handle">
+              <button class="editor_btn_button" @click="cancleCropperBanner()">取消</button>
+              <button class="editor_btn_button" @click="btnCropperBanner()">确定</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 上传图片截图 -->
+      <div class="set_con_banner set_con_cropper" v-if="cropperImg">
+        <div>
+          <div class="set_con_banner_box">
+            <i class="el-icon-close" @click="cropperImg = ''"></i>
+            <div class="set_con_banner_title">上传<span class="set_con_banner_title_tip">拖动选框选择具体图片<sup>*</sup></span></div>
+            <div class="set_con_cropper_con">
+              <div class="set_con_cropper_box">
+                <VueCropper
+                  ref="cropper"
+                  data-ref="cropper"
+                  :img="cropperImg"
+                  :canScale="false"
+                  :autoCrop="true"
+                  :canMove="false"
+                  :fixedBox="false"
+                  :fixed="true"
+                  :fixedNumber="[192,65]"
+                  :centerBox="true"
+                  :full="true"
+                  :infoTrue="true">
+                </VueCropper>
+              </div>
+              <label for="uploadID" class="set_con_cropper_reset"><i class="el-icon-plus"></i><span>重新选择</span></label>
+            </div>
+            <div class="set_con_cropper_btn"><button class="editor_btn_button" @click="saveCropImg()">保存并关闭</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 弹框商品列表 -->
+    <div v-if="cropperGoods">
+      <!-- 遮罩层 -->
+      <div class="wrapper"></div>
+      <div class="set_con_banner">
+        <div>
+          <div class="set_con_banner_box">
+            <i class="el-icon-close" @click="closeCropGoods()"></i>
+            <div class="set_con_banner_title">选择商品详情页</div>
+            <div class="set_con_banner_info set_con_banner_info_two">
+              <div class="set_con_banner_row">
+                <!-- 后期分页查询操作 -->
+                <div class="set_con_banner_cell_img"></div>
+                <div class="set_con_banner_cell_url"></div>
+                <div class="set_con_banner_cell_set"></div>
+              </div>
+              <div class="pane-box pane_box_title">
+                <ul>
+                  <li>
+                    <span></span>
+                    <span>产品图片</span>
+                    <span>产品名称</span>
+                    <span>产品价格</span>
+                    <span>更新时间</span>
+                  </li>
+                </ul>
+              </div>
+              <div class="pane-box" style="border-bottom: 1px solid #663399;">
+                <ul class="pane_limit_height">
+                  <li v-for="list in storeGoods.rows" :key="list.id">
+                    <span><input type="checkbox" :value="list" v-model="pickList" @change="goodsChange($event)"/></span>
+                    <span><img :src="list.smallPic"></span>
+                    <span>{{list.goodsName}}</span>
+                    <span>
+                      <span>{{list.priceShow}}元</span>
+                    </span>
+                    <span>{{formatDate(list.createTime)}}</span>
+                  </li>
+                </ul>
+              </div>
+              <div class="set_con_banner_add_btn">
+                <span class="set_con_banner_upload_tip">拖动产品图片可调整顺序&nbsp;&nbsp;</span>
+                <span class="set_con_banner_upload_tip">已选择的产品:</span>
+                <span class="set_con_banner_upload_tip">{{pickList.length}}/{{pickNum}}</span>
+              </div>
+              <span class="set_select_order">
+                <ul>
+                  <li v-for="item in pickNum" :key="item.id">{{item}}</li>
+                  <draggable class="draggable" v-model="pickList">
+                    <li v-for="list in pickList" :key="list.id" style="cursor: move">
+                      <img :src="list.smallPic">
+                      <i class="el-icon-delete" @click="chooseDeleteData(list)"></i>
+                    </li>
+                  </draggable>
+                </ul>
+              </span>
+            </div>
+            <div class="set_con_banner_handle">
+              <button class="editor_btn_button" @click="closeCropGoods()">取消</button>
+              <button class="editor_btn_button" @click="btnCropGoods()">确定</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <!-- <div class="menu-two-box" v-if="list.sonMenunameList.length">
-    <div class="visible"></div>
-    <ul class="menu-two">
-      <li class="menu-item menu-two-li" v-for="item in list.sonMenunameList" :key="item.menuname">
-        <a class="menu-a menu-two-a" href="javascript:;"><span>{{item.menuname}}</span><i class="el-icon-caret-right menu-more" v-if="item.sonMenunameList.length"></i></a>
-        <shopsNav v-if="item.sonMenunameList.length" :list="item.sonMenunameList"></shopsNav>
-      </li>
-    </ul>
-  </div> -->
 </template>
 <script>
-// 随机id
-// import GUID from '@/utils/guid'
+import { guid } from '@/utils/common'
 import { mapState, mapMutations } from 'vuex'
+import axios from 'axios'
+import draggable from 'vuedraggable'
 export default {
   name: 'decorate',
   data () {
@@ -648,139 +910,35 @@ export default {
       bgLayStatus: '平铺', // 页面背景平铺状态
       bgAlignStatus: '平铺', // 页面背景对齐状态
       overView: 0,
-      isEditPanel: '', // 显示编辑面板
+      isEditPanelId: '', // 显示编辑面板=>> 组件内模板id
       isLoading: false,
-      currentComponent: [], // 当前编辑的组件
-      menuList: [
-        {
-          'menuname': '所有商品',
-          'sonMenunameList': [
-            {
-              'menuname': '一级商品1',
-              'sonMenunameList': [
-                {
-                  'menuname': '二级商品1',
-                  'sonMenunameList': [
-                    {
-                      'menuname': '三级商品1',
-                      'sonMenunameList': []
-                    }
-                  ]
-                },
-                {
-                  'menuname': '二级商品2',
-                  'sonMenunameList': []
-                },
-                {
-                  'menuname': '二级商品3',
-                  'sonMenunameList': []
-                },
-                {
-                  'menuname': '二级商品4',
-                  'sonMenunameList': []
-                },
-                {
-                  'menuname': '二级商品5',
-                  'sonMenunameList': []
-                },
-                {
-                  'menuname': '二级商品6',
-                  'sonMenunameList': []
-                },
-                {
-                  'menuname': '二级商品7',
-                  'sonMenunameList': []
-                },
-                {
-                  'menuname': '二级商品8',
-                  'sonMenunameList': []
-                },
-                {
-                  'menuname': '二级商品9',
-                  'sonMenunameList': []
-                }
-              ]
-            },
-            {
-              'menuname': '一级商品2',
-              'sonMenunameList': [
-                {
-                  'menuname': '二级商品1',
-                  'sonMenunameList': []
-                },
-                {
-                  'menuname': '二级商品2',
-                  'sonMenunameList': []
-                },
-                {
-                  'menuname': '二级商品3',
-                  'sonMenunameList': []
-                },
-                {
-                  'menuname': '二级商品4',
-                  'sonMenunameList': []
-                },
-                {
-                  'menuname': '二级商品5',
-                  'sonMenunameList': []
-                },
-                {
-                  'menuname': '二级商品6',
-                  'sonMenunameList': []
-                },
-                {
-                  'menuname': '二级商品7',
-                  'sonMenunameList': []
-                },
-                {
-                  'menuname': '二级商品8',
-                  'sonMenunameList': []
-                },
-                {
-                  'menuname': '二级商品9',
-                  'sonMenunameList': []
-                }
-              ]
-            }
-          ]
-        },
-        {
-          'menuname': '分类1',
-          'sonMenunameList': []
-        },
-        {
-          'menuname': '分类2',
-          'sonMenunameList': []
-        },
-        {
-          'menuname': '分类3',
-          'sonMenunameList': []
-        },
-        {
-          'menuname': '分类4',
-          'sonMenunameList': []
-        },
-        {
-          'menuname': '分类5',
-          'sonMenunameList': []
-        },
-        {
-          'menuname': '分类6',
-          'sonMenunameList': []
-        }
-      ],
+      currentComponent: {}, // 当前编辑的组件
+      storeSign: {},
+      menuNavBar: [],
+      menuCate: [],
       // 配置内容 自动/手动选择
-      picked: 'auto',
+      picked: 'manual',
       // 当前页面基本信息
       currentPageInfo: {
-        version: this.$route.query.version,
-        pageName: this.$route.query.pageName
+        storePageId: this.$route.query.storePageId
       },
-      cooommm: []
+      // 弹框产品列表选择的数量
+      pickNum: 8,
+      pickList: [],
+      // 弹框图片列表选择的数量
+      markNum: 5,
+      markList: [],
+      markIndex: null,
+      markDeleteImgId: [],
+      storeGoods: {},
+      cropperBanner: '',
+      cropperGoods: '',
+      cropperImg: ''
     }
   },
   components: {
     /* 本页面的组件 */
+    draggable,
     storeHeader: () => import('@/components/storeHeader'),
     /* 菜单和模板 */
     shopsNav: () => import('@/components/goods/shopsNav'),
@@ -813,9 +971,8 @@ export default {
     })
   },
   mounted () {
-    if (!this.currentPageInfo.version || !this.currentPageInfo.pageName) {
-      this.$message.error('数据请求有误！')
-    }
+    // if (!this.currentPageInfo.storePageId) this.$message.error('数据请求有误！') // this.$router.go(-1)
+
     // 请求得到数据拖拽列表信息
     this.API.homeNav().then(res => {
       let navData = res.data
@@ -830,80 +987,62 @@ export default {
       this.office = navData[4]
       this.savePanlSelect[4].id = this.office.id
     })
-    this.API.getStoreModule({ pagePosition: 'HOME', version: 1 }).then(res => {
-      console.log(res.data, 'mounted')
-      // let tem = res.data
-      // let arr = []
-      // for (let i = 0; i < tem.length; i++) {
-      //   let obj = {
-      //     componentId: tem[i].componentId,
-      //     pass: [],
-      //     width: [],
-      //     narrow: []
-      //   }
-      //   if (i === 0) {
-      //     if (tem[i].type === '1') {
-      //       obj.narrow.push(tem[i])
-      //     } else if (tem[i].type === '2') {
-      //       obj.width.push(tem[i])
-      //     } else {
-      //       obj.pass.push(tem[i])
-      //     }
-      //     arr.push(obj)
-      //   } else {
-      //     if ((tem[i].componentId === tem[ i - 1 ].componentId)) {
-      //       for (let j = 0; j < arr.length; j++) {
-      //         if (arr[j].componentId === tem[i].componentId) {
-      //           if (tem[i].type === '1') {
-      //             arr[j].narrow.push(tem[i])
-      //           } else if (tem[i].type === '2') {
-      //             arr[j].width.push(tem[i])
-      //           } else {
-      //             arr[j].pass.push(tem[i])
-      //           }
-      //         }
-      //       }
-      //     } else {
-      //       if (tem[i].type === '1') {
-      //         obj.narrow.push(tem[i])
-      //       } else if (tem[i].type === '2') {
-      //         obj.width.push(tem[i])
-      //       } else {
-      //         obj.pass.push(tem[i])
-      //       }
-      //       arr.push(obj)
-      //     }
-      //   }
-      // }
-      // console.log(arr)
-      // this.cooommm = arr
+
+    // TODO 获取组件树
+    // this.API.getStorePageModule({ navigationItemId: this.currentPageInfo.storePageId }).then(res => {
+    //   this.BUILD_TREE(res.data)
+    // })
+
+    // TODO 临时获取组件树
+    this.API.getTemStorePageModule().then(res => {
       this.BUILD_TREE(res.data)
     })
+
+    this.API.getStoreSign().then(res => {
+      this.storeSign = res.data
+      this.$nextTick(() => {
+        this.$refs.bgStoreSign.style.backgroundImage = 'url(' + this.storeSign.image + ')'
+      })
+      console.log(this.storeSign)
+    })
+    // 获取导航栏
+    this.API.storeNavBar().then(res => {
+      this.menuNavBar = res.data
+    })
+    // 下拉菜单
+    this.API.storeMenu().then(rtn => {
+      this.menuCate = rtn.data
+    })
+
     document.addEventListener('click', this.handlePackUp)
+
+    document.addEventListener('mousemove', this.handlePackNavBar)
+
     document.body.ondragover = e => {
       e.dataTransfer.dropEffect = 'move'
       this.switchNav = ''
       e.preventDefault()
     }
-    this.$nextTick(() => {
-      // 解决头部组件导入时序问题，影响storeMenuShow位置定位
-      setTimeout(() => {
-        let { left, top } = this.$refs.storeMenuname.getBoundingClientRect()
-        this.$refs.storeMenuShow.style.position = 'absolute'
-        this.$refs.storeMenuShow.style.left = left + 'px'
-        this.$refs.storeMenuShow.style.top = top + 40 + 'px'
-        this.$refs.storeMenuShow.style.zoom = 0.783035
-      }, 1000)
-    })
+    this.goodsData()
   },
   destroyed () {
     document.removeEventListener('click', this.handlePackUp)
+    document.removeEventListener('mousemove', this.handlePackNavBar)
   },
   methods: {
     ...mapMutations(['BUILD_TREE']),
+    init () {
+      this.isEditPanelId = ''
+      this.cropperGoods = ''
+      this.cropperBanner = ''
+      this.cropperImg = ''
+      this.pickList = []
+      this.markDeleteImgId = []
+      this.markList = []
+    },
     handleClick (val) {
     },
-    // 收起菜单
+    // 收起左侧菜单
     handlePackUp (e) {
       if (this.switchNav) {
         let navDom = this.$refs.nav
@@ -951,7 +1090,7 @@ export default {
     dragleave () {
       this.overView = 0
     },
-    drop (event, componentId) {
+    drop (event, componentId, comPosition = 1) {
       let moduleTypeId = event.target.getAttribute('data-module-type') || event.target.parentNode.getAttribute('data-module-type')
       console.log(moduleTypeId, 100)
       this.isLoading = true
@@ -964,21 +1103,22 @@ export default {
           createTime: '',
           data: '',
           dataSources: 1,
-          pagePosition: this.currentPageInfo.pageName,
           sellerId: '',
-          sort: 1,
+          sort: comPosition,
           template: component.template,
           templateContext: '',
           templateId: component.templateId,
           templateName: fox.text,
           type: component.type,
           updateTime: '',
-          version: this.currentPageInfo.version
+          navigationItemId: this.currentPageInfo.storePageId
         }
         this.API.saveTemplateGetData(config).then(rtn => {
           console.log(rtn.data)
-          this.tree.splice(0, 0, rtn.data)
-          console.log(this.tree)
+          // 存在组件id 则替换该组件模板数据
+          if (componentId) this.tree.splice(comPosition - 1, 1, rtn.data)
+          // 插入该组件模板数据
+          else this.tree.splice(comPosition - 1, 0, rtn.data)
           this.BUILD_TREE(this.tree)
           this.isLoading = false
         }).catch(() => {
@@ -994,56 +1134,357 @@ export default {
       this.layoutType = {}
     },
     // 组件上移
-    componentUp (component, index) {
-      this.API.setTemplateSort({ id: component.id, target: index }).then(res => {
+    upComponent (component, index) {
+      this.API.moveComponent({ componentId: component.componentId, target: index }).then(res => {
         if (res.code === 2000) {
           this.$set(this.tree, index, this.tree[index - 1])
           this.$set(this.tree, index - 1, component)
+          let sort = component.sort
+          this.$set(this.tree[index - 1], 'sort', this.tree[index].sort)
+          this.$set(this.tree[index], 'sort', sort)
+          this.BUILD_TREE(this.tree)
         }
       })
     },
     // 组件下移
-    componentDowm (component, index) {
-      this.API.setTemplateSort({ id: component.id, target: index + 2 }).then(res => {
+    downComponent (component, index) {
+      this.API.moveComponent({ componentId: component.componentId, target: index + 2 }).then(res => {
         if (res.code === 2000) {
           this.$set(this.tree, index, this.tree[index + 1])
           this.$set(this.tree, index + 1, component)
+          let sort = component.sort
+          this.$set(this.tree[index + 1], 'sort', this.tree[index].sort)
+          this.$set(this.tree[index], 'sort', sort)
+          this.BUILD_TREE(this.tree)
         }
       })
     },
     // 组件删除
-    componentDelete (component, index) {
+    deleteComponent (componentId, index) {
       this.$confirm('', '是否删除该组件?', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         center: true
       }).then(() => {
-        this.API.deleteTemplate({ id: component.id }).then(res => {
-          if (res.code === 2000) this.tree.splice(index, 1)
+        this.API.deleteComponent({ componentId: componentId }).then(res => {
+          if (res.code === 2000) {
+            this.tree.splice(index, 1)
+            this.BUILD_TREE(this.tree)
+          }
         })
       }).catch(() => {})
     },
+    // 删除组件里的模板
+    deleteTemplate (tem, index, list) {
+      // 组件只有一个模板 即删除组件
+      let moduleNum = list.narrowModuleDataList.length + list.widthModuleDataList.length + list.passModuleDataList.length
+      if (moduleNum <= 1) this.deleteComponent(tem.componentId, index)
+      else {
+        this.$confirm('', '是否删除该模板?', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          center: true
+        }).then(() => {
+          this.API.deleteTemplate({ moduleId: tem.id }).then(res => {
+            if (res.code === 2000) {
+              this.tree.splice(index, 1, res.data)
+              this.BUILD_TREE(this.tree)
+            }
+          })
+        }).catch(() => {})
+      }
+    },
     // 取消编辑
     cancle () {
-      this.isEditPanel = ''
+      this.isEditPanelId = ''
     },
     // 保存编辑
-    save () {},
-    // 店招导航栏 移入时
-    enterNav (event, id) {
-      this.$refs.storeMenuShow.style.visibility = 'visible'
+    save () {
+      if (this.currentComponent.isGoods && !this.currentComponent.isBanner) {
+        // 保存产品配置
+        this.API.saveTemplate(this.currentComponent).then(res => {
+          if (res.code === 2000) {
+            for (let i = 0; i < this.tree.length; i++) {
+              if (this.currentComponent.componentId === this.tree[i].componentId) {
+                this.$set(this.tree, i, res.data)
+                this.BUILD_TREE(this.tree)
+                break
+              }
+            }
+          }
+        })
+      } else if (this.currentComponent.isBanner && !this.currentComponent.isGoods) {
+        // 保存Banner配置
+        console.log(this.currentComponent, this.markDeleteImgId)
+        this.API.saveBannerImg(this.currentComponent.dataList, this.markDeleteImgId.join(',')).then(res => {
+          if (res.code === 2000) {
+            this.API.getComponent({ componentId: this.currentComponent.componentId }).then(rtn => {
+              for (let i = 0; i < this.tree.length; i++) {
+                if (this.currentComponent.componentId === this.tree[i].componentId) {
+                  this.$set(this.tree, i, rtn.data)
+                  this.BUILD_TREE(this.tree)
+                  break
+                }
+              }
+            })
+          }
+        })
+      }
+      this.init()
     },
-    // 店招导航栏 移出时
-    leaveNav () {
-      this.$refs.storeMenuShow.style.visibility = 'hidden'
+    // 店招导航栏 移入显示
+    handlePackNavBar (e) {
+      let navBar = this.$refs.navBar
+      if ((navBar && navBar[1].contains(e.target)) || this.$refs.storeMenuShow.contains(e.target)) {
+        this.$refs.storeMenuShow.style.visibility = 'visible'
+      } else {
+        this.$refs.storeMenuShow.style.visibility = 'hidden'
+      }
+    },
+    // 移入导航项时，重新定位
+    resetMenuPosition () {
+      this.$nextTick(() => {
+        let { left, bottom } = this.$refs.navBar[1].getBoundingClientRect()
+        this.$refs.storeMenuShow.style.position = 'absolute'
+        this.$refs.storeMenuShow.style.left = left + 'px'
+        this.$refs.storeMenuShow.style.top = bottom + 'px'
+        this.$refs.storeMenuShow.style.zoom = 0.783035
+      })
     },
     // 预览
     pagePreview () {
+    },
+    // 商品列表
+    goodsData () {
+      this.API.getGoodsList({ goodsName: '', page: 1, rows: 10, strIds: '' }).then(res => {
+        this.storeGoods = res.data
+      })
+    },
+    // 选取数据产品
+    chooseDeleteData (url) {
+      if (this.pickList.indexOf(url) >= 0) {
+        this.$delete(this.pickList, this.pickList.indexOf(url))
+      } else {
+        if (this.pickList.length < this.pickNum) this.pickList.push(url)
+      }
+    },
+    // 时间戳转日期
+    formatDate (val) {
+      let date = new Date(val)
+      let y = date.getFullYear()
+      let m = date.getMonth()
+      let d = date.getDate()
+      return y + '-' + m + '-' + d
+    },
+    // 关闭选择产品
+    closeCropGoods () {
+      this.pickList = []
+      this.cropperGoods = ''
+    },
+    // 确定选择产品
+    btnCropGoods () {
+      let pickIdList = []
+      this.pickList.forEach(item => {
+        pickIdList.push(item.id)
+      })
+      // 作用于 产品和 banner链接（产品）
+      Object.assign(this.currentComponent, { data: pickIdList.join(','), dataSources: 3 })
+      // banner 选产品链接 ？
+      if (this.cropperBanner && this.cropperGoods) {
+        this.markList[this.markIndex].link = this.WEBSITE + '/#/detail?goodsId=' + pickIdList[0]
+      }
+      this.cropperGoods = ''
+    },
+    // 选择商品变化
+    goodsChange (event) {
+      if (this.pickList.length > this.pickNum) {
+        this.pickList.splice(this.pickNum, 1)
+        event.target.checked = false
+      }
+    },
+    // 设置图片的前奏
+    frontBanner () {
+      this.cropperBanner = this.isEditPanelId
+      this.markList = JSON.parse(JSON.stringify(this.currentComponent.dataList))
+    },
+    // banner图片上传前的判断
+    handleFilesUpload () {
+      let uploadDom = document.getElementById('uploadID')
+      let uploadFiles = this.$refs.uploadID.files
+      let typeList = ['jpg', 'jpeg', 'png']
+      if (typeList.length > 0 && typeList.indexOf(uploadFiles[0].type.split('/')[1]) < 0) {
+        this.$notify.warning({
+          title: '提示',
+          message: '只支持jpg、jpeg、png图片格式'
+        })
+        uploadDom.value = ''
+        return
+      }
+      this.uploadFilterWH(uploadFiles[0], 1920, 650).then(res => {
+        uploadDom.value = ''
+        if (!res) {
+          this.$notify.warning({
+            title: '提示',
+            message: '您上传的图片尺寸不符合要求，请重新上传'
+          })
+          return false
+        } else {
+          // 得到 base64 展示
+          this.cropperImg = res.src
+        }
+      })
+    },
+    // 判断图片宽高
+    uploadFilterWH (file, WIDTH = 1920, HEIGH = 1920) {
+      return new Promise(resolve => {
+        let reader = new FileReader()
+        reader.readAsDataURL(file)
+        reader.onload = function (e) {
+          // this.result 图片的base64数据
+          let img = new Image()
+          img.src = this.result
+          img.onload = function () { // 事件是异步
+            if (this.height < HEIGH || this.width < WIDTH) resolve(false)
+            else resolve(this)
+          }
+        }
+      })
+    },
+    // 保存截图
+    saveCropImg () {
+      this.isLoading = true
+      this.$refs.cropper.getCropBlob(theBlob => {
+        let fd = new FormData()
+        let substr = guid() + 'bannerCrop.' + theBlob.type.split('/')[1]
+        let temFile = new File([theBlob], substr, { type: theBlob.type })
+        fd.append('file', temFile)
+        axios({
+          method: 'post',
+          url: process.env.BASE_API + '/shop/commonDataUpload/uploadFile',
+          data: fd,
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'Authorization': this.$cookies.get('st_token')
+          }
+        }).then(res => {
+          if (res.data.code === 2000) {
+            this.markList[this.markIndex].url = res.data.data
+          } else {
+            this.$notify.error({
+              title: '提示',
+              message: '上传图片失败请重新上传~~'
+            })
+          }
+          this.isLoading = false
+          this.cropperImg = ''
+        })
+      })
+    },
+    // 新增图片
+    addCropBanner () {
+      if (this.markList.length < this.markNum) this.markList.push({ link: null, moduleId: this.currentComponent.id, sort: null, url: null })
+    },
+    // banner图片上移
+    upBannerImg (list, index) {
+      this.$set(this.markList, index, this.markList[index - 1])
+      this.$set(this.markList, index - 1, list)
+    },
+    // banner图片下移
+    downBannerImg (list, index) {
+      this.$set(this.markList, index, this.markList[index + 1])
+      this.$set(this.markList, index + 1, list)
+    },
+    // banner图片删除
+    deleteBannerImg (index) {
+      if (this.markList[index].id) this.markDeleteImgId.push(this.markList[index].id)
+      this.$delete(this.markList, index)
+    },
+    // banner图片链接
+    cropperBannerGoods (index) {
+      this.cropperGoods = this.isEditPanelId
+      this.pickNum = 1
+      this.markIndex = index
+    },
+    // 确定上传banner
+    btnCropperBanner () {
+      if (this.markList) {}
+      for (let val of this.markList) {
+        if (!val.url) {
+          this.$message.error({
+            message: '请上传图片'
+          })
+          return
+        }
+      }
+      this.currentComponent.dataList = JSON.parse(JSON.stringify(this.markList))
+      this.cropperBanner = ''
+    },
+    // 取消上传banner
+    cancleCropperBanner () {
+      this.markDeleteImgId = []
+      this.cropperBanner = ''
+    },
+    // 上传店招背景图
+    uploadBgFile () {
+      let uploadDom = document.getElementById('uploadBg')
+      let uploadFiles = this.$refs.uploadBg.files
+      let typeList = ['jpg', 'jpeg', 'png']
+      if (typeList.length > 0 && typeList.indexOf(uploadFiles[0].type.split('/')[1]) < 0) {
+        this.$notify.warning({
+          title: '提示',
+          message: '只支持jpg、jpeg、png图片格式'
+        })
+        uploadDom.value = ''
+        return
+      }
+      this.isLoading = true
+      let form = new FormData()
+      form.append('file', uploadFiles[0])
+      axios({
+        method: 'post',
+        url: process.env.BASE_API + '/shop/commonDataUpload/uploadFile',
+        data: form,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Authorization': this.$cookies.get('st_token')
+        }
+      }).then(res => {
+        if (res.data.code === 2000) {
+          this.currentComponent.image = res.data.data
+        } else {
+          this.$notify.error({
+            title: '提示',
+            message: '上传图片失败请重新上传~~'
+          })
+        }
+        this.isLoading = false
+      })
+    },
+    // 取消店招配置
+    cancleSignConfig () {
+      console.log(this.storeSign)
+      this.currentComponent = {}
+    },
+    // 确定店招配置 TODO
+    saveSignConfig () {
+      console.log(this.currentComponent, 'config')
+      this.API.saveStoreSign(this.currentComponent).then(res => {
+        console.log(res)
+      })
     }
   },
   watch: {
-    isEditPanel (val) {
-      if (val) this.currentComponent = this.tree.find(item => item.id === val)
+    isEditPanelId (val) {
+      if (val) {
+        for (let i = 0; i < this.tree.length; i++) {
+          this.currentComponent = JSON.parse(JSON.stringify(this.tree[i].narrowModuleDataList.find(item => item.id === val) || {}))
+          if (Object.keys(this.currentComponent).length) break
+          this.currentComponent = JSON.parse(JSON.stringify(this.tree[i].passModuleDataList.find(item => item.id === val) || {}))
+          if (Object.keys(this.currentComponent).length) break
+          this.currentComponent = JSON.parse(JSON.stringify(this.tree[i].widthModuleDataList.find(item => item.id === val) || {}))
+          if (Object.keys(this.currentComponent).length) break
+        }
+      }
     },
     switchNav (val) {
       for (let item of this.savePanlSelect) {
@@ -1064,6 +1505,11 @@ export default {
           break
         }
       }
+    },
+    tree: {
+      handler (newVal, oldVal) {
+      },
+      deep: true
     }
   }
 }
@@ -1072,10 +1518,12 @@ export default {
 <style lang="scss" scoped>
 $aside-theme-color: #ef7026;
 .rec_goods_box {
-  padding-bottom: 8px;
-  border-bottom: 1px solid rgb(225, 225, 225);
   margin-top: 16px;
   margin: 10px 0;
+  margin-bottom: 20px;
+}
+.rec_goods_box.bottom {
+  border-bottom: 1px solid rgb(225, 225, 225);
 }
 .rec_goods_select_cate {
   display: flex;
@@ -1097,8 +1545,8 @@ $aside-theme-color: #ef7026;
     overflow: hidden;
     line-height: 1.28571;
     position: relative;
-    width: 16px;
-    height: 16px;
+    width: 17px;
+    height: 17px;
   }
   .sub_input_box input[type=radio] {
     position: absolute;
@@ -1126,10 +1574,8 @@ $aside-theme-color: #ef7026;
     transform: scale(0);
     position: absolute;
     border-radius: 50%;
-    top: 50%;
-    margin-top: -4px;
-    left: 50%;
-    margin-left: -4px;
+    left: calc(50% - 3.9px);
+    top: calc(50% - 3.9px);
     background: #fff;
     transition: all .3s ease 0s;
   }
@@ -1145,6 +1591,441 @@ $aside-theme-color: #ef7026;
   color: #666;
   line-height: 1.28571;
   margin: 0 5px;
+}
+/* 隐藏下边距 */
+ .rec_goods_box.hidden_border {
+   padding-bottom: 0;
+   .checked .radio_inner {
+     border-color: #c4c6cf;
+   }
+   .radio_inner {
+     border-radius: initial;
+     &::after {
+       content: none;
+     }
+     .el-icon-check {
+       color: $aside-theme-color;
+       font-weight: 700;
+     }
+   }
+ }
+
+.editor_btn_button.set_button {
+  margin: 0;
+  &:last-child:focus {
+    background-color: initial
+  }
+  :hover {
+    background-color: #f5f7fa;
+    border-color: #a0a2ad;
+  }
+}
+.editor_btn_button.set_button.select_goods {
+  width: 100%;
+}
+.editor_btn_button.set_button.set_banner {
+  color: #333;
+  background-color: #fff;
+  border-color: #c4c6cf;
+  margin-top: 10px;
+}
+.set_sup {
+  color: #e91e63;
+  margin: 0 5px;
+}
+.set_img_show {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.set_img_show img {
+  width: 115px;
+  height: 60px;
+  margin-top: 10px;
+}
+.set_desc {
+  color: #999;
+  font-size: 14px;
+  line-height: 20px;
+  margin-bottom: 5px;
+  word-break: break-all;
+}
+.wrapper {
+  background: #000;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 998;
+  transition: opacity .3s;
+  opacity: 0.2;
+}
+.set_con_banner {
+  position: absolute;
+  width: 900px;
+  height: 600px;
+  background: #fff;
+  z-index: 999;
+  left: calc(50vw - 900px/2);
+  top: calc(50vh - 600px/2);
+}
+.set_con_banner_box {
+  width: 100%;
+  height: 600px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  font-size: 20px;
+}
+.set_con_banner_box .el-icon-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+}
+.set_con_banner_title {
+  height: 40px;
+}
+.set_con_banner_info {
+  height: 490px;
+  overflow-y: auto;
+  position: relative;
+}
+.set_con_banner_handle {
+  position: absolute;
+  bottom: 15px;
+  right: 20px;
+}
+.set_con_banner_row {
+  width: 100%;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  color: #333333;
+  font-size: 14px;
+}
+.set_con_banner_row_con {
+  align-items: flex-start;
+  height: 85px;
+  padding: 10px;
+  background: #f7f8fa;
+  border: 1px solid #dcdee3;
+}
+.set_con_banner_cell_img {
+  width: 300px;
+}
+.set_con_banner_cell_img_upload {
+  width: 230px;
+  height: 65px;
+  background-color: #F2F3F7;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.set_con_banner_cell_img_upload_con {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.set_con_banner_cell_img_upload_con img {
+  max-height: 100%;
+  max-width: 100%;
+  width: auto;
+  height: auto;
+}
+.set_con_banner_cell_img_upload_reUpload {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: opacity 1s;
+  opacity: 1;
+  background-color: rgba(0,0,0,0.7);
+  color: #ffffff;
+  cursor: pointer;
+  visibility: hidden;
+}
+.set_con_banner_cell_img_upload_con:hover .set_con_banner_cell_img_upload_reUpload {
+  visibility: visible;
+}
+.set_con_banner_cell_img_upload_text {
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  font-size: 20px;
+  text-align: center;
+  line-height: 65px;
+}
+.set_con_banner_cell_url {
+  width: 330px;
+}
+.set_con_banner_cell_url_action {
+  width: 90%;
+  display: flex;
+  align-items: center;
+}
+.set_con_banner_cell_url_action i {
+  font-size: 20px;
+}
+.set_con_banner_cell_url_action /deep/ .el-button--mini {
+  padding: 2px;
+}
+.set_con_banner_cell_url_con {
+  color: #ccc;
+  background-color: #F5F7FA;
+  cursor: not-allowed;
+  display: inline-table;
+  overflow: visible;
+  border: 1px solid #DAE2ED;
+  transition: border 0.3s ease 0.1s;
+  width: 240px;
+  border-spacing: 0;
+}
+.set_con_banner_cell_url_popper {
+  display: inline-block;
+  cursor: pointer;
+}
+.set_con_banner_cell_url_popper_a {
+  color: #333;
+}
+.set_con_banner_cell_set {
+  flex: 1;
+}
+input:disabled {
+  width: 100%;
+  height: 21px;
+  color: #ccc;
+  border-color: #DAE2ED;
+  background-color: #F5F7FA;
+  cursor: not-allowed;
+  padding: 0 8px;
+}
+.disabled {
+  color: #E3e3e3 !important;
+  cursor: not-allowed !important;
+}
+.set_con_banner_cell_set_action {
+  width: 100%;
+  height: 35px;
+  display: flex;
+}
+.set_con_banner_cell_set_action_btn {
+  width: 28px;
+  height: 28px;
+  margin-right: 5px;
+  background-color: #f7f8fa;
+  border: 1px solid #e0e2e7;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  color: #999;
+  font-size: 20px;
+}
+.action_btn_active {
+  background-color: #fff;
+  border-color: #d5d5d5;
+  color: #333;
+}
+.set_con_banner_add_btn button{
+  margin-left: 0px;
+}
+.set_con_banner_upload_tip {
+  font-size: 14px;
+  line-height: 17px;
+  color: #777;
+}
+.set_con_banner_info_two {
+  overflow-y: initial;
+}
+@mixin border($height,$width,$borderColor,$border-radio:0){
+  width: $width;
+  height:$height;
+  text-align: center;
+  line-height: $height;
+  border: 1px solid $borderColor;
+  border-radius:$border-radio ;
+}
+@mixin flex($flex-direction:row,$justify-content:space-around,$align-items:center){
+  display: flex;
+  flex-direction:$flex-direction;
+  justify-content:$justify-content;
+  align-items: $align-items;
+}
+@mixin redBorder($width,$height){
+  width: $width;
+  height:$height;
+  line-height: $height;
+  text-align: center;
+  border: 1px solid #E53031;
+  cursor: pointer;
+}
+
+.pane-box{
+  ul{
+    display: flex;
+    flex-direction: column;
+    border:1px solid #D6D6D6;
+    border-bottom: none;
+    li{
+      display: flex;
+      align-items: center;
+      padding-left: 20px;
+      font-size: 14px;
+      &>span{
+        text-align: center;
+        margin-right:30px;
+      }
+      &>span:nth-child(2){
+        width:80px;
+        margin-left: -10px;
+      }
+      &>span:nth-child(3){
+        width:400px;
+        overflow: hidden;
+        text-overflow:ellipsis;
+        white-space: nowrap;
+      }
+      &>span:nth-child(4){
+        width:130px;
+      }
+      &>span:nth-child(5){
+        width:110px;
+      }
+    }
+    &>li{
+      height:89px;
+      border-bottom: 1px solid #D6D6D6;
+      &>span:nth-child(2){
+        @include border(62px,62px,#E2E2E2);
+        @include flex(row,center,center);
+        img{
+          max-width: 100%;
+          max-height: 100%;
+        }
+      }
+      &>span:last-child{
+        border-radius: 2px;
+      }
+    }
+  }
+}
+.pane-box.pane_box_title {
+  ul {
+    &>li:first-child{
+      height:40px;
+      border-bottom:1px solid #A2A2A2;
+      font-size:14px;
+      color:rgba(0,0,0,1);
+      &>span:nth-child(2){
+        display: initial;
+        line-height: 16px;
+        height: initial;
+        border: none;
+        cursor: initial;
+      }
+    }
+  }
+}
+.pane_limit_height {
+  max-height: 318px;
+  overflow-y: auto;
+  li:hover {
+    background-color: rgba(238, 238, 238, 0.68);
+  }
+}
+.set_select_order {
+  ul{
+    position: relative;
+    display: flex;
+    .draggable {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: flex;
+      list-style: none;
+    }
+    li{
+      @include border(66px,66px,#D8D8D8);
+      background:rgba(247,247,247,1);
+      border:1px dotted rgba(216,216,216,1);
+      margin:7px 12px 20px 2px;
+      font-size:18px;
+      font-weight:500;
+      font-style:italic;
+      color:rgba(212,212,212,1);
+      cursor: initial;
+      position: relative;
+      img{
+        max-height: 66px;
+        max-width: 66px;
+      }
+      i{
+        font-size: 16px;
+        position: absolute;
+        right: 2px;
+        bottom: 2px;
+        cursor: pointer;
+        color: #989898;
+        font-weight: bolder;
+      }
+      i:hover{
+        color: #E43031;
+      }
+    }
+  }
+}
+.set_con_cropper {
+  background: rgba(0, 0, 0, 0.2);
+  .set_con_banner_box {
+    position: absolute;
+    background-color: #fff;
+    left: calc(50% - 445px/2);
+    top: calc(50% - 450px/2);
+    width: 445px;
+    height: 450px;
+    .set_con_banner_title_tip {
+      font-size: 12px;
+      margin-left: 10px;
+      color: red;
+    }
+    .set_con_cropper_con {
+      flex-grow: 1;
+      color: #333;
+      .set_con_cropper_box {
+        background-color: rgba(0, 0, 0, 0.5);
+        height: 290px;
+        width: 100%;
+      }
+      .set_con_cropper_reset {
+        margin: 5px 0;
+        font-size: 12px;
+        cursor: pointer;
+      }
+    }
+    .set_con_cropper_btn {
+      border-top: 1px solid #E3e3e3;
+      padding-top: 10px;
+      text-align: center;
+      button {
+        background-color: #FF6A00;
+        color: #fff;
+      }
+    }
+  }
 }
 
 .container {
@@ -1483,35 +2364,36 @@ $aside-theme-color: #ef7026;
           background: #fff;
           position: absolute;
           bottom: 0;
-          .editor_btn_button {
-            flex: 1 1 0%;
-            margin: 0px 5px;
-            height: 28px;
-            padding: 0 16px;
-            font-size: 14px;
-            line-height: 26px;
-            border-width: 1px;
-            border: 1px solid rgb(192, 194, 203);
-            background-color: $aside-theme-color;
-            border-color: transparent;
-            color: #fff;
-            cursor: pointer;
-            &:first-child {
-              color: #333;
-              background-color: #fff;
-              border-color: #c4c6cf;
-              &:focus {
-                background-color: #f5f7fa;
-                border-color: #a0a2ad;
-              }
-            }
-            &:last-child:focus { background-color: saturate($aside-theme-color, 100%); }
-          }
         }
       }
     }
     &>.transform { transform: translate(0); opacity: 1; }
   }
+}
+
+.editor_btn_button {
+  flex: 1 1 0%;
+  margin: 0px 5px;
+  height: 28px;
+  padding: 0 16px;
+  font-size: 14px;
+  line-height: 23px;
+  border-width: 1px;
+  border: 1px solid rgb(192, 194, 203);
+  background-color: $aside-theme-color;
+  border-color: transparent;
+  color: #fff;
+  cursor: pointer;
+  &:first-child {
+    color: #333;
+    background-color: #fff;
+    border-color: #c4c6cf;
+    &:focus {
+      background-color: #f5f7fa;
+      border-color: #a0a2ad;
+    }
+  }
+  &:last-child:focus { background-color: saturate($aside-theme-color, 100%); }
 }
 
 .bg_tabcontent {
@@ -1693,7 +2575,10 @@ $aside-theme-color: #ef7026;
     }
   }
 }
-
+.notToday {
+  color: #e4e7ed !important;
+  cursor: not-allowed !important;
+}
 .root_page {
   .layout_page {
     width: 100%;
@@ -1710,7 +2595,6 @@ $aside-theme-color: #ef7026;
         position: relative;
         width: 100%;
         margin-top: 0;
-        margin-bottom: 20px;
         min-height: 50px;
         z-index: 1;
         display: flex;
@@ -1741,34 +2625,6 @@ $aside-theme-color: #ef7026;
             position: absolute;
             right: -44px;
             top: -2px;
-
-            .handle_com {
-              width: 33px;
-              margin-left: 10px;
-              display: flex;
-              flex-direction: column;
-              align-items: center;
-              justify-content: space-around;
-              box-shadow: 0 0 10px 0 rgba(0, 0, 0, .1);
-              font-size: 24px;
-              min-height: 100px;
-
-              div {
-                padding: 7px 5px;
-                background-color: #fff;
-                color: #999;
-                cursor: pointer;
-                text-align: center;
-                .notToday {
-                  color: #e4e7ed;
-                  cursor: not-allowed;
-                }
-              }
-
-              &>div:last-child {
-                border-top: 1px solid #e6e6e6;
-              }
-            }
           }
 
           .pre_item_overlay {
@@ -1795,6 +2651,7 @@ $aside-theme-color: #ef7026;
           .pre_module_con {
             position: relative;
             zoom: 0.783035;
+            margin-bottom: 20px;
             &>:nth-child(n) {
               background: #fff;
             }
@@ -1850,6 +2707,28 @@ $aside-theme-color: #ef7026;
     }
   }
 }
+.handle_com {
+  width: 33px;
+  margin-left: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, .1);
+  font-size: 24px;
+  min-height: 100px;
+  div {
+    padding: 7px 5px;
+    background-color: #fff;
+    color: #999;
+    cursor: pointer;
+    text-align: center;
+  }
+  &>div:last-child {
+    border-top: 1px solid #e6e6e6;
+  }
+}
+
 /* 组件显示添加的框 */
 .width_20, .width_80, .width_100 {
   width: 100%;
@@ -1878,7 +2757,7 @@ $aside-theme-color: #ef7026;
 
 /* 店铺招牌 */
   #store_header {
-    max-height: 280px;
+    max-height: 210px;
     margin-bottom: 0px;
     overflow: hidden;
     position: relative;
@@ -1891,8 +2770,7 @@ $aside-theme-color: #ef7026;
     width: 100%;
     min-height: 100%;
     background-color: rgb(253, 253, 253);
-    background-image: url(/static/img/shop_default_bg.jpg);
-    background-repeat: repeat;
+    background-repeat: no-repeat;
     background-position: center top;
     zoom: 0.783035;
   }
@@ -1903,32 +2781,41 @@ $aside-theme-color: #ef7026;
     zoom: 0.783035;
   }
   .store_sign_nav_box {
+    position: relative;
     min-height: 1px;
+  }
+  .handle_store_sign_box {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    border: 1px solid transparent;
+    .handle_com {
+      display: none;
+      position: absolute;
+      right: 0;
+    }
+  }
+  .handle_store_sign_box:hover{
+    border: 1px solid $aside-theme-color;
+    .handle_com {
+      display: block;
+    }
   }
   .store_sign_bg {
     /* background: url(//gdp.alicdn.com/tps/TB1hYBhJXXXXXciXpXXXXXXXXXX-950-120.png) no-repeat 0 0 !important; */
-    height: 240px !important;
+    height: 210px !important;
   }
   .store_sign_con {
     position: relative;
-  }
-  .store_sign_info {
-    position: absolute;
-    left: 20px;
-    top: calc(50% - 25px);
-    background: rgba(244, 177, 90, 0.1);
-    border-radius: 8px;
-    line-height: 30px;
-    color: #333;
-    padding: 10px 40px;
-    font-size: 24px;
-    font-weight: 400;
   }
 /* nav 导航栏菜单 */
   .shop_nav {
     position: relative;
     height: 40px;
-    background-color: #aside-theme-color;
+    /* background-color: $aside-theme-color; */
   }
  .m-nav-content {
     width: 1226px;
@@ -2011,8 +2898,9 @@ $aside-theme-color: #ef7026;
   left: 50vw;
   top: 50vh;
   margin: auto;
-  font-size: 30px;
+  font-size: 32px;
   color: $aside-theme-color;
+  z-index: 10000;
 }
 /* 修改插件样式 未启用？ */
   /deep/ .el-color-picker__panel.el-color-dropdown {

@@ -2,9 +2,9 @@
   <div class="menu-two-box menu-two-right Flex-bet">
     <div class="visible"></div>
     <ul class="menu-two">
-      <li class="menu-item menu-two-li" v-for="item in list" :key="item.menuname">
-        <a class="menu-a menu-two-a" href="javascript:;"><span>{{item.menuname}}</span><i class="el-icon-arrow-right menu-more" v-if="item.sonMenunameList.length"></i></a>
-        <shopsNav v-if="item.sonMenunameList.length" :list="item.sonMenunameList"></shopsNav>
+      <li class="menu-item menu-two-li" v-for="item in list" :key="item.id">
+        <router-link :to="{path: '/category', query:{cateId: item.id}}" class="menu-a menu-two-a"><span>{{item.name}}</span><i class="el-icon-arrow-right menu-more" v-if="item.children && item.children.length"></i></router-link>
+        <shopsNav v-if="item.children && item.children.length" :list="item.children"></shopsNav>
       </li>
     </ul>
   </div>
@@ -20,6 +20,8 @@ export default {
     list: {
       type: Array
     }
+  },
+  filters: {
   },
   mounted () {}
 }

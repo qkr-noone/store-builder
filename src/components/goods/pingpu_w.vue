@@ -1,18 +1,18 @@
 <template>
   <div id="pingpu_w">
-    <div class="product_item" :class="{'has_bottom': length>4}" v-for="index in length" :key="index">
+    <div class="product_item" :class="{'has_bottom': length>4}" v-for="item in list" :key="item.id">
       <div class="product_cart">
-        <a href="" class="product_img" target="_blank">
+        <router-link :to="{path: '/detail' , query: {goodsId: item.id}}" class="product_img" target="_blank">
           <div class="product_img_box">
-            <img class="product_img_con" :src="list.img">
+            <img class="product_img_con" :src="item.smallPic">
           </div>
-        </a>
+        </router-link>
         <div class="product_info">
           <div class="product_title">
-            <a class="product_word" href=""><span>{{list.title}}</span></a>
+            <router-link :to="{path: '/detail' , query: {goodsId: item.id}}" class="product_word"><span>{{item.goodsName}}</span></router-link>
           </div>
-          <div class="product_price">{{list.price}}元</div>
-          <!-- <del class="product_price">{{list.price+5}}元</del> -->
+          <div class="product_price">{{item.priceShow}}元</div>
+          <!-- <del class="product_price">{{item.price+5}}元</del> -->
         </div>
       </div>
     </div>
@@ -21,10 +21,14 @@
 <script>
 export default {
   name: 'pingpu_w',
+  props: {
+    list: {
+      type: Array
+    }
+  },
   data () {
     return {
-      length: 4,
-      list: { img: 'static/img/tem.jpeg', title: '121212212222222121212212222222121212212222222121212212222222121212212222', price: 12.00, sale: 11222 }
+      length: this.list.length
     }
   }
 }

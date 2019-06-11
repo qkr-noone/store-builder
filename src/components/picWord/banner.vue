@@ -23,11 +23,13 @@ export default {
     return {
     }
   },
-  mounted () {
-  },
-  methods: {
-  },
+  methods: {},
   watch: {
+    list: {
+      handler (newV, oldV) {
+      },
+      deep: true
+    }
   }
 }
 

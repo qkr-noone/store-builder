@@ -11,16 +11,20 @@ import './styles/common.scss'
 // import './assets/font_store_builder/iconfont.css'
 import VueCookies from 'vue-cookies'
 import API from './utils/api'
+import VueCropper from 'vue-cropper'
 
 Vue.prototype.API = API
 Vue.config.productionTip = false
+Vue.prototype.WEBSITE = 'http://192.168.1.100:9003'
 
-Vue.use(ElementUI, VueCookies)
+Vue.use(ElementUI)
+Vue.use(VueCookies)
+Vue.use(VueCropper)
 // 上传文件 或者需要在页面中拿到全部的接口  也可以放到页面中
 // console.log(process.env.BASE_API)
 
 // 测试用例
-VueCookies.set('token', 'MkTail-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJiYWlkdTEyMyIsImV4cCI6MTU4NTAyMDAzMiwiaWF0IjoxNTUzNDg0MDMyfQ.ZFEvTHIWYrCyujdAzOIJElDRm9wK75T3_rzz7KQmQA3Fg4UWXyphBj4ReeSZeRlrk62bc5KF4oxOSKtn3YERgw')
+VueCookies.set('st_token', 'MkTail-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkZGQiLCJleHAiOjE1OTE3ODY0NTUsImlhdCI6MTU2MDI1MDQ1NX0.hPgHtX_UdtiIHqeh-R_aFOgx-mTe9q8xI9VCRvHG3JX_wyfz_DJby7zzlDBjVhn8QPKNxO1JrA4KFfdioHVsfw')
 
 let vueDom = new Vue({
   el: '#app',
