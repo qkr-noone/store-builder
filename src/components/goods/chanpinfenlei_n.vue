@@ -7,10 +7,10 @@
       <div class="pro_cate_con">
         <div class="pro_cate_menu">
           <ul>
-            <li class="pro_cate_item" v-for="tip in 8" :key="tip">
-              <a class="pro_item_link" href="">asdfads</a>
-              <i class="el-icon-arrow-right" v-if="list.sonMenunameList.length && tip===2"></i>
-              <shopsNav v-if="list.sonMenunameList.length && tip===2" :list="list.sonMenunameList"></shopsNav>
+            <li class="pro_cate_item" v-for="item in menuCate" :key="item.id">
+              <router-link :to="{path: '/category', query:{cateId: item.id}}" class="pro_item_link">{{item.name}}</router-link>
+              <i class="el-icon-arrow-right" v-if="item.children.length"></i>
+              <shopsNav v-if="item.children.length" :list="item.children"></shopsNav>
             </li>
           </ul>
         </div>
@@ -23,6 +23,11 @@
 import shopsNav from '@/components/goods/shopsNav'
 export default {
   name: 'chanpinfenlei_n',
+  props: {
+    menuCate: {
+      types: Array
+    }
+  },
   data () {
     return {
       list: { menuname: 'series', sonMenunameList: [{ menuname: 'series222', sonMenunameList: [{ menuname: 'series222', sonMenunameList: [] }] }] }

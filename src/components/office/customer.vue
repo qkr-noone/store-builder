@@ -1,12 +1,11 @@
 <template>
   <div id="customer">
-    <div class="customer_box">
+    <div class="customer_box" ref="customerBg">
       <div class="customer_wrap">
         <div class="customer_item">
-          <div class="customer_portrait"><img src="static/img/tem.jpeg"></div>
           <div class="customer_info">
-            <p class="customer_name">name</p>
-            <i class="el-icon-service"></i>
+            <p class="customer_name" v-for="(item, tip) in list[0]" :key="item">{{tip}}:&nbsp;{{item}}</p>
+            <!-- <i class="el-icon-service"></i> -->
           </div>
         </div>
       </div>
@@ -17,13 +16,30 @@
 export default {
   // 客服通栏和宽栏 样式相似
   name: 'customer',
-  data () {
-    return {
+  props: {
+    dataUrl: {
+      type: [String, Number],
+      defaul: null
+    },
+    list: {
+      type: [Object, Array]
     }
+  },
+  data () {
+    return {}
+  },
+  mounted () {
+    this.$refs.customerBg.style.backgroundImage = 'url(' + this.dataUrl + ')'
   },
   methods: {
   },
   watch: {
+    dataUrl: {
+      hanlder (val, old) {
+        this.$refs.customerBg.style.backgroundImage = 'url(' + val + ')'
+      },
+      deep: true
+    }
   }
 }
 
@@ -39,7 +55,8 @@ export default {
     align-items: center;
     height: 280px;
     overflow: hidden;
-    background: url('/static/img/tem_bg.jpg') no-repeat center;
+    background-repeat: no-repeat;
+    background-position: center;
     background-size: cover;
   }
   .customer_wrap {
@@ -51,11 +68,12 @@ export default {
     align-items: center;
   }
   .customer_item {
-    text-align: center;
+    text-align: left;
+    /*text-align: center;*/
     padding: 0 10px;
-    width: 16.66667%;
-    max-width: 16.66667%;
-    flex: 0 0 16.66667%;
+    /*width: 16.66667%;*/
+    /*max-width: 16.66667%;*/
+    /*flex: 0 0 16.66667%;*/
 
   }
   .customer_portrait {
@@ -74,10 +92,12 @@ export default {
   }
   .customer_name {
     color: #fff;
-    line-height: 24px;
+    line-height: 32px;
+    font-size: 24px;
+    /*line-height: 24px;
     overflow: hidden;
     white-space: nowrap;
-    text-overflow: ellipsis;
+    text-overflow: ellipsis;*/
   }
   .el-icon-service {
     color: #fff;

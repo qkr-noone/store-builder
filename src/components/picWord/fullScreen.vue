@@ -2,9 +2,9 @@
   <div id="fullScreen">
     <div class="full_box">
       <el-carousel :interval="4000" arrow="always" indicator-position="" height="100%" style="width: 1920px; left: 50%; height: 100%; margin-left: -960px;">
-        <el-carousel-item v-for="index in 5" :key="index" class="full_item">
-          <a class="full_link" href="" target="_blank">
-            <img src="static/img/tem_bg.jpg">
+        <el-carousel-item v-for="(item, index) in list" :key="index" class="full_item">
+          <a class="full_link" :href="item.link" target="_blank">
+            <img :src="item.url">
           </a>
         </el-carousel-item>
       </el-carousel>
@@ -14,6 +14,9 @@
 <script>
 export default {
   name: 'fullScreen',
+  props: {
+    list: Array
+  },
   data () {
     return {
     }

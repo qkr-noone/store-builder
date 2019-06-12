@@ -2,7 +2,7 @@
   <div id="chuchuang_p">
     <div class="chuchuang_head">
       <p class="chuchuang_title">产品展示</p>
-      <a class="chuchuang_more" href="" title="更多产品">更多产品 <i class="el-icon-d-arrow-right"></i></a>
+      <!-- <a class="chuchuang_more" href="" title="更多产品">更多产品 <i class="el-icon-d-arrow-right"></i></a> -->
     </div>
     <div class="chuchuang_con">
       <div class="product_item" :class="{has_bottom: length>4, has_bottom2: length>10 && index >3 && (length-4)%6 >0 && (length - (length-4)%6 >= index) || (length>10 && index >3 && (length-4)%6 ===0 && (parseInt((length-4)/6)*6)>index+1)}" v-for="(item, index) in list" :key="index">

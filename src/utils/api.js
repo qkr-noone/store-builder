@@ -54,5 +54,11 @@ export default {
   saveBannerImg: (data, params) => http.post('/shop/decoration/image/save?deleteIds=' + params, data),
 
   // 根据组件id获取组件数据
-  getComponent: data => http.get('/shop/decoration/component/getOneById', data)
+  getComponent: data => http.get('/shop/decoration/component/getOneById', data),
+
+  // 获取文件下的资源 1（相册） 2（3d文件） 3（视频)
+  getResources: (data, params) => http.post('/shop/data/search?page=' + params.page + '&rows=' + params.rows, data),
+
+  // 发布店铺装修
+  onlineVersion: data => http.get('/shop/decoration/online/releaseDecoration', data)
 }

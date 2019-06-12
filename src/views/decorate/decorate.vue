@@ -396,6 +396,7 @@
                             <router-link :to="{path: '/shops'}" target="_blank" class="menu-a"><span>{{list.navigationName}}</span><i class="el-icon-arrow-down menu-more" v-if="tip===1"></i></router-link>
                           </li>
                         </ul>
+                        <div class="handle_wrap handle_store_sign_box"></div>
                       </div>
                     </div>
                   </div>
@@ -439,7 +440,7 @@
                             <div>
                               <i class="el-icon-caret-bottom" @click="index < tree.length - 1 && downComponent(list, index)" :class="{'notToday':index >= tree.length - 1}"></i>
                             </div>
-                            <div><i class="el-icon-delete-solid" @click="deleteComponent(list.componentId, index)"></i></div>
+                            <!-- <div><i class="el-icon-delete-solid" @click="deleteComponent(list.componentId, index)"></i></div> -->
                           </div>
                         </div>
                         <div class="pre_item_overlay" @click="isEditPanelId=list.passModuleDataList[0].id">
@@ -455,7 +456,7 @@
                             <div class="handle_wrap" data-attr="上下移动">
                               <div class="handle_com">
                                 <div><i class="el-icon-news"></i></div>
-                                <div><i class="el-icon-delete-solid" @click="deleteTemplate(item, index, list)"></i></div>
+                                <!-- <div><i class="el-icon-delete-solid" @click="deleteTemplate(item, index, list)"></i></div> -->
                               </div>
                             </div>
                             <div class="pre_item_overlay" @click="isEditPanelId=item.id">
@@ -463,7 +464,7 @@
                             </div>
                           </div>
                           <!-- 窄栏项模板>>组件 -->
-                          <component :is="item.template" :list="item.dataList"></component>
+                          <component :is="item.template" :list="item.dataList" :dataUrl="item.data" :menuCate="menuCate"></component>
                         </div>
                         <!-- 窄栏拖放框 -->
                         <div class="width_20" v-show="layoutType.narrow==='1'">
@@ -488,7 +489,7 @@
                             <div class="handle_wrap" data-attr="上下移动">
                               <div class="handle_com">
                                 <div><i class="el-icon-news"></i></div>
-                                <div><i class="el-icon-delete-solid" @click="deleteTemplate(item, index, list)"></i></div>
+                                <!-- <div><i class="el-icon-delete-solid" @click="deleteTemplate(item, index, list)"></i></div> -->
                               </div>
                             </div>
                             <div class="pre_item_overlay" @click="isEditPanelId=item.id">
@@ -496,7 +497,7 @@
                             </div>
                           </div>
                           <!-- 宽栏项模板>>组件 -->
-                          <component :is="item.template" :list="item.dataList"></component>
+                          <component :is="item.template" :list="item.dataList" :dataUrl="item.data"></component>
                         </div>
                         <!-- 宽栏拖放框 -->
                         <div class="width_80" v-show="layoutType.wide==='1'">
@@ -511,7 +512,7 @@
                         <!-- 通栏数据遍历 -->
                         <div class="pre_module_con" v-for="item in list.passModuleDataList" :key="item.id" :data-template="item.templateName">
                           <!-- 通栏项模板=>>组件 -->
-                          <component :is="item.template" :list="item.dataList"></component>
+                          <component :is="item.template" :list="item.dataList" :dataUrl="item.data"></component>
                         </div>
                       </div>
                     </div>
@@ -554,7 +555,8 @@
                   </div>
                 </div> -->
                 <div class="rec_goods_box hidden_border" v-if="currentComponent.isGoods">
-                  <button class="editor_btn_button set_button select_goods" @click="cropperGoods=isEditPanelId">选择商品{{ !Object.keys(currentComponent).length || (currentComponent.data && currentComponent.data.split(',').length) || 0}}/8</button>
+                  <button class="editor_btn_button set_button select_goods" @click="cropperGoods=isEditPanelId; goodsData()">选择商品
+                  {{!Object.keys(currentComponent).length || currentComponent.dataList.length || 0}}/8</button>
                 </div>
                 <!-- 隐藏下边距  -->
                 <!-- <div class="rec_goods_box hidden_border">
@@ -569,7 +571,7 @@
                   </div>
                 </div> -->
                 <div class="rec_goods_box hidden_border" v-if="currentComponent.isVideo">
-                  <button class="editor_btn_button set_button">选择视频</button>
+                  <button class="editor_btn_button set_button" @click="cropperVideo=true; resourcesData(3)">选择视频</button>
                   <p class="set_desc">请上传比例为16:9的高质量视频</p>
                 </div>
                 <!-- <div class="rec_goods_box bottom">
@@ -647,7 +649,12 @@
           </div>
         </section>
       </section>
-      <footer class="footer"></footer>
+      <footer class="footer_pre">
+        <div class="footer_pre_box">
+          <span class="footer_pre_tip">提示：未发布不会替换线上店铺，当前装修的店铺不会丢失</span>
+          <button class="editor_btn_button" @click="release()" title="上线当前装修店铺">发布版本</button>
+        </div>
+      </footer>
     </div>
     <!-- 加载loading -->
     <div class="loading_wrap" v-show="isLoading"><i class="el-icon-loading"></i></div>
@@ -691,11 +698,11 @@
                 </div>
                 <div class="set_con_banner_cell_set"></div>
               </div> -->
+              <input type="file" id="uploadID" ref="uploadID" accept="image/png, image/jpeg, image/jpg" style="position: absolute; left: -9999999px;"  @change="handleFilesUpload()" value="">
               <div class="set_con_banner_row set_con_banner_row_con" v-for="(tip, index) in markList" :key="tip.id">
                 <div class="set_con_banner_cell_img">
                   <div>
                     <div class="set_con_banner_cell_img_upload">
-                      <input type="file" id="uploadID" ref="uploadID" accept="image/png, image/jpeg, image/jpg" style="position: absolute; left: -9999999px;"  @change="handleFilesUpload()" value="">
                       <div v-if="Object.keys(tip).length" class="set_con_banner_cell_img_upload_con">
                         <img :src="tip.url">
                         <label class="set_con_banner_cell_img_upload_reUpload" for="uploadID" @click="markIndex=index">
@@ -710,7 +717,7 @@
                 </div>
                 <div class="set_con_banner_cell_url">
                   <div class="set_con_banner_cell_url_action">
-                    <span class="set_con_banner_cell_url_con"><input type="text" disabled :value="tip.link"></span>
+                    <span class="set_con_banner_cell_url_con"><input type="text" :data-title="tip.link" disabled :value="tip.link"></span>
                     <el-popover
                       placement="bottom"
                       title="选择链接页面类型"
@@ -722,7 +729,13 @@
                           <a class="set_con_banner_cell_url_popper_a" href="javascript:;" @click="cropperBannerGoods(index)">商品详情页</a>
                         </li>
                         <li>
-                          <a class="set_con_banner_cell_url_popper_a" href="javascript:;">店内类目商品列表页</a>
+                          <a class="set_con_banner_cell_url_popper_a" href="javascript:;" @click="cropperBannerCate(index)">店内类目商品列表页</a>
+                        </li>
+                        <li>
+                          <a class="set_con_banner_cell_url_popper_a" href="javascript:;" @click="cropperBanner3D(index)">店内3D页面</a>
+                        </li>
+                        <li>
+                          <a class="set_con_banner_cell_url_popper_a" href="javascript:;" @click="cropperBannerLive(index)">店内直播页面</a>
                         </li>
                       </ul>
                       <el-button slot="reference" size="mini"><i class="el-icon-menu"></i></el-button>
@@ -741,7 +754,7 @@
                 <button class="editor_btn_button" @click="addCropBanner()" :class="{disabled: markList.length===markNum}">新增</button>
                 <span class="set_con_banner_upload_tip">{{markList.length}}/{{markNum}}</span>
               </div>
-              <span class="set_con_banner_upload_tip">图片建议上传尺寸&nbsp;≧&nbsp;1920X650像素，仅支持JPG/JPEG/PNG格式。</span>
+              <span class="set_con_banner_upload_tip">图片建议上传尺寸&nbsp;≧&nbsp;{{markImgSize.width}}X{{markImgSize.height}}像素，仅支持JPG/JPEG/PNG格式。</span>
             </div>
             <div class="set_con_banner_handle">
               <button class="editor_btn_button" @click="cancleCropperBanner()">取消</button>
@@ -767,7 +780,7 @@
                   :canMove="false"
                   :fixedBox="false"
                   :fixed="true"
-                  :fixedNumber="[192,65]"
+                  :fixedNumber="[markImgSize.width, markImgSize.height]"
                   :centerBox="true"
                   :full="true"
                   :infoTrue="true">
@@ -819,6 +832,7 @@
                     <span>{{formatDate(list.createTime)}}</span>
                   </li>
                 </ul>
+                <div v-if="!storeGoods.total" class="set_con_banner_title set_con_banner_upload_tip">暂无商品，请先添加商品~</div>
               </div>
               <div class="set_con_banner_add_btn">
                 <span class="set_con_banner_upload_tip">拖动产品图片可调整顺序&nbsp;&nbsp;</span>
@@ -840,6 +854,76 @@
             <div class="set_con_banner_handle">
               <button class="editor_btn_button" @click="closeCropGoods()">取消</button>
               <button class="editor_btn_button" @click="btnCropGoods()">确定</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 弹框视频列表 -->
+    <div v-if="cropperVideo">
+      <!-- 遮罩层 -->
+      <div class="wrapper"></div>
+      <div class="set_con_banner">
+        <div>
+          <div class="set_con_banner_box">
+            <i class="el-icon-close" @click="cropperVideo=''"></i>
+            <div class="set_con_banner_title">选择视频</div>
+            <div class="set_con_banner_info set_con_banner_info_two">
+              <div class="set_con_banner_row">
+                <!-- 后期分页查询操作 -->
+                <div class="set_con_banner_cell_img"></div>
+                <div class="set_con_banner_cell_url"></div>
+                <div class="set_con_banner_cell_set"></div>
+              </div>
+              <div class="pane-box pane_box_title">
+              </div>
+              <div class="pane-box" style="border-bottom: 1px solid #663399;">
+                <ul class="pane_limit_height video_pane_limit_height">
+                  <li class="video_li_pane_limit_height" v-for="list in storeRes.rows" :key="list.id">
+                    <div class="video_pane_box">
+                      <video preload="metadata" muted width="100%" height="100%" style="display: block; background-color: #000;" :src="list.url" controls></video>
+                    </div>
+                    <p class="video_pane_title">{{list.title}}</p>
+                    <div><button class="editor_btn_button" @click="selectVideo(list)">选用视频</button></div>
+                  </li>
+                </ul>
+                <div v-if="!storeRes.total" class="set_con_banner_title set_con_banner_upload_tip">暂无视频，请在数字管理先添加视频~</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 弹框类别列表 -->
+    <div v-if="cropperCate">
+      <!-- 遮罩层 -->
+      <div class="wrapper"></div>
+      <div class="set_con_banner">
+        <div>
+          <div class="set_con_banner_box">
+            <i class="el-icon-close" @click="cropperCate=''"></i>
+            <div class="set_con_banner_title">选择类别商品列表页</div>
+            <div class="set_con_banner_info set_con_banner_info_two">
+              <div class="" style="border: 1px solid #663399;">
+                <div class="m-nav-content">
+                  <ul class="menu-box">
+                    <ul class="menu-two">
+                      <li class="menu-item menu-two-li" v-for="item in menuCate" :key="item.id" @click="cropperCateUrl(item.id)">
+                        <a class="menu-a menu-two-a" href="javascript:;"><span>{{item.name}}</span></a>
+                      </li>
+                    </ul>
+                  </ul>
+                </div>
+                <div v-if="!menuCate.length" class="set_con_banner_title set_con_banner_upload_tip">暂无商品类别，请先添加商品~</div>
+              </div>
+              <div class="set_con_banner_add_btn">
+                <span class="set_con_banner_upload_tip">点击类别实时生成的链接</span>
+                <span><input type="text" disabled name="" :value="cropperCateTemUrl"></span>
+              </div>
+            </div>
+            <div class="set_con_banner_handle">
+              <button class="editor_btn_button" @click="closeCropCateUrl()">取消</button>
+              <button class="editor_btn_button" @click="btnCropCateUrl()">确定</button>
             </div>
           </div>
         </div>
@@ -930,10 +1014,15 @@ export default {
       markList: [],
       markIndex: null,
       markDeleteImgId: [],
+      markImgSize: { width: 1920, height: 650 },
       storeGoods: {},
+      storeRes: {},
       cropperBanner: '',
       cropperGoods: '',
-      cropperImg: ''
+      cropperImg: '',
+      cropperVideo: '',
+      cropperCate: '',
+      cropperCateTemUrl: ''
     }
   },
   components: {
@@ -998,12 +1087,12 @@ export default {
       this.BUILD_TREE(res.data)
     })
 
+    // 店招
     this.API.getStoreSign().then(res => {
       this.storeSign = res.data
       this.$nextTick(() => {
         this.$refs.bgStoreSign.style.backgroundImage = 'url(' + this.storeSign.image + ')'
       })
-      console.log(this.storeSign)
     })
     // 获取导航栏
     this.API.storeNavBar().then(res => {
@@ -1023,7 +1112,6 @@ export default {
       this.switchNav = ''
       e.preventDefault()
     }
-    this.goodsData()
   },
   destroyed () {
     document.removeEventListener('click', this.handlePackUp)
@@ -1039,6 +1127,7 @@ export default {
       this.pickList = []
       this.markDeleteImgId = []
       this.markList = []
+      this.markImgSize = { width: 1920, height: 650 }
     },
     handleClick (val) {
     },
@@ -1197,23 +1286,11 @@ export default {
     // 取消编辑
     cancle () {
       this.isEditPanelId = ''
+      this.markImgSize = { width: 1920, height: 650 }
     },
     // 保存编辑
     save () {
-      if (this.currentComponent.isGoods && !this.currentComponent.isBanner) {
-        // 保存产品配置
-        this.API.saveTemplate(this.currentComponent).then(res => {
-          if (res.code === 2000) {
-            for (let i = 0; i < this.tree.length; i++) {
-              if (this.currentComponent.componentId === this.tree[i].componentId) {
-                this.$set(this.tree, i, res.data)
-                this.BUILD_TREE(this.tree)
-                break
-              }
-            }
-          }
-        })
-      } else if (this.currentComponent.isBanner && !this.currentComponent.isGoods) {
+      if (this.currentComponent.isBanner) {
         // 保存Banner配置
         console.log(this.currentComponent, this.markDeleteImgId)
         this.API.saveBannerImg(this.currentComponent.dataList, this.markDeleteImgId.join(',')).then(res => {
@@ -1227,6 +1304,27 @@ export default {
                 }
               }
             })
+          }
+        })
+      } else {
+        if (this.currentComponent.isGoods) {
+          // 保存产品配置
+          if (!this.currentComponent.dataList.length) {
+            this.$notify.warning({
+              message: '当前选择商品数据为空，请填写完整'
+            })
+            return false
+          }
+        }
+        this.API.saveTemplate(this.currentComponent).then(res => {
+          if (res.code === 2000) {
+            for (let i = 0; i < this.tree.length; i++) {
+              if (this.currentComponent.componentId === this.tree[i].componentId) {
+                this.$set(this.tree, i, res.data)
+                this.BUILD_TREE(this.tree)
+                break
+              }
+            }
           }
         })
       }
@@ -1256,8 +1354,10 @@ export default {
     },
     // 商品列表
     goodsData () {
-      this.API.getGoodsList({ goodsName: '', page: 1, rows: 10, strIds: '' }).then(res => {
+      this.API.getGoodsList({ goodsName: '', page: 1, rows: 1000, strIds: '' }).then(res => {
         this.storeGoods = res.data
+        if (this.cropperBanner) this.pickList = []
+        else this.pickList = JSON.parse(JSON.stringify(this.currentComponent.dataList))
       })
     },
     // 选取数据产品
@@ -1283,12 +1383,18 @@ export default {
     },
     // 确定选择产品
     btnCropGoods () {
+      if (!this.pickList.length) {
+        this.$notify.warning({
+          message: '当前选择数据为空，请填写完整'
+        })
+        return false
+      }
       let pickIdList = []
       this.pickList.forEach(item => {
         pickIdList.push(item.id)
       })
       // 作用于 产品和 banner链接（产品）
-      Object.assign(this.currentComponent, { data: pickIdList.join(','), dataSources: 3 })
+      Object.assign(this.currentComponent, { data: pickIdList.join(','), dataSources: 3, dataList: this.pickList })
       // banner 选产品链接 ？
       if (this.cropperBanner && this.cropperGoods) {
         this.markList[this.markIndex].link = this.WEBSITE + '/#/detail?goodsId=' + pickIdList[0]
@@ -1311,6 +1417,7 @@ export default {
     handleFilesUpload () {
       let uploadDom = document.getElementById('uploadID')
       let uploadFiles = this.$refs.uploadID.files
+      console.log(uploadFiles, 1000)
       let typeList = ['jpg', 'jpeg', 'png']
       if (typeList.length > 0 && typeList.indexOf(uploadFiles[0].type.split('/')[1]) < 0) {
         this.$notify.warning({
@@ -1320,7 +1427,7 @@ export default {
         uploadDom.value = ''
         return
       }
-      this.uploadFilterWH(uploadFiles[0], 1920, 650).then(res => {
+      this.uploadFilterWH(uploadFiles[0], this.markImgSize.width, this.markImgSize.height).then(res => {
         uploadDom.value = ''
         if (!res) {
           this.$notify.warning({
@@ -1399,9 +1506,10 @@ export default {
       if (this.markList[index].id) this.markDeleteImgId.push(this.markList[index].id)
       this.$delete(this.markList, index)
     },
-    // banner图片链接
+    // banner图片商品链接
     cropperBannerGoods (index) {
       this.cropperGoods = this.isEditPanelId
+      this.goodsData()
       this.pickNum = 1
       this.markIndex = index
     },
@@ -1462,14 +1570,68 @@ export default {
     },
     // 取消店招配置
     cancleSignConfig () {
-      console.log(this.storeSign)
       this.currentComponent = {}
     },
     // 确定店招配置 TODO
     saveSignConfig () {
-      console.log(this.currentComponent, 'config')
       this.API.saveStoreSign(this.currentComponent).then(res => {
-        console.log(res)
+        if (res.code === 2000) {
+          this.$set(this.storeSign, 'image', JSON.parse(JSON.stringify(this.currentComponent.image)))
+          this.$nextTick(() => {
+            this.$refs.bgStoreSign.style.backgroundImage = 'url(' + this.storeSign.image + ')'
+          })
+        }
+        this.currentComponent = {}
+      })
+    },
+    // 视频列表 1（相册） 2（3d文件） 3（视频)
+    resourcesData (type) {
+      this.API.getResources({ type: type }, { page: 1, rows: 1000 }).then(res => {
+        this.storeRes = res.data
+      })
+    },
+    // 选中视频
+    selectVideo (item) {
+      this.$set(this.currentComponent, 'data', item.url)
+      this.cropperVideo = ''
+    },
+    // banner图片类别链接
+    cropperBannerCate (index) {
+      this.cropperCate = this.isEditPanelId
+      this.markIndex = index
+    },
+    // 选择类别链接
+    cropperCateUrl (cateId) {
+      this.cropperCateTemUrl = this.WEBSITE + '/#/category?cateId=' + cateId
+    },
+    // banner图片类别取消
+    closeCropCateUrl () {
+      this.cropperCate = ''
+      this.cropperCateTemUrl = ''
+      this.markIndex = null
+    },
+    // banner图片类别确定
+    btnCropCateUrl () {
+      this.markList[this.markIndex].link = this.cropperCateTemUrl
+      this.cropperCate = ''
+      this.markIndex = null
+    },
+    cropperBanner3D (index) {
+      this.markList[index].link = this.WEBSITE + '/#/3D/3DShow?homeShops=' + this.$cookies.get('st_b_user')
+    },
+    cropperBannerLive (index) {
+      this.markList[index].link = this.WEBSITE + '/#/live/factory?homeShops=' + this.$cookies.get('st_b_user')
+    },
+    // 发布上线店铺
+    release () {
+      if (!this.storeSign.id || !this.menuNavBar[0].navigationItemId) {
+        this.$notify.warning({ message: '请求参数格式不正确' })
+        return false
+      }
+      this.API.onlineVersion({ navigationItemId: this.menuNavBar[0].navigationItemId, trickId: this.storeSign.id }).then(res => {
+        if (res.code === 2000) {
+          this.$notify.success({ title: '成功', message: '发布成功' })
+        }
       })
     }
   },
@@ -1483,6 +1645,18 @@ export default {
           if (Object.keys(this.currentComponent).length) break
           this.currentComponent = JSON.parse(JSON.stringify(this.tree[i].widthModuleDataList.find(item => item.id === val) || {}))
           if (Object.keys(this.currentComponent).length) break
+        }
+        if (Object.keys(this.currentComponent).length) {
+          if (this.currentComponent.template === 'banner') {
+            this.markImgSize = { width: 1226, height: 180 }
+          } else if (this.currentComponent.template === 'fullScreen') {
+            this.markImgSize = { width: 1920, height: 650 }
+          } else if (this.currentComponent.template === 'chanpinfenleiN' || this.currentComponent.template === 'customer') {
+            this.$notify.warning({
+              message: '该模块不可操作'
+            })
+            this.isEditPanelId = ''
+          }
         }
       }
     },
@@ -1505,11 +1679,6 @@ export default {
           break
         }
       }
-    },
-    tree: {
-      handler (newVal, oldVal) {
-      },
-      deep: true
     }
   }
 }
@@ -1945,6 +2114,29 @@ input:disabled {
   overflow-y: auto;
   li:hover {
     background-color: rgba(238, 238, 238, 0.68);
+  }
+}
+.video_pane_limit_height {
+  flex-direction: initial !important;
+  flex-wrap: wrap !important;
+  li.video_li_pane_limit_height {
+    width: 30%;
+    height: 220px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid transparent;
+    margin-top: 15px;
+    .video_pane_box {
+      max-height: 150px;
+      max-width: 200px;
+    }
+    .video_pane_title {
+      width: 150px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      margin-top: 10px;
+    }
   }
 }
 .set_select_order {
@@ -2652,6 +2844,7 @@ input:disabled {
             position: relative;
             zoom: 0.783035;
             margin-bottom: 20px;
+            min-height: 50px;
             &>:nth-child(n) {
               background: #fff;
             }
@@ -2757,7 +2950,7 @@ input:disabled {
 
 /* 店铺招牌 */
   #store_header {
-    max-height: 210px;
+    max-height: 250px;
     margin-bottom: 0px;
     overflow: hidden;
     position: relative;
@@ -2776,7 +2969,7 @@ input:disabled {
   }
   .store_signature {
     width: 100%;
-    max-height: 280px;
+    max-height: 250px;
     overflow: hidden;
     zoom: 0.783035;
   }
@@ -2823,6 +3016,7 @@ input:disabled {
   }
   .menu_pupper {
     visibility: hidden;
+    z-index: 10;
   }
   .menu-box {
     display: flex;
@@ -2873,12 +3067,6 @@ input:disabled {
     justify-content: space-between;
     align-items: center;
   }
-  .menu-two-box {
-    position: absolute;
-    top: 100%;
-    display: none;
-    z-index: 20;
-  }
   .menu-box>.menu-item:hover>.menu-a>.menu-more{
     transform-origin: 62% 50%;
     transform: rotate(0.5turn);
@@ -2888,9 +3076,6 @@ input:disabled {
   }
   .menu-box>.menu-item:hover {
     background-color: rgba(0, 0, 0, 0.1);
-  }
-  .menu-item:hover>.menu-two-box {
-    display: block;
   }
 
 .loading_wrap {
@@ -2947,5 +3132,26 @@ input:disabled {
     background: linear-gradient(to top, #f00 0%, #ff0 17%, #0f0 33%, #0ff 50%, #00f 67%, #f0f 83%, #f00 100%);
     background: -webkit-linear-gradient(to top, #f00 0%, #ff0 17%, #0f0 33%, #0ff 50%, #00f 67%, #f0f 83%, #f00 100%);
   }
-
+.footer_pre {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  background-color: rgba(0, 0, 0, 0.72);
+  .footer_pre_box {
+    margin-right: 20px;
+    button {
+      width: 100px;
+      line-height: 28px;
+      border-radius: 4px;
+      flex: initial;
+      background-color: $aside-theme-color;
+      color: #fff;
+      border-color: initial;
+    }
+    .footer_pre_tip {
+      color: #fff;
+    }
+  }
+}
 </style>

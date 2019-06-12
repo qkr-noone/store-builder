@@ -3,10 +3,8 @@
     <div class="dynamic_box">
       <div class="dynamic_player">
         <div class="dynamic_player_bg">
-          <video preload="metadata" muted width="100%" height="100%" loop="false" style="display: block; background-color: #000;" src="//cloud.video.alibaba.com/play/u/2153292369/p/1/e/6/t/1/d/hd/210692166549.mp4" controls></video>
+          <video preload="metadata" muted width="100%" height="100%" loop="false" style="display: block; background-color: #000;" :src="dataUrl" controls></video>
         </div>
-      </div>
-      <div class="dynamic_desc">
       </div>
     </div>
   </div>
@@ -14,6 +12,12 @@
 <script>
 export default {
   name: 'dynamic',
+  props: {
+    dataUrl: {
+      type: [String, Number],
+      defaul: null
+    }
+  },
   data () {
     return {
     }
@@ -31,19 +35,13 @@ export default {
     width: 100%;
   }
   .dynamic_box {
-    height: 460px;
-    display: flex;
-  }
-  .dynamic_desc {
-    flex-grow: 1;
-    height: 100%;
-    padding: 20px;
+    min-height: 600px;
+    max-height: 817px;
     overflow: hidden;
   }
   .dynamic_player {
-    width: 818px;
-    flex-grow: 0;
-    flex-shrink: 0;
+    width: 100%;
+    width: auto;
   }
   .dynamic_player_bg {
     width: 100%;

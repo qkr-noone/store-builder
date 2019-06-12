@@ -1,7 +1,7 @@
 <template>
   <div id="banner">
     <div class="full_box">
-      <el-carousel :interval="4000" arrow="always" height="100%" style="width: 100%; height: 100%;">
+      <el-carousel :interval="4000" arrow="always" indicator-position="" height="100%" style="width: 100%; height: 100%;">
         <el-carousel-item v-for="item in list" :key="item.id" class="full_item">
           <a class="full_link" :href="item.link" target="_blank">
             <img :src="item.url">
@@ -25,11 +25,6 @@ export default {
   },
   methods: {},
   watch: {
-    list: {
-      handler (newV, oldV) {
-      },
-      deep: true
-    }
   }
 }
 
@@ -41,7 +36,7 @@ export default {
   }
   .full_box {
     width: 100%;
-    height: 350px;
+    height: 180px;
   }
   .full_item {
     height: 100%;
