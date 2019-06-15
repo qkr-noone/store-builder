@@ -2,7 +2,7 @@
   <div id="chuchuang_w">
     <div class="chuchuang_head">
       <p class="chuchuang_title">产品展示</p>
-      <a class="chuchuang_more" href="" title="更多产品">更多产品 <i class="el-icon-d-arrow-right"></i></a>
+      <!-- <a class="chuchuang_more" href="" title="更多产品">更多产品 <i class="el-icon-d-arrow-right"></i></a> -->
     </div>
     <div class="chuchuang_con">
       <div class="product_item" :class="{has_bottom: length>5 && length%5>0 && (length - length%5 >= index) || (length>5 && length%5===0 && length-5>index-1)}"  v-for="index in length" :key="index">

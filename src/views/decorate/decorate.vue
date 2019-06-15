@@ -1,20 +1,18 @@
 <template>
   <div id="decorate" name="data-reactroot">
     <div class="container">
-      <storeHeader></storeHeader>
+      <!-- <storeHeader></storeHeader> -->
       <section class="content">
-        <aside>
+        <!-- <aside>
           <section class="manager-sidebar" ref="nav">
-            <!-- PC/无线 -->
-            <div class="switchEditor">
+            <div class="switchEditor" data-attr="PC/无线">
               <span class="PC active">PC</span>
               <el-tooltip effect="dark" placement="bottom">
                 <div slot="content">尚未支持无线端</div>
                 <span class="mobile">无线</span>
               </el-tooltip>
             </div>
-            <!-- 页面背景 -->
-            <div class="manager-wrap" :class="{'panel-active': switchNav==='bg'}" @click="switchNav='bg'">
+            <div class="manager-wrap" data-attr="页面背景" :class="{'panel-active': switchNav==='bg'}" @click="switchNav='bg'">
               <a class="manager-link">
                 <i>页面背景</i>
               </a>
@@ -214,8 +212,7 @@
                 </el-tabs>
               </div>
             </div>
-            <!-- 产品 -->
-            <div class="manager-wrap" :class="{'panel-active': switchNav==='goods'}" @click="switchNav='goods'">
+            <div class="manager-wrap" data-attr="产品" :class="{'panel-active': switchNav==='goods'}" @click="switchNav='goods'">
               <a class="manager-link">
                 <i class="next-icon" :class="goods.icon"></i>
                 <i>{{goods.moduleName}}</i>
@@ -244,8 +241,7 @@
                 </div>
               </div>
             </div>
-            <!-- 图文 -->
-            <div class="manager-wrap" :class="{'panel-active': switchNav==='picWord'}" @click="switchNav='picWord'">
+            <div class="manager-wrap" data-attr="图文" :class="{'panel-active': switchNav==='picWord'}" @click="switchNav='picWord'">
               <a class="manager-link">
                 <i class="next-icon" :class="picWord.icon"></i>
                 <i>{{picWord.moduleName}}</i>
@@ -274,8 +270,7 @@
                 </div>
               </div>
             </div>
-            <!-- 视频 -->
-            <div class="manager-wrap" :class="{'panel-active': switchNav==='video'}" @click="switchNav='video'">
+            <div class="manager-wrap" data-attr="视频" :class="{'panel-active': switchNav==='video'}" @click="switchNav='video'">
               <a class="manager-link">
                 <i class="next-icon" :class="video.icon"></i>
                 <i>{{video.moduleName}}</i>
@@ -304,8 +299,7 @@
                 </div>
               </div>
             </div>
-            <!-- 营销 -->
-            <div class="manager-wrap" :class="{'panel-active': switchNav==='sell'}" @click="switchNav='sell'">
+            <div class="manager-wrap" data-attr="营销" :class="{'panel-active': switchNav==='sell'}" @click="switchNav='sell'">
               <a class="manager-link">
                 <i class="next-icon" :class="sell.icon"></i>
                 <i>{{sell.moduleName}}</i>
@@ -334,8 +328,7 @@
                 </div>
               </div>
             </div>
-            <!-- 公司 -->
-            <div class="manager-wrap" :class="{'panel-active': switchNav==='office'}" @click="switchNav='office'">
+            <div class="manager-wrap" data-attr="公司" :class="{'panel-active': switchNav==='office'}" @click="switchNav='office'">
               <a class="manager-link">
                 <i class="next-icon" :class="office.icon"></i>
                 <i>{{office.moduleName}}</i>
@@ -365,7 +358,7 @@
               </div>
             </div>
           </section>
-        </aside>
+        </aside> -->
         <section class="manager_right">
           <div class="previewer_wrap">
             <div :style="'background-color:'+ themeColor"></div>
@@ -393,7 +386,7 @@
                       <div class="pre_module store_sign_nav_box shop_nav m-nav-content">
                         <ul class="menu-box" slot="reference">
                           <li class="menu-item menu-item-li" v-for="(list, tip) in menuNavBar" :key="list.id" ref="navBar" @mouseenter="tip===1 &&resetMenuPosition()">
-                            <router-link :to="{path: '/shops'}" target="_blank" class="menu-a"><span>{{list.navigationName}}</span><i class="el-icon-arrow-down menu-more" v-if="tip===1"></i></router-link>
+                            <router-link :to="{path: list.path, query:{homeShops: list.sellerId }}" class="menu-a"><span>{{list.navigationName}}</span><i class="el-icon-arrow-down menu-more" v-if="tip===1"></i></router-link>
                           </li>
                         </ul>
                         <div class="handle_wrap handle_store_sign_box"></div>
@@ -464,7 +457,7 @@
                             </div>
                           </div>
                           <!-- 窄栏项模板>>组件 -->
-                          <component :is="item.template" :list="item.dataList" :dataUrl="item.data" :menuCate="menuCate"></component>
+                          <component :is="item.template" :list="item.dataList" :dataUrl="item.data" :menuCate="menuCate" :storeId="storeId"></component>
                         </div>
                         <!-- 窄栏拖放框 -->
                         <div class="width_20" v-show="layoutType.narrow==='1'">
@@ -651,7 +644,7 @@
       </section>
       <footer class="footer_pre">
         <div class="footer_pre_box">
-          <span class="footer_pre_tip">提示：未发布不会替换线上店铺，当前装修的店铺不会丢失</span>
+          <sub class="footer_pre_tip">提示：未发布不会替换线上店铺，当前装修的店铺自动保存</sub>
           <button class="editor_btn_button" @click="release()" title="上线当前装修店铺">发布版本</button>
         </div>
       </footer>
@@ -663,8 +656,8 @@
       <ul class="menu-box">
         <ul class="menu-two">
           <li class="menu-item menu-two-li" v-for="item in menuCate" :key="item.id">
-            <router-link :to="{path: '/category', query:{cateId: item.id}}" class="menu-a menu-two-a"><span>{{item.name}}</span><i class="el-icon-arrow-right menu-more" v-if="item.children.length"></i></router-link>
-            <shopsNav v-if="item.children.length" :list="item.children"></shopsNav>
+            <router-link :to="{path: '/category', query:{homeShops: storeId, cateId: item.id}}" class="menu-a menu-two-a"><span>{{item.name}}</span><i class="el-icon-arrow-right menu-more" v-if="item.children.length"></i></router-link>
+            <shopsNav v-if="item.children.length" :list="item.children" :storeId="storeId"></shopsNav>
           </li>
         </ul>
       </ul>
@@ -1022,7 +1015,8 @@ export default {
       cropperImg: '',
       cropperVideo: '',
       cropperCate: '',
-      cropperCateTemUrl: ''
+      cropperCateTemUrl: '',
+      storeId: this.$cookies.get('st_b_user')
     }
   },
   components: {
@@ -1342,10 +1336,12 @@ export default {
     // 移入导航项时，重新定位
     resetMenuPosition () {
       this.$nextTick(() => {
-        let { left, bottom } = this.$refs.navBar[1].getBoundingClientRect()
+        let { left, top } = this.$refs.navBar[1].getBoundingClientRect()
+        let srcollTop = document.documentElement.scrollTop || document.body.scrollTop
+        let scrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft
         this.$refs.storeMenuShow.style.position = 'absolute'
-        this.$refs.storeMenuShow.style.left = left + 'px'
-        this.$refs.storeMenuShow.style.top = bottom + 'px'
+        this.$refs.storeMenuShow.style.left = left + scrollLeft + 'px'
+        this.$refs.storeMenuShow.style.top = top + 40 + srcollTop + 'px'
         this.$refs.storeMenuShow.style.zoom = 0.783035
       })
     },
@@ -1602,7 +1598,7 @@ export default {
     },
     // 选择类别链接
     cropperCateUrl (cateId) {
-      this.cropperCateTemUrl = this.WEBSITE + '/#/category?cateId=' + cateId
+      this.cropperCateTemUrl = this.WEBSITE + '/#/shops/category?homeShops=' + this.$cookies.get('st_b_user') + '&cateId=' + cateId
     },
     // banner图片类别取消
     closeCropCateUrl () {
@@ -1624,15 +1620,23 @@ export default {
     },
     // 发布上线店铺
     release () {
-      if (!this.storeSign.id || !this.menuNavBar[0].navigationItemId) {
-        this.$notify.warning({ message: '请求参数格式不正确' })
-        return false
-      }
-      this.API.onlineVersion({ navigationItemId: this.menuNavBar[0].navigationItemId, trickId: this.storeSign.id }).then(res => {
-        if (res.code === 2000) {
-          this.$notify.success({ title: '成功', message: '发布成功' })
+      this.$confirm('是否发布当前店铺版本?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        if (!this.storeSign.id || !this.menuNavBar[0].navigationItemId) {
+          this.$notify.warning({ message: '请求参数格式不正确' })
+          return false
         }
-      })
+        this.API.onlineVersion({ navigationItemId: this.menuNavBar[0].navigationItemId, trickId: this.storeSign.id }).then(res => {
+          if (res.code === 2000) {
+            this.$notify.success({ title: '成功', message: '发布成功' })
+          } else {
+            this.$notify.error({ title: '失败', message: res.message || '发布失败' })
+          }
+        })
+      }).catch(() => {})
     }
   },
   watch: {
@@ -3147,10 +3151,11 @@ input:disabled {
       flex: initial;
       background-color: $aside-theme-color;
       color: #fff;
-      border-color: initial;
+      border-color: none;
     }
     .footer_pre_tip {
       color: #fff;
+      margin-right: 10px;
     }
   }
 }

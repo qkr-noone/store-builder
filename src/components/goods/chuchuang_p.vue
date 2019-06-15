@@ -14,7 +14,7 @@
           </router-link>
           <div class="product_info">
             <div class="product_title">
-              <a class="product_word" href=""><span>{{item.goodsName}}</span></a>
+              <a class="product_word"><span>{{item.goodsName}}</span></a>
             </div>
           </div>
         </div>

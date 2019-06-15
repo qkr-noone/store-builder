@@ -23,7 +23,8 @@ export default {
   name: 'pingpu_w',
   props: {
     list: {
-      type: Array
+      type: Array,
+      default: () => []
     }
   },
   data () {

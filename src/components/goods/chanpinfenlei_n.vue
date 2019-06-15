@@ -8,9 +8,9 @@
         <div class="pro_cate_menu">
           <ul>
             <li class="pro_cate_item" v-for="item in menuCate" :key="item.id">
-              <router-link :to="{path: '/category', query:{cateId: item.id}}" class="pro_item_link">{{item.name}}</router-link>
+              <router-link :to="{path: '/shops/category', query:{homeShops: storeId, cateId: item.id}}" class="pro_item_link">{{item.name}}</router-link>
               <i class="el-icon-arrow-right" v-if="item.children.length"></i>
-              <shopsNav v-if="item.children.length" :list="item.children"></shopsNav>
+              <shopsNav v-if="item.children.length" :list="item.children" :storeId="storeId"></shopsNav>
             </li>
           </ul>
         </div>
@@ -26,12 +26,14 @@ export default {
   props: {
     menuCate: {
       types: Array
+    },
+    storeId: {
+      type: [Number, String],
+      default: 0
     }
   },
   data () {
-    return {
-      list: { menuname: 'series', sonMenunameList: [{ menuname: 'series222', sonMenunameList: [{ menuname: 'series222', sonMenunameList: [] }] }] }
-    }
+    return {}
   },
   components: { shopsNav }
 }
@@ -86,6 +88,7 @@ export default {
               overflow: hidden;
               text-overflow: ellipsis;
               color: #333333;
+              text-align: left;
               &:hover {
                 color: #ef7026;
                 text-decoration: underline;

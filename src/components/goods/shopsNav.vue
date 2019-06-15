@@ -3,7 +3,7 @@
     <div class="visible"></div>
     <ul class="menu-two">
       <li class="menu-item menu-two-li" v-for="item in list" :key="item.id">
-        <router-link :to="{path: '/category', query:{cateId: item.id}}" class="menu-a menu-two-a"><span>{{item.name}}</span><i class="el-icon-arrow-right menu-more" v-if="item.children && item.children.length"></i></router-link>
+        <router-link :to="{path: '/shops/category', query:{homeShops: storeId, cateId: item.id}}" class="menu-a menu-two-a"><span>{{item.name}}</span><i class="el-icon-arrow-right menu-more" v-if="item.children && item.children.length"></i></router-link>
         <shopsNav v-if="item.children && item.children.length" :list="item.children"></shopsNav>
       </li>
     </ul>
@@ -19,6 +19,10 @@ export default {
   props: {
     list: {
       type: Array
+    },
+    storeId: {
+      type: [Number, String],
+      default: 0
     }
   },
   filters: {

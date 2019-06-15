@@ -5,7 +5,7 @@
         <div class="pro_n_limit">
           <div class="pro_n_ul" ref="sroll">
             <div class="pro_n_item" v-for="item in list" :key="item.id">
-              <a href="" class="pro_n_img" target="_blank"><img class="pro_n_img_con" :src="item.smallPic"></a>
+              <router-link :to="{path: '/detail', query: { goodsId: item.id }}" class="pro_n_img" target="_blank"><img class="pro_n_img_con" :src="item.smallPic"></router-link>
               <div class="pro_n_info">
                 <router-link :to="{path: '/detail', query: { goodsId: item.id }}" class="pro_n_title"  :title="item.goodsName" target="_blank"><span>{{item.goodsName}}</span></router-link>
                 <div class="pro_n_price" :title="item.priceShow"><span>{{item.priceShow}}元</span></div>
@@ -31,7 +31,8 @@ export default {
   name: 'pingpu_n',
   props: {
     list: {
-      type: Array
+      type: Array,
+      default: () => []
     }
   },
   data () {
@@ -110,6 +111,7 @@ export default {
               flex-grow: 1;
               color: #666;
               overflow: hidden;
+              text-align: left;
               .pro_n_title {
                 line-height: 16px;
                 max-height: 32px;
