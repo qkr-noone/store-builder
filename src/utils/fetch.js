@@ -47,8 +47,10 @@ service.interceptors.response.use(res => {
     })
     if (result.code === 4001) {
       // token 失效返回到登录页面中 清除数据
-      localStorage.removeItem('st_token')
-      localStorage.removeItem('build_tree')
+      // localStorage.removeItem('st_token')
+      // localStorage.removeItem('build_tree')
+      VueCookies.remove('st_token')
+      VueCookies.remove('st_b_user')
       // 需修改
       window.location.href = `http://192.168.1.100:9002/#/login?redirect=`
     }

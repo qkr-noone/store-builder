@@ -23,11 +23,6 @@ Vue.use(VueCropper)
 // 上传文件 或者需要在页面中拿到全部的接口  也可以放到页面中
 // console.log(process.env.BASE_API)
 
-// 测试用例
-VueCookies.set('st_token', 'MkTail-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJycnIiLCJleHAiOjE1OTIwMTYxNTIsImlhdCI6MTU2MDQ4MDE1Mn0.6FojWJaKEgWa0lCZHoRnBsjQ5UjDgL4BGZY2SUKn61mZsC1ZJhOcJL9UCwRnNU9YL6iVoyz0UlnOx6Wy4pvVbA')
-VueCookies.set('st_b_user', 'rrr')
-// MkTail-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkZGQiLCJleHAiOjE1OTE3ODY0NTUsImlhdCI6MTU2MDI1MDQ1NX0.hPgHtX_UdtiIHqeh-R_aFOgx-mTe9q8xI9VCRvHG3JX_wyfz_DJby7zzlDBjVhn8QPKNxO1JrA4KFfdioHVsfw
-// MkTail-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJiYWlkdTEyMyIsImV4cCI6MTU5MTY4Njg0NywiaWF0IjoxNTYwMTUwODQ3fQ.zHIFvyhdug6zeWi6xO7lt-W28xrjf1GMly5WqXBHJ6r_R9BBK-zzDk5o3XtJ2kTRVXeAfhhlcIZ02TUPgTF4vQ
 let vueDom = new Vue({
   el: '#app',
   router,

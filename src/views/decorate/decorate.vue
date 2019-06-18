@@ -1053,6 +1053,10 @@ export default {
       tree: state => state.tree
     })
   },
+  created () {
+    this.$cookies.set('st_token', this.$route.query.t)
+    this.$cookies.set('st_b_user', this.$route.query.s)
+  },
   mounted () {
     // if (!this.currentPageInfo.storePageId) this.$message.error('数据请求有误！') // this.$router.go(-1)
 
