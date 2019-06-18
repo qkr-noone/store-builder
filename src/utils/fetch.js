@@ -52,7 +52,7 @@ service.interceptors.response.use(res => {
       VueCookies.remove('st_token')
       VueCookies.remove('st_b_user')
       // 需修改
-      window.location.href = `http://192.168.1.100:9002/#/login?redirect=`
+      window.location.href = process.env.BASE_AFTER + '/#/login?redirect='
     }
     return Promise.reject(msg)
   }
