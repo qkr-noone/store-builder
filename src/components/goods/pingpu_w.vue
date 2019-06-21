@@ -1,6 +1,6 @@
 <template>
   <div id="pingpu_w">
-    <div class="product_item" :class="{'has_bottom': length>4}" v-for="item in list" :key="item.id">
+    <div class="product_item" v-for="item in list" :key="item.id">
       <div class="product_cart">
         <router-link :to="{path: '/detail' , query: {goodsId: item.id}}" class="product_img" target="_blank">
           <div class="product_img_box">
@@ -16,6 +16,7 @@
         </div>
       </div>
     </div>
+    <div class="shadow_line"></div>
   </div>
 </template>
 <script>
@@ -28,9 +29,7 @@ export default {
     }
   },
   data () {
-    return {
-      length: this.list.length
-    }
+    return {}
   }
 }
 
@@ -49,7 +48,7 @@ export default {
     padding: 18px 15px;
     text-align: center;
     overflow: hidden;
-    &:nth-child(-n+4).has_bottom {
+    &:nth-child(n) {
       border-bottom: 1px solid #dbe3ef;
     }
     &:nth-child(4n) {
@@ -113,5 +112,12 @@ export default {
       }
     }
   }
+.shadow_line {
+  position: absolute;
+  bottom: 1px;
+  height: 1px;
+  background: #fff;
+  width: 100%;
+}
 
 </style>

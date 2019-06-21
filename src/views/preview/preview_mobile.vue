@@ -97,8 +97,8 @@ export default {
 }
 
 </script>
-<style lang="scss" src="../../styles/common.scss"></style>
-<style lang="scss">
+<style lang="scss" scoped src="../../styles/common.scss"></style>
+<style lang="scss" scoped>
 
 $aside-theme-color: #ef7026;
 
@@ -124,7 +124,6 @@ $aside-theme-color: #ef7026;
 
         .pre_module {
           height: auto;
-          background-color: rgba(0, 0, 0, .5);
           z-index: 1;
           position: relative;
 
@@ -197,8 +196,7 @@ $aside-theme-color: #ef7026;
     width: 100%;
     min-height: 100%;
     background-color: rgb(253, 253, 253);
-    background-image: url(/static/img/shop_default_bg.jpg);
-    background-repeat: repeat;
+    background-repeat: no-repeat;
     background-position: center top;
     zoom: 1;
   }
@@ -234,7 +232,6 @@ $aside-theme-color: #ef7026;
   .shop_nav {
     position: relative;
     height: 40px;
-    background-color: #ef7026;
   }
  .m-nav-content {
     width: 1226px;

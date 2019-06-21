@@ -20,7 +20,7 @@ Vue.prototype.WEBSITE = process.env.BASE_FRONT
 Vue.use(ElementUI)
 Vue.use(VueCookies)
 Vue.use(VueCropper)
-// 上传文件 或者需要在页面中拿到全部的接口  也可以放到页面中
+// 上传文件 或者需要在页面中拿到全部的接口  也可以放到页面js中
 // console.log(process.env.BASE_API)
 let vueDom = new Vue({
   el: '#app',
