@@ -52,7 +52,7 @@ export default {
   .customer_box {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-end;
     height: 280px;
     overflow: hidden;
     background-repeat: no-repeat;
@@ -61,16 +61,14 @@ export default {
   }
   .customer_wrap {
     flex-grow: 1;
-    padding: 25px 40px;
-    background: rgba(0,0,0,.5);
+    padding-bottom: 62px;
+    /*background: rgba(0,0,0,.5);*/
     display: flex;
     justify-content: center;
     align-items: center;
   }
   .customer_item {
-    text-align: left;
     /*text-align: center;*/
-    padding: 0 10px;
     /*width: 16.66667%;*/
     /*max-width: 16.66667%;*/
     /*flex: 0 0 16.66667%;*/
@@ -88,16 +86,24 @@ export default {
     max-width: 100%;
   }
   .customer_info {
-    margin-top: 8px;
+    background-color: #fff;
+    color: red;
+    display: flex;
+    justify-content: center;
+    border-radius: 17px;
+    padding: 0 24px;
   }
   .customer_name {
-    color: #fff;
-    line-height: 32px;
-    font-size: 24px;
+    color: #000000;
+    line-height: 34px;
+    font-size: 21px;
     /*line-height: 24px;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;*/
+  }
+  p.customer_name:not(:last-child){
+    margin-right: 46px;
   }
   .el-icon-service {
     color: #fff;

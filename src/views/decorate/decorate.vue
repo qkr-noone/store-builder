@@ -564,7 +564,7 @@
                   </div>
                 </div> -->
                 <div class="rec_goods_box hidden_border" v-if="currentComponent.isVideo">
-                  <button class="editor_btn_button set_button" @click="cropperVideo=true; resourcesData(3)">选择视频</button>
+                  <button class="editor_btn_button set_button" @click="cropperVideo=true; videoBox()">选择视频</button>
                   <p class="set_desc">请上传比例为16:9的高质量视频</p>
                 </div>
                 <!-- <div class="rec_goods_box bottom">
@@ -871,7 +871,7 @@
               <div class="pane-box pane_box_title">
               </div>
               <div class="pane-box" style="border-bottom: 1px solid #663399;">
-                <ul class="pane_limit_height video_pane_limit_height">
+                <ul class="pane_limit_height video_pane_limit_height" v-if="storeRes.total">
                   <li class="video_li_pane_limit_height" v-for="list in storeRes.rows" :key="list.id">
                     <div class="video_pane_box">
                       <video preload="metadata" muted width="100%" height="100%" style="display: block; background-color: #000;" :src="list.url" controls></video>
@@ -880,7 +880,7 @@
                     <div><button class="editor_btn_button" @click="selectVideo(list)">选用视频</button></div>
                   </li>
                 </ul>
-                <div v-if="!storeRes.total" class="set_con_banner_title set_con_banner_upload_tip">暂无视频，请在数字管理先添加视频~</div>
+                <div v-else class="set_con_banner_title set_con_banner_upload_tip">暂无视频，请在数字管理先添加视频~</div>
               </div>
             </div>
           </div>
@@ -1588,8 +1588,11 @@ export default {
       })
     },
     // 视频列表 1（相册） 2（3d文件） 3（视频)
-    resourcesData (type) {
-      this.API.getResources({ type: type }, { page: 1, rows: 1000 }).then(res => {
+    resourcesData (type) { this.API.getResources({ type: type }, { page: 1, rows: 1000 }).then(res => {}) },
+    // 获取视频列表
+    videoBox () {
+      this.API.getVideoList({ page: 1, rows: 1000, title: '' }).then(res => {
+        console.log(res)
         this.storeRes = res.data
       })
     },
@@ -2131,9 +2134,11 @@ input:disabled {
 .video_pane_limit_height {
   flex-direction: initial !important;
   flex-wrap: wrap !important;
+  max-height: 470px;
+  height: 470px;
   li.video_li_pane_limit_height {
     width: 30%;
-    height: 220px;
+    height: 216px;
     display: flex;
     flex-direction: column;
     border: 1px solid transparent;

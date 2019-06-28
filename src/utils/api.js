@@ -56,8 +56,11 @@ export default {
   // 根据组件id获取组件数据
   getComponent: data => http.get('/shop/decoration/component/getOneById', data),
 
-  // 获取文件下的资源 1（相册） 2（3d文件） 3（视频)
+  // 获取文件下的资源 1（相册） 2（3d文件） 3（视频) --- 未使用
   getResources: (data, params) => http.post('/shop/data/search?page=' + params.page + '&rows=' + params.rows, data),
+
+  // 获取商家视频列表
+  getVideoList: params => http.post('/shop/data/video/search?page=' + params.page + '&rows=' + params.rows + '&title=' + params.title),
 
   // 发布店铺装修
   onlineVersion: data => http.get('/shop/decoration/online/releaseDecoration', data)
