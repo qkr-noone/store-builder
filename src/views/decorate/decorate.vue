@@ -1599,6 +1599,7 @@ export default {
     // 选中视频
     selectVideo (item) {
       this.$set(this.currentComponent, 'data', item.url)
+      this.$set(this.currentComponent, 'config', JSON.stringify({ videoCover: item.cover }))
       this.cropperVideo = ''
     },
     // banner图片类别链接
