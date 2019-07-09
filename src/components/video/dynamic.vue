@@ -3,7 +3,7 @@
     <div class="dynamic_box">
       <div class="dynamic_player">
         <div class="dynamic_player_bg">
-          <video preload="metadata" muted width="100%" height="100%" loop="false" style="display: block; background-color: #000;" :src="dataUrl" controls></video>
+          <video preload="metadata" muted width="100%" height="100%" loop="false" style="display: block; background-color: #000;" :src="dataUrl" controls :poster="JSON.parse(videoCover).videoCover || ''"></video>
         </div>
       </div>
     </div>
@@ -16,6 +16,10 @@ export default {
     dataUrl: {
       type: [String, Number],
       defaul: null
+    },
+    videoCover: {
+      type: [String, Number],
+      defaul: ''
     }
   },
   data () {

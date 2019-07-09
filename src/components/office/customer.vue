@@ -4,7 +4,13 @@
       <div class="customer_wrap">
         <div class="customer_item">
           <div class="customer_info">
-            <p class="customer_name" v-for="(item, tip) in list[0]" :key="item">{{tip}}:&nbsp;{{item}}</p>
+            <p class="customer_name">小二:&nbsp;{{list[0].name}}</p>
+            <p class="customer_name">邮件:&nbsp;{{list[0].email}}</p>
+            <p class="customer_name">职称:&nbsp;{{list[0].position}}</p>
+            <p class="customer_name">电话:&nbsp;{{list[0].fixedLine}}</p>
+            <p class="customer_name">手机:&nbsp;{{list[0].mobile}}</p>
+            <p class="customer_name">传真:&nbsp;{{list[0].fax}}</p>
+            <p class="customer_name">Q&nbsp;Q:&nbsp;{{list[0].qq}}</p>
             <!-- <i class="el-icon-service"></i> -->
           </div>
         </div>
@@ -89,22 +95,28 @@ export default {
     background-color: #fff;
     color: red;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
+    flex-wrap: wrap;
     border-radius: 17px;
     padding: 0 24px;
+    padding-top: 20px;
+    width: 800px;
+    height: 240px;
   }
   .customer_name {
     color: #000000;
     line-height: 34px;
-    font-size: 21px;
+    font-size: 16px;
+    width: 270px;
+    margin-left: 80px;
     /*line-height: 24px;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;*/
   }
-  p.customer_name:not(:last-child){
+  /*p.customer_name:not(:last-child){
     margin-right: 46px;
-  }
+  }*/
   .el-icon-service {
     color: #fff;
     font-size: 20px;

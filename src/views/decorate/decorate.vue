@@ -505,7 +505,7 @@
                         <!-- 通栏数据遍历 -->
                         <div class="pre_module_con" v-for="item in list.passModuleDataList" :key="item.id" :data-template="item.templateName">
                           <!-- 通栏项模板=>>组件 -->
-                          <component :is="item.template" :list="item.dataList" :dataUrl="item.data"></component>
+                          <component :is="item.template" :list="item.dataList" :dataUrl="item.data" :videoCover="item.config"></component>
                         </div>
                       </div>
                     </div>
@@ -1335,9 +1335,9 @@ export default {
     handlePackNavBar (e) {
       let navBar = this.$refs.navBar
       if ((navBar && navBar[1].contains(e.target)) || this.$refs.storeMenuShow.contains(e.target)) {
-        this.$refs.storeMenuShow.style.visibility = 'visible'
+        this.$refs.storeMenuShow.style.display = 'block'
       } else {
-        this.$refs.storeMenuShow.style.visibility = 'hidden'
+        this.$refs.storeMenuShow.style.display = 'none'
       }
     },
     // 移入导航项时，重新定位
@@ -3034,7 +3034,7 @@ input:disabled {
     margin: 0 auto;
   }
   .menu_pupper {
-    visibility: hidden;
+    display: none;
     z-index: 10;
   }
   .menu-box {
