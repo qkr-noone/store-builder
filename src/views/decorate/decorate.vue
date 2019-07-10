@@ -564,7 +564,7 @@
                   </div>
                 </div> -->
                 <div class="rec_goods_box hidden_border" v-if="currentComponent.isVideo">
-                  <button class="editor_btn_button set_button" @click="cropperVideo=true; videoBox()">选择视频</button>
+                  <button class="editor_btn_button set_button" @click="cropperVideo=isEditPanelId; videoBox()">选择视频</button>
                   <p class="set_desc">请上传比例为16:9的高质量视频</p>
                 </div>
                 <!-- <div class="rec_goods_box bottom">
@@ -798,9 +798,29 @@
             <div class="set_con_banner_info set_con_banner_info_two">
               <div class="set_con_banner_row">
                 <!-- 后期分页查询操作 -->
-                <div class="set_con_banner_cell_img"></div>
-                <div class="set_con_banner_cell_url"></div>
-                <div class="set_con_banner_cell_set"></div>
+                <div class="set_con_banner_cell_img set_con_banner_info_two_filter">
+                  <select v-model="currentCate" placehlder="所有分类" class="set_con_banner_info_two_select">
+                    <option value="">所有分类</option>
+                    <option :value="cate.id" v-for="cate in menuCate" :key="cate.id">{{cate.name}}</option>
+                    <option :value="cate.id" v-for="cate in menuCate" :key="cate.id+'##'">{{cate.name}}</option>
+                  </select>
+                  <div class="set_box_store_search">
+                    <input type="search" name="" placeholder="请输入产品名称" v-model="searchGoodsName" @keyup.enter="page=1;goodsData()">
+                    <span class="set_box_search_btn" @click="page=1;goodsData()"><i class="el-icon-search"></i></span>
+                  </div>
+                </div>
+                <div class="set_con_banner_cell_url set_con_banner_info_two_other"></div>
+                <div class="set_con_banner_cell_set set_con_banner_info_two_sort">
+                  <el-pagination
+                    v-if="storeGoods.total"
+                    small
+                    @current-change="goodsData()"
+                    :current-page.sync="page"
+                    :page-size="rows"
+                    layout="prev, pager, next"
+                    :total="storeGoods.total">
+                  </el-pagination>
+                </div>
               </div>
               <div class="pane-box pane_box_title">
                 <ul>
@@ -825,7 +845,7 @@
                     <span>{{formatDate(list.createTime)}}</span>
                   </li>
                 </ul>
-                <div v-if="!storeGoods.total" class="set_con_banner_title set_con_banner_upload_tip">暂无商品，请先添加商品~</div>
+                <div v-if="!storeGoods.total" class="set_con_banner_title set_con_banner_upload_tip">暂无商品，请先相关添加商品~</div>
               </div>
               <div class="set_con_banner_add_btn">
                 <span class="set_con_banner_upload_tip">拖动产品图片可调整顺序&nbsp;&nbsp;</span>
@@ -871,8 +891,8 @@
               <div class="pane-box pane_box_title">
               </div>
               <div class="pane-box" style="border-bottom: 1px solid #663399;">
-                <ul class="pane_limit_height video_pane_limit_height" v-if="storeRes.total">
-                  <li class="video_li_pane_limit_height" v-for="list in storeRes.rows" :key="list.id">
+                <ul class="pane_limit_height video_pane_limit_height" v-if="storeResVideo.total">
+                  <li class="video_li_pane_limit_height" v-for="list in storeResVideo.rows" :key="list.id">
                     <div class="video_pane_box">
                       <video preload="metadata" muted width="100%" height="100%" style="display: block; background-color: #000;" :src="list.url" controls></video>
                     </div>
@@ -917,6 +937,43 @@
             <div class="set_con_banner_handle">
               <button class="editor_btn_button" @click="closeCropCateUrl()">取消</button>
               <button class="editor_btn_button" @click="btnCropCateUrl()">确定</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 弹框3D列表 -->
+    <div v-if="cropper3D">
+      <!-- 遮罩层 -->
+      <div class="wrapper"></div>
+      <div class="set_con_banner">
+        <div>
+          <div class="set_con_banner_box">
+            <i class="el-icon-close" @click="cropper3D=''"></i>
+            <div class="set_con_banner_title">选择3D展示</div>
+            <div class="set_con_banner_info set_con_banner_info_two">
+              <div class="set_con_banner_row">
+                <!-- 后期分页查询操作 -->
+                <div class="set_con_banner_cell_img"></div>
+                <div class="set_con_banner_cell_url"></div>
+                <div class="set_con_banner_cell_set"></div>
+              </div>
+              <div class="pane-box pane_box_title">
+              </div>
+              <div class="pane-box" style="border-bottom: 1px solid #663399;">
+                <ul class="pane_limit_height video_pane_limit_height" v-if="storeRes3D.total">
+                  <li class="video_li_pane_limit_height" v-for="list in storeRes3D.rows" :key="list.id">
+                    <div class="video_pane_box tD_item_box">
+                      <a class="video_pane_box_img_box">
+                        <img class="video_pane_box_img" style="display: block; background-color: #000;" :src="list.smallPic">
+                      </a>
+                    </div>
+                    <p class="video_pane_title">{{list.goodsName}}</p>
+                    <div><button class="editor_btn_button" @click="select3D(list)">选择</button></div>
+                  </li>
+                </ul>
+                <div v-else class="set_con_banner_title set_con_banner_upload_tip">暂无相关3D商品，请在数字管理先添加3D文件，并且绑定商品~</div>
+              </div>
             </div>
           </div>
         </div>
@@ -990,6 +1047,7 @@ export default {
       isEditPanelId: '', // 显示编辑面板=>> 组件内模板id
       isLoading: false,
       currentComponent: {}, // 当前编辑的组件
+      sellerInfo: {},
       storeSign: {},
       menuNavBar: [],
       menuCate: [],
@@ -1009,14 +1067,20 @@ export default {
       markDeleteImgId: [],
       markImgSize: { width: 1920, height: 650 },
       storeGoods: {},
-      storeRes: {},
+      storeResVideo: {},
+      storeRes3D: {},
       cropperBanner: '',
       cropperGoods: '',
       cropperImg: '',
       cropperVideo: '',
       cropperCate: '',
+      cropper3D: '',
       cropperCateTemUrl: '',
-      storeId: this.$cookies.get('st_b_user')
+      storeId: this.$cookies.get('st_b_user'),
+      searchGoodsName: '',
+      currentCate: '',
+      page: 1,
+      rows: 20
     }
   },
   components: {
@@ -1054,11 +1118,14 @@ export default {
     })
   },
   created () {
-    this.$cookies.set('st_token', this.$route.query.t)
-    this.$cookies.set('st_b_user', this.$route.query.s)
+    // this.$cookies.set('st_token', this.$route.query.t)
+    // this.$cookies.set('st_b_user', this.$route.query.s)
     // 本地测试
-    // this.$cookies.set('st_token', 'MkTail-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJmZmYiLCJleHAiOjE1OTI2Mzk0MjYsImlhdCI6MTU2MTEwMzQyNn0.N0vlks1-hYSROJYfVABMDfq8cM1uv5H_e7hIU1SBY_Ilp4bE1tHbBXjc8if25trkj8In3VI-NhWArqXw7o1cXw')
     // this.$cookies.set('st_b_user', 'fff')
+    // this.$cookies.set('st_token', 'MkTail-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJmZmYiLCJleHAiOjE1OTI2Mzk0MjYsImlhdCI6MTU2MTEwMzQyNn0.N0vlks1-hYSROJYfVABMDfq8cM1uv5H_e7hIU1SBY_Ilp4bE1tHbBXjc8if25trkj8In3VI-NhWArqXw7o1cXw')
+    // 新兴账号
+    this.$cookies.set('st_b_user', 'conghuaxinxing')
+    this.$cookies.set('st_token', 'MkTail-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjb25naHVheGlueGluZyIsImV4cCI6MTU5NDI5Mjc4MCwiaWF0IjoxNTYyNzU2NzgwfQ.qXMuqyZKRbEr0KNpu-rS63Ax6KJOHhXlbm2f3gR6x98PHf6p3Em2tCjztZXTw7mvU6yAuBds-W1sCJEvIxxGTA')
   },
   mounted () {
     // if (!this.currentPageInfo.storePageId) this.$message.error('数据请求有误！') // this.$router.go(-1)
@@ -1103,6 +1170,11 @@ export default {
     this.API.storeMenu().then(rtn => {
       this.menuCate = rtn.data
     })
+    // 商家信息
+    this.API.getSeller({ name: 'conghuaxinxing' }).then(res => {
+      console.log('seller', res)
+      // this.sellerInfo = res.data.seller
+    })
 
     document.addEventListener('click', this.handlePackUp)
 
@@ -1129,6 +1201,12 @@ export default {
       this.markDeleteImgId = []
       this.markList = []
       this.markImgSize = { width: 1920, height: 650 }
+    },
+    initCropGoods () {
+      this.page = 1
+      this.rows = 20
+      this.pickNum = 8
+      this.cropperGoods = ''
     },
     handleClick (val) {
     },
@@ -1357,7 +1435,7 @@ export default {
     },
     // 商品列表
     goodsData () {
-      this.API.getGoodsList({ goodsName: '', page: 1, rows: 1000, strIds: '' }).then(res => {
+      this.API.getGoodsList({ goodsName: this.searchGoodsName, page: this.page, rows: this.rows, productTypeId: this.currentCate }).then(res => {
         this.storeGoods = res.data
         if (this.cropperBanner) this.pickList = []
         else this.pickList = JSON.parse(JSON.stringify(this.currentComponent.dataList))
@@ -1382,7 +1460,7 @@ export default {
     // 关闭选择产品
     closeCropGoods () {
       this.pickList = []
-      this.cropperGoods = ''
+      this.initCropGoods()
     },
     // 确定选择产品
     btnCropGoods () {
@@ -1402,7 +1480,7 @@ export default {
       if (this.cropperBanner && this.cropperGoods) {
         this.markList[this.markIndex].link = this.WEBSITE + '/#/detail?goodsId=' + pickIdList[0]
       }
-      this.cropperGoods = ''
+      this.initCropGoods()
     },
     // 选择商品变化
     goodsChange (event) {
@@ -1592,8 +1670,7 @@ export default {
     // 获取视频列表
     videoBox () {
       this.API.getVideoList({ page: 1, rows: 1000, title: '' }).then(res => {
-        console.log(res)
-        this.storeRes = res.data
+        this.storeResVideo = res.data
       })
     },
     // 选中视频
@@ -1609,7 +1686,7 @@ export default {
     },
     // 选择类别链接
     cropperCateUrl (cateId) {
-      this.cropperCateTemUrl = this.WEBSITE + '/#/shops/category?homeShops=' + this.$cookies.get('st_b_user') + '&cateId=' + cateId
+      this.cropperCateTemUrl = this.WEBSITE + '/#/shops/category?homeShops=' + this.storeId + '&cateId=' + cateId
     },
     // banner图片类别取消
     closeCropCateUrl () {
@@ -1623,11 +1700,22 @@ export default {
       this.cropperCate = ''
       this.markIndex = null
     },
+    // 获取3D 列表
     cropperBanner3D (index) {
-      this.markList[index].link = this.WEBSITE + '/#/3D/3DShow?homeShops=' + this.$cookies.get('st_b_user')
+      this.cropper3D = this.isEditPanelId
+      this.markIndex = index
+      this.API.get3DList({ page: 1, rows: 10000, goodsName: '' }).then(res => {
+        this.storeRes3D = res.data
+      })
+    },
+    // 选择3D 展示
+    select3D (item) {
+      this.markList[this.markIndex].link = this.WEBSITE + '/#/3D/3DShow?homeShops=' + this.storeId + '&id=' + item.threeId + '&logoPic=' + this.sellerInfo.logoPic + '&InfoName=' + this.sellerInfo.name + '&goodsId=' + item.id + '&linkmanQq=' + this.sellerInfo.linkmanQq
+      this.markIndex = null
+      this.cropper3D = ''
     },
     cropperBannerLive (index) {
-      this.markList[index].link = this.WEBSITE + '/#/live/factory?homeShops=' + this.$cookies.get('st_b_user')
+      this.markList[index].link = this.WEBSITE + '/#/live/factory?homeShops=' + this.storeId
     },
     // 发布上线店铺
     release () {
@@ -1694,6 +1782,10 @@ export default {
           break
         }
       }
+    },
+    currentCate (val) {
+      this.page = 1
+      this.goodsData()
     }
   }
 }
@@ -2035,6 +2127,59 @@ input:disabled {
 .set_con_banner_info_two {
   overflow-y: initial;
 }
+.set_con_banner_info_two_filter {
+  display: flex;
+  width: 360px;
+}
+.set_con_banner_info_two_other {
+  width: 240px;
+}
+.set_con_banner_info_two_sort {
+  display: flex;
+  justify-content: flex-end;
+  width: 260px;
+}
+.set_con_banner_info_two_select {
+  width: 120px;
+  height: 28px;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-right: 20px;
+}
+/* 弹框列表搜索框 */
+  .set_box_store_search {
+    width: 220px;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    input {
+      display: block;
+      width: 168px;
+      height: 28px;
+      border-radius: 4px;
+      text-decoration: none;
+      border: none;
+      border: 1px solid #aaa;
+      -webkit-appearance: none;
+      &:hover {
+        outline: none;
+      }
+      &:focus {
+        outline: none;
+      }
+    }
+    input[type="search"]::-webkit-search-cancel-button {
+      display: none;
+    }
+    .set_box_search_btn {
+      padding-left: 10px;
+      font-size: 20px;
+      line-height: 28px;
+      color: #333;
+      cursor: pointer;
+    }
+  }
 @mixin border($height,$width,$borderColor,$border-radio:0){
   width: $width;
   height:$height;
@@ -2148,6 +2293,19 @@ input:disabled {
       max-height: 150px;
       max-width: 200px;
     }
+    .tD_item_box {
+      height: 150px;
+      width: 200px;
+      .video_pane_box_img_box {
+        width: 100%;
+        height: 100%;
+        .video_pane_box_img {
+          max-width: 100%;
+          max-height: 100%;
+          margin: 0 auto;
+        }
+      }
+    }
     .video_pane_title {
       width: 150px;
       overflow: hidden;
@@ -2163,6 +2321,8 @@ input:disabled {
     display: flex;
     .draggable {
       position: absolute;
+      width: 631px;
+      overflow-x: auto;
       top: 0;
       left: 0;
       display: flex;
@@ -2172,7 +2332,7 @@ input:disabled {
       @include border(66px,66px,#D8D8D8);
       background:rgba(247,247,247,1);
       border:1px dotted rgba(216,216,216,1);
-      margin:7px 12px 20px 2px;
+      margin:6px 10px 8px 2px;
       font-size:18px;
       font-weight:500;
       font-style:italic;
@@ -2180,8 +2340,8 @@ input:disabled {
       cursor: initial;
       position: relative;
       img{
-        max-height: 66px;
-        max-width: 66px;
+        max-height: 64px;
+        max-width: 64px;
       }
       i{
         font-size: 16px;
@@ -3058,6 +3218,10 @@ input:disabled {
     color: #000;
     font-size: 14px;
     border-radius: 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: keep-all;
+    max-width: 200px;
   }
   .menu-more {
     padding-left: 5px;

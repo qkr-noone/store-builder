@@ -20,6 +20,9 @@ export default {
   // 保存店招
   saveStoreSign: data => http.post('/shop/decoration/trick/save', data),
 
+  // 获取商家信息
+  getSeller: data => http.get('/shop/seller/info', data),
+
   // 店铺首页导航栏
   storeNavBar: data => http.get('/shop/decoration/navigation/getOnlineNavigationBar', data),
 
@@ -61,6 +64,9 @@ export default {
 
   // 获取商家视频列表
   getVideoList: params => http.post('/shop/data/video/search?page=' + params.page + '&rows=' + params.rows + '&title=' + params.title),
+
+  // 3D 商品全部列表
+  get3DList: data => http.get('/shop/goods/findThreeDGoodsByName', data),
 
   // 发布店铺装修
   onlineVersion: data => http.get('/shop/decoration/online/releaseDecoration', data)
