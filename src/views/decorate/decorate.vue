@@ -802,7 +802,6 @@
                   <select v-model="currentCate" placehlder="所有分类" class="set_con_banner_info_two_select">
                     <option value="">所有分类</option>
                     <option :value="cate.id" v-for="cate in menuCate" :key="cate.id">{{cate.name}}</option>
-                    <option :value="cate.id" v-for="cate in menuCate" :key="cate.id+'##'">{{cate.name}}</option>
                   </select>
                   <div class="set_box_store_search">
                     <input type="search" name="" placeholder="请输入产品名称" v-model="searchGoodsName" @keyup.enter="page=1;goodsData()">
@@ -949,14 +948,29 @@
       <div class="set_con_banner">
         <div>
           <div class="set_con_banner_box">
-            <i class="el-icon-close" @click="cropper3D=''"></i>
+            <i class="el-icon-close" @click="closeCropp3D()"></i>
             <div class="set_con_banner_title">选择3D展示</div>
             <div class="set_con_banner_info set_con_banner_info_two">
               <div class="set_con_banner_row">
                 <!-- 后期分页查询操作 -->
-                <div class="set_con_banner_cell_img"></div>
-                <div class="set_con_banner_cell_url"></div>
-                <div class="set_con_banner_cell_set"></div>
+                <div class="set_con_banner_cell_img set_con_banner_info_two_filter">
+                  <div class="set_box_store_search">
+                    <input type="search" name="" placeholder="请输入产品名称" v-model="threeD.goodsName" @keyup.enter="threeD.page=1;get3DData()">
+                    <span class="set_box_search_btn" @click="threeD.page=1;get3DData()"><i class="el-icon-search"></i></span>
+                  </div>
+                </div>
+                <div class="set_con_banner_cell_url set_con_banner_info_two_other"></div>
+                <div class="set_con_banner_cell_set set_con_banner_info_two_sort">
+                  <el-pagination
+                    v-if="storeRes3D.total"
+                    small
+                    @current-change="get3DData()"
+                    :current-page.sync="threeD.page"
+                    :page-size="threeD.rows"
+                    layout="prev, pager, next"
+                    :total="storeRes3D.total">
+                  </el-pagination>
+                </div>
               </div>
               <div class="pane-box pane_box_title">
               </div>
@@ -1080,7 +1094,12 @@ export default {
       searchGoodsName: '',
       currentCate: '',
       page: 1,
-      rows: 20
+      rows: 20,
+      threeD: {
+        goodsName: '',
+        rows: 21,
+        page: 1
+      }
     }
   },
   components: {
@@ -1172,8 +1191,7 @@ export default {
     })
     // 商家信息
     this.API.getSeller({ name: 'conghuaxinxing' }).then(res => {
-      console.log('seller', res)
-      // this.sellerInfo = res.data.seller
+      this.sellerInfo = res.data.seller
     })
 
     document.addEventListener('click', this.handlePackUp)
@@ -1201,12 +1219,6 @@ export default {
       this.markDeleteImgId = []
       this.markList = []
       this.markImgSize = { width: 1920, height: 650 }
-    },
-    initCropGoods () {
-      this.page = 1
-      this.rows = 20
-      this.pickNum = 8
-      this.cropperGoods = ''
     },
     handleClick (val) {
     },
@@ -1462,6 +1474,14 @@ export default {
       this.pickList = []
       this.initCropGoods()
     },
+    // 初始化
+    initCropGoods () {
+      this.page = 1
+      this.rows = 20
+      this.searchGoodsName = ''
+      this.pickNum = 8
+      this.cropperGoods = ''
+    },
     // 确定选择产品
     btnCropGoods () {
       if (!this.pickList.length) {
@@ -1700,19 +1720,28 @@ export default {
       this.cropperCate = ''
       this.markIndex = null
     },
-    // 获取3D 列表
+    // 显示3D 列表弹框
     cropperBanner3D (index) {
       this.cropper3D = this.isEditPanelId
       this.markIndex = index
-      this.API.get3DList({ page: 1, rows: 10000, goodsName: '' }).then(res => {
+      this.get3DData()
+    },
+    // 获取3D 商品列表
+    get3DData () {
+      this.API.get3DList({ page: this.threeD.page, rows: this.threeD.rows, goodsName: this.threeD.goodsName }).then(res => {
         this.storeRes3D = res.data
       })
+    },
+    // 关闭3D 列表弹框
+    closeCropp3D () {
+      this.threeD = { goodsName: '', rows: 21, page: 1 }
+      this.markIndex = null
+      this.cropper3D = ''
     },
     // 选择3D 展示
     select3D (item) {
       this.markList[this.markIndex].link = this.WEBSITE + '/#/3D/3DShow?homeShops=' + this.storeId + '&id=' + item.threeId + '&logoPic=' + this.sellerInfo.logoPic + '&InfoName=' + this.sellerInfo.name + '&goodsId=' + item.id + '&linkmanQq=' + this.sellerInfo.linkmanQq
-      this.markIndex = null
-      this.cropper3D = ''
+      this.closeCropp3D()
     },
     cropperBannerLive (index) {
       this.markList[index].link = this.WEBSITE + '/#/live/factory?homeShops=' + this.storeId
