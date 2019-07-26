@@ -15,6 +15,14 @@
           <!-- <del class="product_price">{{item.price+5}}元</del> -->
         </div>
       </div>
+      <router-link
+        :to="{path: '/3D/3Dshow',query:{ id: item.threeId,homeShops: item.sellerId,goodsId: item.id}}"
+        v-if="item.threeId"
+        target="_blank"
+        class="t3D_play"
+        title="商品支持3D展示">
+        <img src="static/img/detail_play_3D.png">
+      </router-link>
     </div>
     <div class="shadow_line"></div>
   </div>
@@ -47,6 +55,7 @@ export default {
     border-right: 1px solid #dbe3ef;
     padding: 18px 15px;
     text-align: center;
+    position: relative;
     overflow: hidden;
     &:nth-child(n) {
       border-bottom: 1px solid #dbe3ef;
@@ -109,6 +118,28 @@ export default {
           text-overflow: ellipsis;
           text-align: center;
         }
+      }
+    }
+    .t3D_play {
+      position: absolute;
+      bottom: 8px;
+      z-index: 100;
+      font-size: 36px;
+      color: #404040;
+      border-radius: 50%;
+      line-height: 35px;
+      width: 45px;
+      height: 45px;
+      left: initial;
+      right: 6px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      &:hover {
+        border: 1px solid rgba(64, 64, 64, 0.33);
+      }
+      &>img {
+        max-width: 100%;
+        max-height: 100%;
       }
     }
   }

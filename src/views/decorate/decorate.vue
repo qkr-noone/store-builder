@@ -1740,7 +1740,7 @@ export default {
     },
     // 选择3D 展示
     select3D (item) {
-      this.markList[this.markIndex].link = this.WEBSITE + '/#/3D/3DShow?homeShops=' + this.storeId + '&id=' + item.threeId + '&logoPic=' + this.sellerInfo.logoPic + '&InfoName=' + this.sellerInfo.name + '&goodsId=' + item.id + '&linkmanQq=' + this.sellerInfo.linkmanQq
+      this.markList[this.markIndex].link = this.WEBSITE + '/#/3D/3DShow?homeShops=' + this.storeId + '&id=' + item.threeId + '&goodsId=' + item.id
       this.closeCropp3D()
     },
     cropperBannerLive (index) {

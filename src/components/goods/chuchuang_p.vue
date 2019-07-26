@@ -14,10 +14,18 @@
           </router-link>
           <div class="product_info">
             <div class="product_title">
-              <a class="product_word"><span>{{item.goodsName}}</span></a>
+              <router-link :to="{path: '/detail' , query: {goodsId: item.id}}" class="product_word"><span>{{item.goodsName}}</span></router-link>
             </div>
           </div>
         </div>
+        <router-link
+          :to="{path: '/3D/3Dshow',query:{ id: item.threeId,homeShops: item.sellerId,goodsId: item.id}}"
+          v-if="item.threeId"
+          target="_blank"
+          class="t3D_play"
+          title="商品支持3D展示">
+          <img src="static/img/detail_play_3D.png">
+        </router-link>
       </div>
     </div>
   </div>
@@ -78,6 +86,7 @@ export default {
   .product_item {
     width: 25%;
     border-right: 1px solid #dbe3ef;
+    position: relative;
     padding: 18px 15px;
     text-align: center;
     overflow: hidden;
@@ -145,6 +154,28 @@ export default {
           text-overflow: ellipsis;
           text-align: center;
         }
+      }
+    }
+    .t3D_play {
+      position: absolute;
+      bottom: 8px;
+      z-index: 100;
+      font-size: 36px;
+      color: #404040;
+      border-radius: 50%;
+      line-height: 35px;
+      width: 45px;
+      height: 45px;
+      left: initial;
+      right: 6px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      &:hover {
+        border: 1px solid rgba(64, 64, 64, 0.33);
+      }
+      &>img {
+        max-width: 100%;
+        max-height: 100%;
       }
     }
   }
