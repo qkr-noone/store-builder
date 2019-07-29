@@ -19,7 +19,7 @@
           </div>
         </div>
         <router-link
-          :to="{path: '/3D/3Dshow',query:{ id: item.threeId,homeShops: item.sellerId,goodsId: item.id}}"
+          :to="{path: '/3D/3Dshow',query:{ id: item.threeId,homeShops: storeId,goodsId: item.id}}"
           v-if="item.threeId"
           target="_blank"
           class="t3D_play"
@@ -36,6 +36,9 @@ export default {
   props: {
     list: {
       type: Array
+    },
+    storeId: {
+      type: String
     }
   },
   data () {

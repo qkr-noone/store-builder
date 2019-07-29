@@ -457,7 +457,13 @@
                             </div>
                           </div>
                           <!-- 窄栏项模板>>组件 -->
-                          <component :is="item.template" :list="item.dataList" :dataUrl="item.data" :menuCate="menuCate" :storeId="storeId"></component>
+                          <component
+                            :is="item.template"
+                            :list="item.dataList"
+                            :dataUrl="item.data"
+                            :menuCate="menuCate"
+                            :storeId="storeId">
+                          </component>
                         </div>
                         <!-- 窄栏拖放框 -->
                         <div class="width_20" v-show="layoutType.narrow==='1'">
@@ -490,7 +496,12 @@
                             </div>
                           </div>
                           <!-- 宽栏项模板>>组件 -->
-                          <component :is="item.template" :list="item.dataList" :dataUrl="item.data"></component>
+                          <component
+                            :is="item.template"
+                            :list="item.dataList"
+                            :dataUrl="item.data"
+                            :storeId="storeId">
+                          </component>
                         </div>
                         <!-- 宽栏拖放框 -->
                         <div class="width_80" v-show="layoutType.wide==='1'">
@@ -505,7 +516,13 @@
                         <!-- 通栏数据遍历 -->
                         <div class="pre_module_con" v-for="item in list.passModuleDataList" :key="item.id" :data-template="item.templateName">
                           <!-- 通栏项模板=>>组件 -->
-                          <component :is="item.template" :list="item.dataList" :dataUrl="item.data" :videoCover="item.config"></component>
+                          <component
+                            :is="item.template"
+                            :list="item.dataList"
+                            :dataUrl="item.data"
+                            :videoCover="item.config"
+                            :storeId="storeId">
+                          </component>
                         </div>
                       </div>
                     </div>
@@ -804,8 +821,8 @@
                     <option :value="cate.id" v-for="cate in menuCate" :key="cate.id">{{cate.name}}</option>
                   </select>
                   <div class="set_box_store_search">
-                    <input type="search" name="" placeholder="请输入产品名称" v-model="searchGoodsName" @keyup.enter="page=1;goodsData()">
-                    <span class="set_box_search_btn" @click="page=1;goodsData()"><i class="el-icon-search"></i></span>
+                    <input type="search" name="" placeholder="请输入产品名称" v-model="searchGoodsName" @keyup.enter="page=1;goodsResetData()">
+                    <span class="set_box_search_btn" @click="page=1;goodsResetData()"><i class="el-icon-search"></i></span>
                   </div>
                 </div>
                 <div class="set_con_banner_cell_url set_con_banner_info_two_other"></div>
@@ -813,7 +830,7 @@
                   <el-pagination
                     v-if="storeGoods.total"
                     small
-                    @current-change="goodsData()"
+                    @current-change="goodsResetData()"
                     :current-page.sync="page"
                     :page-size="rows"
                     layout="prev, pager, next"
@@ -833,11 +850,21 @@
                 </ul>
               </div>
               <div class="pane-box" style="border-bottom: 1px solid #663399;">
-                <ul class="pane_limit_height">
+                <ul class="pane_limit_height pane_limit_goods">
                   <li v-for="list in storeGoods.rows" :key="list.id">
                     <span><input type="checkbox" :value="list" v-model="pickList" @change="goodsChange($event)"/></span>
-                    <span><img :src="list.smallPic"></span>
-                    <span>{{list.goodsName}}</span>
+                    <span class="pane_good_img">
+                      <img :src="list.smallPic" @click="goPage(WEBSITE,'/detail',{goodsId: list.id})">
+                      <a
+                        @click="goPage(WEBSITE,'/3D/3Dshow',{ id: list.threeId,homeShops:storeId,goodsId: list.id})"
+                        v-if="list.threeId"
+                        target="_blank"
+                        class="t3D_play"
+                        title="商品支持3D展示">
+                        <img src="static/img/detail_play_3D.png">
+                      </a>
+                    </span>
+                    <span @click="goPage(WEBSITE,'/detail',{goodsId: list.id})">{{list.goodsName}}</span>
                     <span>
                       <span>{{list.priceShow}}元</span>
                     </span>
@@ -1137,14 +1164,14 @@ export default {
     })
   },
   created () {
-    this.$cookies.set('st_token', this.$route.query.t)
-    this.$cookies.set('st_b_user', this.$route.query.s)
+    // this.$cookies.set('st_token', this.$route.query.t)
+    // this.$cookies.set('st_b_user', this.$route.query.s)
     // 本地测试
     // this.$cookies.set('st_b_user', 'fff')
     // this.$cookies.set('st_token', 'MkTail-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJmZmYiLCJleHAiOjE1OTI2Mzk0MjYsImlhdCI6MTU2MTEwMzQyNn0.N0vlks1-hYSROJYfVABMDfq8cM1uv5H_e7hIU1SBY_Ilp4bE1tHbBXjc8if25trkj8In3VI-NhWArqXw7o1cXw')
     // 新兴账号
-    // this.$cookies.set('st_b_user', 'conghuaxinxing')
-    // this.$cookies.set('st_token', 'MkTail-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjb25naHVheGlueGluZyIsImV4cCI6MTU5NDI5Mjc4MCwiaWF0IjoxNTYyNzU2NzgwfQ.qXMuqyZKRbEr0KNpu-rS63Ax6KJOHhXlbm2f3gR6x98PHf6p3Em2tCjztZXTw7mvU6yAuBds-W1sCJEvIxxGTA')
+    this.$cookies.set('st_b_user', 'conghuaxinxing')
+    this.$cookies.set('st_token', 'MkTail-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjb25naHVheGlueGluZyIsImV4cCI6MTU5NDI5Mjc4MCwiaWF0IjoxNTYyNzU2NzgwfQ.qXMuqyZKRbEr0KNpu-rS63Ax6KJOHhXlbm2f3gR6x98PHf6p3Em2tCjztZXTw7mvU6yAuBds-W1sCJEvIxxGTA')
   },
   mounted () {
     // if (!this.currentPageInfo.storePageId) this.$message.error('数据请求有误！') // this.$router.go(-1)
@@ -1451,6 +1478,11 @@ export default {
         this.storeGoods = res.data
         if (this.cropperBanner) this.pickList = []
         else this.pickList = JSON.parse(JSON.stringify(this.currentComponent.dataList))
+      })
+    },
+    goodsResetData () {
+      this.API.getGoodsList({ goodsName: this.searchGoodsName, page: this.page, rows: this.rows, productTypeId: this.currentCate }).then(res => {
+        this.storeGoods = res.data
       })
     },
     // 选取数据产品
@@ -1765,6 +1797,10 @@ export default {
           }
         })
       }).catch(() => {})
+    },
+    goPage (host, path, query) {
+      let router = this.$router.resolve({ path: path, query: query })
+      window.open(host + router.href, '_blank')
     }
   },
   watch: {
@@ -1814,7 +1850,8 @@ export default {
     },
     currentCate (val) {
       this.page = 1
-      this.goodsData()
+      this.searchGoodsName = ''
+      this.goodsResetData()
     }
   }
 }
@@ -2304,6 +2341,43 @@ input:disabled {
   overflow-y: auto;
   li:hover {
     background-color: rgba(238, 238, 238, 0.68);
+  }
+  &.pane_limit_goods li > span {
+    margin-right: 25px;
+  }
+  &.pane_limit_goods li > span:last-child {
+    margin-right: 0;
+  }
+  &.pane_limit_goods li > span:nth-child(3):hover {
+    cursor: pointer;
+    text-decoration: underline;
+    color: $aside-theme-color;
+  }
+  .pane_good_img {
+    cursor: pointer;
+    position: relative;
+    .t3D_play {
+      position: absolute;
+      top: 1px;
+      z-index: 100;
+      font-size: 36px;
+      color: #404040;
+      border-radius: 50%;
+      line-height: 20px;
+      width: 25px;
+      height: 25px;
+      left: initial;
+      right: 1px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      &:hover {
+        border: 1px solid rgba(64, 64, 64, 0.33);
+      }
+      &>img {
+        max-width: 100%;
+        max-height: 100%;
+      }
+    }
   }
 }
 .video_pane_limit_height {
