@@ -566,7 +566,7 @@
                 </div> -->
                 <div class="rec_goods_box hidden_border" v-if="currentComponent.isGoods">
                   <button class="editor_btn_button set_button select_goods" @click="cropperGoods=isEditPanelId; goodsData()">选择商品
-                  {{!Object.keys(currentComponent).length || currentComponent.dataList.length || 0}}/8</button>
+                  {{!Object.keys(currentComponent).length || currentComponent.dataList.length || 0}}/16</button>
                 </div>
                 <!-- 隐藏下边距  -->
                 <!-- <div class="rec_goods_box hidden_border">
@@ -1099,7 +1099,7 @@ export default {
         storePageId: this.$route.query.storePageId
       },
       // 弹框产品列表选择的数量
-      pickNum: 8,
+      pickNum: 16,
       pickList: [],
       // 弹框图片列表选择的数量
       markNum: 5,
@@ -1511,7 +1511,7 @@ export default {
       this.page = 1
       this.rows = 20
       this.searchGoodsName = ''
-      this.pickNum = 8
+      this.pickNum = 16
       this.cropperGoods = ''
     },
     // 确定选择产品
@@ -2419,17 +2419,21 @@ input:disabled {
   }
 }
 .set_select_order {
+  display: block;
+  width: 700px;
+  overflow-x: auto;
+  overflow-y: hidden;
   ul{
     position: relative;
-    display: flex;
+    width: 100%;
+    display: inline-block;
+    white-space: nowrap;
     .draggable {
       position: absolute;
-      width: 631px;
       overflow-x: auto;
       top: 0;
       left: 0;
       display: flex;
-      list-style: none;
     }
     li{
       @include border(66px,66px,#D8D8D8);
@@ -2442,6 +2446,7 @@ input:disabled {
       color:rgba(212,212,212,1);
       cursor: initial;
       position: relative;
+      display: inline-block;
       img{
         max-height: 64px;
         max-width: 64px;
