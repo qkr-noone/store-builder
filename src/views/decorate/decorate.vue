@@ -982,7 +982,6 @@
         </div>
       </div>
     </div>
-    threeD
   </div>
 </template>
 <script>
