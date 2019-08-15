@@ -9,7 +9,12 @@ router = new Router({
     {
       path: '/decorate',
       name: 'decorate',
-      component: resolve => require(['@/views/decorate/decorate'], resolve)
+      component: resolve => require(['@/views/decorate/decorate'], resolve),
+      children: [{
+        path: 'mobile',
+        name: 'mobile',
+        component: resolve => require(['@/views/decorate/mobile'], resolve)
+      }]
     },
     {
       path: '/',
@@ -30,6 +35,11 @@ router = new Router({
       path: '/page',
       name: 'page',
       component: resolve => require(['@/views/home/page'], resolve)
+    },
+    {
+      path: '/test',
+      name: 'test',
+      component: resolve => require(['@/views/test/index'], resolve)
     }
   ]
 })

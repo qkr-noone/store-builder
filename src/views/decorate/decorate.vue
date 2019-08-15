@@ -1,6 +1,8 @@
 <template>
   <div id="decorate" name="data-reactroot">
     <div class="container">
+      <router-link v-if="!isMobile" :to="{path:'/decorate/mobile'}" class="mobile_switch">装修手机端</router-link>
+      <router-link v-else :to="{path:'/decorate'}" class="mobile_switch">装修PC端</router-link>
       <!-- <storeHeader></storeHeader> -->
       <section class="content">
         <!-- <aside>
@@ -359,7 +361,7 @@
             </div>
           </section>
         </aside> -->
-        <section class="manager_right">
+        <section class="manager_right" v-show="!isMobile">
           <div class="previewer_wrap">
             <div :style="'background-color:'+ themeColor"></div>
             <div class="previewer_limit">
@@ -534,6 +536,14 @@
             </div>
           </div>
         </section>
+        <transition attr="手机端装修" v-if="isMobile">
+          <div class="manager_mobile">
+            <router-view
+              @setComponent="currentComponent=JSON.parse(JSON.stringify($event))"
+              :menuCate="menuCate">
+            </router-view>
+          </div>
+        </transition>
       </section>
       <section class="handle_component_edit" v-show="isEditPanelId">
         <section class="edit_panel" :class="{'transform': isEditPanelId }">
@@ -630,7 +640,10 @@
             </div>
             <div class="editor_panel_con">
               <div>
-                <div class="rec_goods_box hidden_border">
+                <div class="rec_goods_box hidden_border" v-if="isMobile">
+                  <p class="set_desc">背景图片建议设置为750 * 375, 仅支持 jpg/png/jpeg 格式</p>
+                </div>
+                <div class="rec_goods_box hidden_border" v-else>
                   <p class="set_desc">店招背景高度 210px, 导航栏高度 40px, 店招背景图片高度可以设置为250px, 可覆盖导航栏
                   <br>背景图片建议设置为1920 * 250, 仅支持 jpg/png/jpeg 格式</p>
                 </div>
@@ -659,7 +672,7 @@
           </div>
         </section>
       </section>
-      <footer class="footer_pre">
+      <footer class="footer_pre" v-show="!isMobile">
         <div class="footer_pre_box">
           <sub class="footer_pre_tip">提示：未发布不会替换线上店铺，当前装修的店铺自动保存</sub>
           <button class="editor_btn_button" @click="release()" title="上线当前装修店铺">发布版本</button>
@@ -793,7 +806,8 @@
                   :fixedNumber="[markImgSize.width, markImgSize.height]"
                   :centerBox="true"
                   :full="true"
-                  :infoTrue="true">
+                  :infoTrue="true"
+                  :info="false">
                 </VueCropper>
               </div>
               <label for="uploadID" class="set_con_cropper_reset"><i class="el-icon-plus"></i><span>重新选择</span></label>
@@ -968,58 +982,7 @@
         </div>
       </div>
     </div>
-    <!-- 弹框3D列表 -->
-    <div v-if="cropper3D">
-      <!-- 遮罩层 -->
-      <div class="wrapper"></div>
-      <div class="set_con_banner">
-        <div>
-          <div class="set_con_banner_box">
-            <i class="el-icon-close" @click="closeCropp3D()"></i>
-            <div class="set_con_banner_title">选择3D展示</div>
-            <div class="set_con_banner_info set_con_banner_info_two">
-              <div class="set_con_banner_row">
-                <!-- 后期分页查询操作 -->
-                <div class="set_con_banner_cell_img set_con_banner_info_two_filter">
-                  <div class="set_box_store_search">
-                    <input type="search" name="" placeholder="请输入产品名称" v-model="threeD.goodsName" @keyup.enter="threeD.page=1;get3DData()">
-                    <span class="set_box_search_btn" @click="threeD.page=1;get3DData()"><i class="el-icon-search"></i></span>
-                  </div>
-                </div>
-                <div class="set_con_banner_cell_url set_con_banner_info_two_other"></div>
-                <div class="set_con_banner_cell_set set_con_banner_info_two_sort">
-                  <el-pagination
-                    v-if="storeRes3D.total"
-                    small
-                    @current-change="get3DData()"
-                    :current-page.sync="threeD.page"
-                    :page-size="threeD.rows"
-                    layout="prev, pager, next"
-                    :total="storeRes3D.total">
-                  </el-pagination>
-                </div>
-              </div>
-              <div class="pane-box pane_box_title">
-              </div>
-              <div class="pane-box" style="border-bottom: 1px solid #663399;">
-                <ul class="pane_limit_height video_pane_limit_height" v-if="storeRes3D.total">
-                  <li class="video_li_pane_limit_height" v-for="list in storeRes3D.rows" :key="list.id">
-                    <div class="video_pane_box tD_item_box">
-                      <a class="video_pane_box_img_box">
-                        <img class="video_pane_box_img" style="display: block; background-color: #000;" :src="list.smallPic">
-                      </a>
-                    </div>
-                    <p class="video_pane_title">{{list.goodsName}}</p>
-                    <div><button class="editor_btn_button" @click="select3D(list)">选择</button></div>
-                  </li>
-                </ul>
-                <div v-else class="set_con_banner_title set_con_banner_upload_tip">暂无相关3D商品，请在数字管理先添加3D文件，并且绑定商品~</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    threeD
   </div>
 </template>
 <script>
@@ -1126,7 +1089,8 @@ export default {
         goodsName: '',
         rows: 21,
         page: 1
-      }
+      },
+      isMobile: false
     }
   },
   components: {
@@ -1175,6 +1139,10 @@ export default {
   },
   mounted () {
     // if (!this.currentPageInfo.storePageId) this.$message.error('数据请求有误！') // this.$router.go(-1)
+
+    // 装修手机端 判断当前路由
+    let curRouter = (this.$route.path).split('/')[2]
+    if (curRouter === 'mobile') this.isMobile = true
 
     // 请求得到数据拖拽列表信息
     this.API.homeNav().then(res => {
@@ -1513,6 +1481,7 @@ export default {
       this.searchGoodsName = ''
       this.pickNum = 16
       this.cropperGoods = ''
+      this.currentCate = ''
     },
     // 确定选择产品
     btnCropGoods () {
@@ -1648,7 +1617,6 @@ export default {
     },
     // 确定上传banner
     btnCropperBanner () {
-      if (this.markList) {}
       for (let val of this.markList) {
         if (!val.url) {
           this.$message.error({
@@ -1801,6 +1769,9 @@ export default {
     goPage (host, path, query) {
       let router = this.$router.resolve({ path: path, query: query })
       window.open(host + router.href, '_blank')
+    },
+    tabClient () {
+      this.isMobile = false
     }
   },
   watch: {
@@ -1852,6 +1823,11 @@ export default {
       this.page = 1
       this.searchGoodsName = ''
       this.goodsResetData()
+    },
+    '$route' () {
+      let curRouter = (this.$route.path).split('/')[2]
+      if (curRouter === 'mobile') this.isMobile = true
+      else this.isMobile = false
     }
   }
 }
@@ -2513,6 +2489,22 @@ input:disabled {
   height: 100%;
   position: fixed;
 
+  .mobile_switch{
+    position: absolute;
+    top: 0;
+    left: 50px;
+    color: $aside-theme-color;
+    font-size: 16px;
+    z-index: 1000;
+    background-color: #fff;
+    padding: 8px 5px;
+    writing-mode:vertical-lr;
+    border-bottom-right-radius: 18px;
+    border-bottom-left-radius: 18px;
+    border: 1px solid rgba(16, 16, 16, 0.2);;
+    border-top: none;
+  }
+
   .content {
     overflow: hidden;
     display: flex;
@@ -2778,6 +2770,11 @@ input:disabled {
           font: 14px/1.5 "Microsoft Yahei", 'Hiragino Sans GB', arial, '\5B8B\4F53', sans-serif;
         }
       }
+    }
+
+    .manager_mobile {
+      overflow-y: auto;
+      width: 100%;
     }
   }
 
