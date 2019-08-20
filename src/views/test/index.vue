@@ -1,5 +1,5 @@
 <template>
-  <div data-attr="手机端" class="container">
+  <div data-attr="手机端" class="container" ref="mobileTag">
     <div class="iframe_box">
       <div>
         <div data-attr="店招" class="pagetag mobile_header">
@@ -8,24 +8,23 @@
           </div>
           <div class="mobile_header_title_box">
             <div class="mobile_header_title">
-              <img src="static/img/component/1.png">
+              <img :src="sellerInfo.logoPic">
               <div class="mobile_header_name_title">
-                <p>新兴脚轮源头工厂</p>
+                <p>{{sellerInfo.name}}</p>
                 <div class="mobile_header_series_title">
                   <a class="star" v-for="i in 3" :key="i">
                     <img src="static/img/shops/star.png">
-                    <span class="mobile_header_A_title">A</span>
                   </a>
                 </div>
               </div>
             </div>
             <div class="mobile_header_star">
               <div class="mobile_header_fans_star">
-                <a href="">
-                  <span>101</span>
-                  <p>{{''||'千'||'万'}}粉丝</p>
+                <a>
+                  <span v-if="sellerInfo.sellerFans">{{filterNum(sellerInfo.sellerFans)}}</span>
+                  <p>{{((sellerInfo.sellerFans+'').length>8&&'亿')||((sellerInfo.sellerFans+'').length>4&&'万')||((sellerInfo.sellerFans+'').length>3&&'千')||''}}粉丝</p>
                 </a>
-                <a href="">
+                <a>
                   <img src="static/img/shops/star_black.png">
                   <p>已收藏</p>
                 </a>
@@ -35,29 +34,31 @@
         </div>
         <div data-attr="头部导航" class="pagetag mobile_nav">
           <div class="mobile_nav_item active">
-            <a href=""><img class="linear_img" src="static/img/shops/nav_home.png"></a>
+            <a><img class="linear_img" src="static/img/shops/nav_home.png"></a>
             <p>首页</p>
           </div>
           <div class="mobile_nav_item">
-            <a href=""><img class="linear_img" src="static/img/shops/nav_all.png"></a>
+            <a><img class="linear_img" src="static/img/shops/nav_all.png"></a>
             <p>全部商品</p>
           </div>
           <div class="mobile_nav_item">
-            <a href=""><img class="linear_img" src="static/img/shops/nav_video.png"></a>
+            <a><img class="linear_img" src="static/img/shops/nav_video.png"></a>
             <p>工厂视频</p>
           </div>
           <div class="mobile_nav_item">
-            <a href=""><img class="linear_img" src="static/img/shops/nav_bag.png"></a>
+            <a><img class="linear_img" src="static/img/shops/nav_bag.png"></a>
             <p>活动</p>
           </div>
         </div>
         <div data-attr="大图轮播" class="pagetag mobile_switch">
           <div class="mobile_switch_box">
-            <div class="mobile_switch_item">
-              <a href="">
-                <img class="linear_img" src="static/img/tem_bg.jpg">
-              </a>
-            </div>
+            <el-carousel :interval="4000" arrow="never" indicator-position="" height="100%">
+              <el-carousel-item v-for="item in pageSwitch.dataList" :key="item.id" class="mobile_switch_item">
+                <a :href="item.link || null">
+                  <img :src="item.url" class="linear_img">
+                </a>
+              </el-carousel-item>
+            </el-carousel>
           </div>
         </div>
         <div data-attr="橱窗推荐" class="pagetag mobile_recom">
@@ -65,9 +66,16 @@
             <p>橱窗推荐</p>
           </div>
           <div class="mobile_recom_con">
-            <a href="">
-              <img class="linear_img" src="static/img/tem_bg.jpg">
-            </a>
+            <el-carousel :interval="4000" arrow="never" indicator-position="none" height="100%">
+              <el-carousel-item v-for="item in pageWindow.dataList" :key="item.id">
+                <a :href="item.link || null">
+                  <img :src="item.url" class="linear_img">
+                </a>
+              </el-carousel-item>
+            </el-carousel>
+            <!-- <a :href="pageWindow.link || null">
+              <img class="linear_img" :src="pageWindow.url">
+            </a> -->
           </div>
         </div>
         <div data-attr="产品推荐" class="pagetag mobile_goods">
@@ -77,21 +85,29 @@
           <div class="mobile_goods_con">
             <div class="mobile_goods_con_box">
               <ul>
-                <li v-for="i in 7" :key="i">
-                  <a href="">
-                    <img class="linear_img" src="static/img/component/3.png">
+                <li v-for="item in pageGoods.dataList" :key="item.id">
+                  <a class="mobile_goods_con_a">
+                    <img class="linear_img" :src="item.smallPic">
+                    <a
+                      :to="{path: '/3D/3Dshow',query:{ id: item.threeId,homeShops: storeId,goodsId: item.id}}"
+                      v-if="item.threeId"
+                      target="_blank"
+                      class="t3D_play"
+                      title="商品支持3D展示">
+                      <img src="static/img/detail_play_3D.png">
+                    </a>
                   </a>
-                  <p class="title">双USB汽车充电器 车载点烟器车充 快充车充</p>
-                  <div class="tip"><span class="tip_price">￥11.11</span><span>成交123笔</span></div>
+                  <p class="title">{{item.goodsName}}</p>
+                  <div class="tip"><span class="tip_price">￥{{item.priceShow}}</span><span>成交{{item.salesCount||0}}笔</span></div>
                 </li>
               </ul>
             </div>
           </div>
         </div>
         <div data-attr="底部导航" class="pagetag mobile_footer">
-          <a href="">商品分类</a>
-          <a href="">公司介绍</a>
-          <a href="">深度验厂</a>
+          <a>商品分类</a>
+          <a>公司介绍</a>
+          <a>深度验厂</a>
         </div>
       </div>
     </div>
@@ -101,34 +117,81 @@
 export default {
   data () {
     return {
-      pageTag: [],
-      pageSign: {
-        id: '12',
-        image: 'static/img/tem_bg.jpg',
-        isSign: 1,
-        sellerId: 'conghuaxinxing'
-      },
-      pageSwitch: {
-        isBanner: 1,
-        componentId: '121',
-        id: '186'
-      }
+      storeId: this.$route.query.storeId || '',
+      sellerInfo: {},
+      pageSign: {},
+      pageSwitch: [],
+      pageWindow: {},
+      pageGoods: {}
     }
   },
   created () {
     document.documentElement.style.fontSize = document.documentElement.clientWidth / 7.50 + 'px' // 设计稿 750 放大 100倍
   },
+  watch: {
+    pageGoods (val) {
+      this.$nextTick(() => {
+        let page = document.querySelectorAll('.pagetag')
+        let pageTag = []
+        Array.from(page).map(item => {
+          pageTag.push({ height: item.offsetHeight, top: item.offsetTop })
+        })
+        window.parent.getIframeInfo(pageTag, 'pageTag')
+        window.parent.getIframeInfo(document.documentElement.offsetHeight, 'autoHeight')
+      })
+    }
+  },
   mounted () {
-    let page = document.querySelectorAll('.pagetag')
-    Array.from(page).map(item => {
-      this.pageTag.push({ height: item.offsetHeight, top: item.offsetTop })
+    this.getPageTag()
+    this.getPageSwitch()
+    this.getPageWindow()
+    this.getPageGoods()
+    // 商家信息
+    this.API.getSeller({ name: this.storeId }).then(res => {
+      this.sellerInfo = res.data.seller
     })
-    // console.log(window.parent, 10)
-    // if (window.parent) {
-    //   window.parent.getIframeInfo(this.pageTag, 'pageTag')
-    //   window.parent.getIframeInfo(this.pageSign, 'pageSign')
-    //   window.parent.getIframeInfo(this.pageSwitch, 'pageSwitch')
-    // }
+
+    window.getPageData = function (tagName) {
+      this[tagName]()
+    }.bind(this)
+  },
+  methods: {
+    getPageTag () {
+      this.API.getAppSign().then(res => {
+        this.pageSign = res.data
+        window.parent.getIframeInfo(this.pageSign, 'pageSign')
+      })
+    },
+    getPageSwitch () {
+      this.API.getAppBanner().then(res => {
+        this.pageSwitch = res.data
+        window.parent.getIframeInfo(this.pageSwitch, 'pageSwitch')
+      })
+    },
+    getPageWindow () {
+      this.API.getAppWindow().then(res => {
+        this.pageWindow = res.data
+        window.parent.getIframeInfo(this.pageWindow, 'pageWindow')
+      })
+    },
+    getPageGoods () {
+      this.API.getAppProduct().then(res => {
+        this.pageGoods = res.data
+        window.parent.getIframeInfo(this.pageGoods, 'pageGoods')
+      })
+    },
+    filterNum (data) {
+      let num = data ? data + '' : ''
+      if (num.length > 8) {
+        return num.slice(0, -8)
+      } else if (num.length > 4) {
+        return num.slice(0, -4)
+      } else if (num.length > 3) {
+        return num.slice(0, -3)
+      } else {
+        return num
+      }
+    }
   }
 }
 </script>
@@ -139,7 +202,6 @@ export default {
   }
   .iframe_box {
     width: 100%;
-    max-width: 750px;
     min-height: 100%;
     border: none;
   }
@@ -192,15 +254,6 @@ export default {
               img {
                 width: 100%;
                 height: 100%;
-              }
-              .mobile_header_A_title {
-                position: absolute;
-                left: 45%;
-                top: 40%;
-                color: #936500;
-                font-size: 0.2rem;
-                transform: translate3d(-50%, -50%, 0);
-                line-height: 1;
               }
             }
           }
@@ -272,12 +325,19 @@ export default {
     background-color: #ffffff;
     margin: 0.3rem 0;
     .mobile_switch_box {
+      width: 7.5rem;
+      height: 3.75rem;
       .mobile_switch_item {
+        width: 100%;
+        height: 100%;
         a {
-          width: 7.5rem;
-          height: 3.75rem;
+          height: 100%;
+          width: 100%;
           display: block;
         }
+      }
+      .el-carousel {
+        height: 100%;
       }
     }
   }
@@ -297,10 +357,14 @@ export default {
     }
     .mobile_recom_con {
       padding: 0.23rem 0.04rem 0.24rem 0.04rem;
+      height: 2.87rem;
       a {
         display: block;
         width: calc(100vw - 0.4rem);
         height: 2.40rem;
+      }
+      .el-carousel {
+        height: 100%;
       }
     }
   }
@@ -334,7 +398,8 @@ export default {
             &:nth-child(even) {
               margin-left: 0.04rem
             }
-            a {
+            .mobile_goods_con_a {
+              position: relative;
               width: 100%;
               height: calc(50vw - 0.04rem - 0.16rem);
               overflow: hidden;
@@ -389,6 +454,28 @@ export default {
       &+a {
         border-left: 0.02rem solid #D7D7D7;
       }
+    }
+  }
+  .t3D_play {
+    position: absolute;
+    bottom: 8px;
+    z-index: 100;
+    font-size: 36px;
+    color: #404040;
+    border-radius: 50%;
+    line-height: 35px;
+    width: 45px;
+    height: 45px;
+    left: initial;
+    right: 6px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    &:hover {
+      border: 1px solid rgba(64, 64, 64, 0.33);
+    }
+    &>img {
+      max-width: 100%;
+      max-height: 100%;
     }
   }
 </style>

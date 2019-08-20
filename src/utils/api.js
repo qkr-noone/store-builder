@@ -69,5 +69,26 @@ export default {
   get3DList: data => http.get('/shop/goods/findThreeDGoodsByName', data),
 
   // 发布店铺装修
-  onlineVersion: data => http.get('/shop/decoration/online/releaseDecoration', data)
+  onlineVersion: data => http.get('/shop/decoration/online/releaseDecoration', data),
+
+  /* --- App 装修 --- */
+
+  // 获取店招
+  getAppSign: () => http.get('/shop/decoration/app/trick/findBySellerId'),
+  // 保持店招
+  saveAppSign: data => http.post('/shop/decoration/app/trick/save', data),
+  // 获取Banner
+  getAppBanner: () => http.get('/shop/decoration/app/banner/findBySellerId'),
+  // 保存Banner
+  saveAppBanner: (data, params) => http.post('/shop/decoration/app/banner/save?deleteIds=' + params, data),
+  // 获取橱窗产品
+  getAppWindow: () => http.get('/shop/decoration/app/window/findBySellerId'),
+  // 保存橱窗产品
+  saveAppWindow: data => http.post('/shop/decoration/app/window/save', data),
+  // 获取推荐产品
+  getAppProduct: () => http.get('/shop/decoration/app/product/findBySellerId'),
+  // 保存产品产品
+  saveAppProduct: data => http.post('/shop/decoration/app/product/save', data),
+  // 发布店铺装修app端
+  appOnlineVersion: () => http.get('/shop/decoration/app/online/releaseDecoration')
 }

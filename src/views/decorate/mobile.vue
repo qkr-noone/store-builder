@@ -5,17 +5,37 @@
         <div class="phone_handle_box" v-if="isPhoneHandle" :style="'top:'+pageTag[pageIndex].top+'px; height:'+pageTag[pageIndex].height+'px;'"></div>
         <div class="phone_wrap" ref="phoneWrap"></div>
       </div>
-      <iframe ref="iframe" src="/#/test" scrolling="no" frameborder="0" @load="getIframe()"></iframe>
+      <iframe ref="iframe" :src="'/#/test?storeId='+storeId" scrolling="no" frameborder="0"></iframe>
     </div>
     <section class="handle_component_edit" v-show="isMobileEditPanel">
       <section class="edit_panel" :class="{'transform': isMobileEditPanel }">
         <div class="editor_panel_container">
           <div class="editor_panel_title">
             <span class="editor_title">信息配置</span>
-            <span class="editor_second_title">{{currentComponent.templateName || ''}}</span>
+            <!-- <span class="editor_second_title">{{currentComponent.templateName || ''}}</span> -->
           </div>
           <div class="editor_panel_con">
             <div>
+              <div v-if="currentComponent.isSign">
+                <div class="rec_goods_box hidden_border">
+                  <p class="set_desc">背景图片建议设置为750 * 375, 仅支持 jpg/png/jpeg 格式</p>
+                </div>
+                <div class="rec_goods_box hidden_border">
+                  <div>设置背景图片<sup class="set_sup">*</sup></div>
+                  <div class="set_con_banner_cell_img_upload">
+                    <input type="file" id="uploadBg" ref="uploadBg" accept="image/png, image/jpeg, image/jpg" style="position: absolute; left: -9999px;"  @change="uploadBgFile()" value="">
+                    <div v-if="currentComponent.image" class="set_con_banner_cell_img_upload_con">
+                      <img :src="currentComponent.image">
+                      <label class="set_con_banner_cell_img_upload_reUpload" for="uploadBg">
+                        <i class="el-icon-edit"></i>
+                      </label>
+                    </div>
+                    <label v-else class="set_con_banner_cell_img_upload_text" for="uploadBg">
+                      <i class="el-icon-plus"></i>
+                    </label>
+                  </div>
+                </div>
+              </div>
               <div class="rec_goods_box hidden_border" v-if="currentComponent.isGoods">
                 <button class="editor_btn_button set_button select_goods" @click="cropperGoods=isMobileEditPanel; goodsData()">选择商品 {{!Object.keys(currentComponent).length || currentComponent.dataList.length || 0}}/12</button>
               </div>
@@ -295,6 +315,10 @@
         </div>
       </div>
     </div>
+    <div class="publish_box">
+      <div class="publish_item" @click="release()">发布</div>
+      <div class="publish_item">预览</div>
+    </div>
   </div>
 </template>
 <script>
@@ -318,18 +342,7 @@ export default {
       pageSwitch: {},
       isMobileEditPanel: '',
       isLoading: false,
-      currentComponent: {
-        templateName: '',
-        isGoods: 1,
-        isBanner: 0,
-        dataList: [{
-          id: '123',
-          sort: 1,
-          url: 'https://mktail.oss-cn-shenzhen.aliyuncs.com/file/d15a2557acfd4f0da3f0fcde9a5e3039.jpeg',
-          link: 'https://www.mktail.cn/#/3D/3DShow?homeShops=conghuaxinxing&id=214&goodsId=149187842868284',
-          moduleId: '122'
-        }]
-      },
+      currentComponent: {},
       // 弹框产品列表选择的数量
       pickNum: 12,
       pickList: [],
@@ -373,15 +386,14 @@ export default {
       this.page = 1
       this.searchGoodsName = ''
       this.goodsResetData()
+    },
+    autoHeight (val) {
+      this.$nextTick(() => {
+        this.$refs.iframe.style.height = val + 'px'
+      })
     }
   },
   methods: {
-    getIframe () {
-      setTimeout(() => {
-        this.autoHeight = this.$refs.iframe.contentWindow.document.documentElement.scrollHeight
-        this.$refs.iframe.style.height = this.autoHeight + 'px'
-      }, 20)
-    },
     init () {
       this.isMobileEditPanel = ''
       this.cropperGoods = ''
@@ -402,29 +414,134 @@ export default {
             this.pageIndex = i
             if (this.pageIndex === 0) {
               this.init()
-              this.$emit('setComponent', this.pageSign)
+              this.currentComponent = JSON.parse(JSON.stringify(this.pageSign))
+              this.isMobileEditPanel = this.pageSign.id
             } else if (this.pageIndex === 2) {
               this.init()
-              this.isMobileEditPanel = this.pageSwitch.id
+              this.currentComponent = JSON.parse(JSON.stringify(this.pageSwitch))
+              this.isMobileEditPanel = this.pageSwitch
             } else if (this.pageIndex === 3) {
               this.init()
               this.markNum = 1
               this.markImgSize = { width: 710, height: 240 }
-              this.isMobileEditPanel = this.pageSwitch.id
+              this.currentComponent = JSON.parse(JSON.stringify(this.pageWindow))
+              this.isMobileEditPanel = this.pageWindow
             } else if (this.pageIndex === 4) {
               this.init()
-              this.isMobileEditPanel = this.pageSwitch.id
+              this.currentComponent = JSON.parse(JSON.stringify(this.pageGoods))
+              this.isMobileEditPanel = this.pageGoods
+            } else if (this.pageIndex === 1 || this.pageIndex === 5) {
+              this.$notify.warning({
+                message: '该模块不可操作'
+              })
             }
             break
           }
         }
       }
     },
-    getPageTag () {},
     cancle () {
-      this.isMobileEditPanel = ''
+      this.init()
     },
-    save () {},
+    save () {
+      if (this.currentComponent.isSign) {
+        this.isLoading = true
+        this.API.saveAppSign(this.currentComponent).then(res => {
+          if (res.code === 2000) this.$refs.iframe.contentWindow.getPageData('getPageTag')
+          this.currentComponent = {}
+          this.isMobileEditPanel = ''
+          this.isLoading = false
+        }).catch(() => { this.isLoading = false })
+      } else if (this.currentComponent.isBanner) {
+        if (this.pageIndex === 3) {
+          this.isLoading = true
+          this.API.saveAppWindow(this.currentComponent.dataList).then(res => {
+            if (res.code === 2000) this.$refs.iframe.contentWindow.getPageData('getPageWindow')
+            this.currentComponent = {}
+            this.isMobileEditPanel = ''
+            this.isLoading = false
+          }).catch(() => { this.isLoading = false })
+        } else {
+          this.API.saveAppBanner(this.currentComponent.dataList, this.markDeleteImgId.join(',')).then(res => {
+            if (res.code === 2000) this.$refs.iframe.contentWindow.getPageData('getPageSwitch')
+            this.currentComponent = {}
+            this.isMobileEditPanel = ''
+            this.isLoading = false
+          }).catch(() => { this.isLoading = false })
+        }
+      } else if (this.currentComponent.isGoods) {
+        if (!this.currentComponent.dataList.length) {
+          this.$notify.warning({
+            message: '当前选择商品数据为空，请填写完整'
+          })
+          return false
+        }
+        this.isLoading = true
+        this.API.saveAppProduct({
+          goodsIds: this.currentComponent.dataList.map(item => item.id).join(','),
+          sellerId: this.storeId,
+          id: this.currentComponent.decorationAppProduct.id
+        }).then(res => {
+          if (res.code === 2000) this.$refs.iframe.contentWindow.getPageData('getPageGoods')
+          this.currentComponent = {}
+          this.isMobileEditPanel = ''
+          this.isLoading = false
+        }).catch(() => { this.isLoading = false })
+      }
+    },
+    release () {
+      this.$confirm('是否发布当前手机店铺版本?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.isLoading = true
+        this.API.appOnlineVersion().then(res => {
+          if (res.code === 2000) {
+            this.$notify.success({ title: '成功', message: '发布成功' })
+          } else {
+            this.$notify.error({ title: '失败', message: res.message || '发布失败' })
+          }
+          this.isLoading = false
+        }).catch(() => { this.isLoading = false })
+      }).catch(() => {})
+    },
+    // 上传店招背景图
+    uploadBgFile () {
+      let uploadDom = document.getElementById('uploadBg')
+      let uploadFiles = this.$refs.uploadBg.files
+      let typeList = ['jpg', 'jpeg', 'png']
+      if (typeList.length > 0 && typeList.indexOf(uploadFiles[0].type.split('/')[1]) < 0) {
+        this.$notify.warning({
+          title: '提示',
+          message: '只支持jpg、jpeg、png图片格式'
+        })
+        uploadDom.value = ''
+        return
+      }
+      this.isLoading = true
+      let form = new FormData()
+      form.append('file', uploadFiles[0])
+      axios({
+        method: 'post',
+        url: process.env.BASE_API + '/shop/commonDataUpload/uploadFile',
+        data: form,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Authorization': this.$cookies.get('st_token')
+        }
+      }).then(res => {
+        if (res.data.code === 2000) {
+          this.currentComponent.image = res.data.data
+        } else {
+          this.$notify.error({
+            title: '提示',
+            message: '上传图片失败请重新上传~~'
+          })
+        }
+        this.isLoading = false
+      }).catch(() => { this.isLoading = false })
+    },
     // 设置图片的前奏
     frontBanner () {
       this.cropperBanner = this.isMobileEditPanel
@@ -434,7 +551,6 @@ export default {
     handleFilesUpload () {
       let uploadDom = document.getElementById('uploadID')
       let uploadFiles = this.$refs.uploadID.files
-      console.log(uploadFiles, 1000)
       let typeList = ['jpg', 'jpeg', 'png']
       if (typeList.length > 0 && typeList.indexOf(uploadFiles[0].type.split('/')[1]) < 0) {
         this.$notify.warning({
@@ -506,7 +622,7 @@ export default {
     },
     // 新增图片
     addCropBanner () {
-      if (this.markList.length < this.markNum) this.markList.push({ link: null, moduleId: this.currentComponent.id, sort: null, url: null })
+      if (this.markList.length < this.markNum) this.markList.push({ link: null, sellerId: this.storeId, url: null })
     },
     // banner图片上移
     upBannerImg (list, index) {
@@ -562,11 +678,11 @@ export default {
       })
     },
     // 选取数据产品
-    chooseDeleteData (url) {
-      if (this.pickList.indexOf(url) >= 0) {
-        this.$delete(this.pickList, this.pickList.indexOf(url))
+    chooseDeleteData (item) {
+      if (this.pickList.indexOf(item) >= 0) {
+        this.$delete(this.pickList, this.pickList.indexOf(item))
       } else {
-        if (this.pickList.length < this.pickNum) this.pickList.push(url)
+        if (this.pickList.length < this.pickNum) this.pickList.push(item)
       }
     },
     // 时间戳转日期
@@ -603,9 +719,11 @@ export default {
       this.pickList.forEach(item => {
         pickIdList.push(item.id)
       })
-      // 作用于 产品和 banner链接（产品）
-      Object.assign(this.currentComponent, { data: pickIdList.join(','), dataSources: 3, dataList: this.pickList })
-      // banner 选产品链接 ？
+      // 作用于 产品
+      if (!this.cropperBanner && this.cropperGoods) {
+        Object.assign(this.currentComponent, { dataList: this.pickList })
+      }
+      // banner 选产品链接
       if (this.cropperBanner && this.cropperGoods) {
         this.markList[this.markIndex].link = this.WEBSITE + '/#/detail?goodsId=' + pickIdList[0]
       }
@@ -649,9 +767,9 @@ export default {
 </script>
 <style scoped>
   .phone {
-    /*overflow-y: scroll;*/
     width: 375px;
     margin: auto;
+    margin-top: 50px;
     padding: 20px 0;
     height: 100%;
   }
@@ -685,6 +803,28 @@ export default {
     width: 100%;
     min-height: 100%;
     border: none;
+  }
+  .publish_box {
+    position: absolute;
+    top: 0;
+    right: 40px;
+    display: flex;
+    align-items: center;
+    background-color: rgba(0,0,0,.1);
+    height: 50px;
+    color: #ef7026;
+    font-size: 14px;
+  }
+  .publish_item {
+    width: 80px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+  .publish_item + .publish_item {
+    border-left: 1px solid #aba2a2;
   }
 </style>
 <style scoped lang="scss">
@@ -804,6 +944,14 @@ export default {
     &:last-child:focus { background-color: saturate($aside-theme-color, 100%); }
   }
 /* 隐藏下边距 button 按钮 */
+  .rec_goods_box {
+    margin-top: 16px;
+    margin: 10px 0;
+    margin-bottom: 20px;
+  }
+  .rec_goods_box.bottom {
+    border-bottom: 1px solid rgb(225, 225, 225);
+  }
   .rec_goods_box.hidden_border {
     padding-bottom: 0;
     .checked .radio_inner {
@@ -866,6 +1014,10 @@ export default {
     opacity: 0.2;
   }
 /* bannerBox */
+  .notToday {
+    color: #e4e7ed !important;
+    cursor: not-allowed !important;
+  }
   .set_con_banner {
     position: absolute;
     width: 900px;

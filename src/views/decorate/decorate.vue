@@ -539,7 +539,6 @@
         <transition attr="手机端装修" v-if="isMobile">
           <div class="manager_mobile">
             <router-view
-              @setComponent="currentComponent=JSON.parse(JSON.stringify($event))"
               :menuCate="menuCate">
             </router-view>
           </div>
@@ -640,10 +639,7 @@
             </div>
             <div class="editor_panel_con">
               <div>
-                <div class="rec_goods_box hidden_border" v-if="isMobile">
-                  <p class="set_desc">背景图片建议设置为750 * 375, 仅支持 jpg/png/jpeg 格式</p>
-                </div>
-                <div class="rec_goods_box hidden_border" v-else>
+                <div class="rec_goods_box hidden_border">
                   <p class="set_desc">店招背景高度 210px, 导航栏高度 40px, 店招背景图片高度可以设置为250px, 可覆盖导航栏
                   <br>背景图片建议设置为1920 * 250, 仅支持 jpg/png/jpeg 格式</p>
                 </div>
@@ -1127,14 +1123,14 @@ export default {
     })
   },
   created () {
-    this.$cookies.set('st_token', this.$route.query.t)
-    this.$cookies.set('st_b_user', this.$route.query.s)
+    // this.$cookies.set('st_token', this.$route.query.t)
+    // this.$cookies.set('st_b_user', this.$route.query.s)
     // 本地测试
     // this.$cookies.set('st_b_user', 'fff')
     // this.$cookies.set('st_token', 'MkTail-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJmZmYiLCJleHAiOjE1OTI2Mzk0MjYsImlhdCI6MTU2MTEwMzQyNn0.N0vlks1-hYSROJYfVABMDfq8cM1uv5H_e7hIU1SBY_Ilp4bE1tHbBXjc8if25trkj8In3VI-NhWArqXw7o1cXw')
     // 新兴账号
-    // this.$cookies.set('st_b_user', 'conghuaxinxing')
-    // this.$cookies.set('st_token', 'MkTail-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjb25naHVheGlueGluZyIsImV4cCI6MTU5NDI5Mjc4MCwiaWF0IjoxNTYyNzU2NzgwfQ.qXMuqyZKRbEr0KNpu-rS63Ax6KJOHhXlbm2f3gR6x98PHf6p3Em2tCjztZXTw7mvU6yAuBds-W1sCJEvIxxGTA')
+    this.$cookies.set('st_b_user', 'conghuaxinxing')
+    this.$cookies.set('st_token', 'MkTail-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjb25naHVheGlueGluZyIsImV4cCI6MTU5NDI5Mjc4MCwiaWF0IjoxNTYyNzU2NzgwfQ.qXMuqyZKRbEr0KNpu-rS63Ax6KJOHhXlbm2f3gR6x98PHf6p3Em2tCjztZXTw7mvU6yAuBds-W1sCJEvIxxGTA')
   },
   mounted () {
     // if (!this.currentPageInfo.storePageId) this.$message.error('数据请求有误！') // this.$router.go(-1)
@@ -1184,7 +1180,7 @@ export default {
       this.menuCate = rtn.data
     })
     // 商家信息
-    this.API.getSeller({ name: 'conghuaxinxing' }).then(res => {
+    this.API.getSeller({ name: this.storeId }).then(res => {
       this.sellerInfo = res.data.seller
     })
 
@@ -1494,9 +1490,11 @@ export default {
       this.pickList.forEach(item => {
         pickIdList.push(item.id)
       })
-      // 作用于 产品和 banner链接（产品）
-      Object.assign(this.currentComponent, { data: pickIdList.join(','), dataSources: 3, dataList: this.pickList })
-      // banner 选产品链接 ？
+      // 作用于 产品
+      if (!this.cropperBanner && this.cropperGoods) {
+        Object.assign(this.currentComponent, { data: pickIdList.join(','), dataSources: 3, dataList: this.pickList })
+      }
+      // banner 选产品链接
       if (this.cropperBanner && this.cropperGoods) {
         this.markList[this.markIndex].link = this.WEBSITE + '/#/detail?goodsId=' + pickIdList[0]
       }
@@ -1666,7 +1664,7 @@ export default {
           })
         }
         this.isLoading = false
-      })
+      }).catch(() => { this.isLoading = false })
     },
     // 取消店招配置
     cancleSignConfig () {
@@ -2494,7 +2492,7 @@ input:disabled {
     left: 50px;
     color: $aside-theme-color;
     font-size: 16px;
-    z-index: 1000;
+    z-index: 7;
     background-color: #fff;
     padding: 8px 5px;
     writing-mode:vertical-lr;
