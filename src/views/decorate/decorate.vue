@@ -1123,14 +1123,14 @@ export default {
     })
   },
   created () {
-    // this.$cookies.set('st_token', this.$route.query.t)
-    // this.$cookies.set('st_b_user', this.$route.query.s)
+    this.$cookies.set('st_token', this.$route.query.t)
+    this.$cookies.set('st_b_user', this.$route.query.s)
     // 本地测试
     // this.$cookies.set('st_b_user', 'fff')
     // this.$cookies.set('st_token', 'MkTail-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJmZmYiLCJleHAiOjE1OTI2Mzk0MjYsImlhdCI6MTU2MTEwMzQyNn0.N0vlks1-hYSROJYfVABMDfq8cM1uv5H_e7hIU1SBY_Ilp4bE1tHbBXjc8if25trkj8In3VI-NhWArqXw7o1cXw')
     // 新兴账号
-    this.$cookies.set('st_b_user', 'conghuaxinxing')
-    this.$cookies.set('st_token', 'MkTail-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjb25naHVheGlueGluZyIsImV4cCI6MTU5NDI5Mjc4MCwiaWF0IjoxNTYyNzU2NzgwfQ.qXMuqyZKRbEr0KNpu-rS63Ax6KJOHhXlbm2f3gR6x98PHf6p3Em2tCjztZXTw7mvU6yAuBds-W1sCJEvIxxGTA')
+    // this.$cookies.set('st_b_user', 'conghuaxinxing')
+    // this.$cookies.set('st_token', 'MkTail-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjb25naHVheGlueGluZyIsImV4cCI6MTU5NDI5Mjc4MCwiaWF0IjoxNTYyNzU2NzgwfQ.qXMuqyZKRbEr0KNpu-rS63Ax6KJOHhXlbm2f3gR6x98PHf6p3Em2tCjztZXTw7mvU6yAuBds-W1sCJEvIxxGTA')
   },
   mounted () {
     // if (!this.currentPageInfo.storePageId) this.$message.error('数据请求有误！') // this.$router.go(-1)
