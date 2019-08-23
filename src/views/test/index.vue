@@ -32,25 +32,25 @@
             </div>
           </div>
         </div>
-        <div data-attr="头部导航" class="pagetag mobile_nav">
+        <div data-attr="头部导航" class="pagetag mobile_nav" id="navTag" :class="{'scroll_top': navHeight}">
           <div class="mobile_nav_item active">
-            <a><img class="linear_img" src="static/img/shops/nav_home.png"></a>
+            <a><i class="iconfont sb-icon-_h5_shop_home"></i></a>
             <p>首页</p>
           </div>
           <div class="mobile_nav_item">
-            <a><img class="linear_img" src="static/img/shops/nav_all.png"></a>
+            <a><i class="iconfont sb-icon-_h5_shop_all"></i></a>
             <p>全部商品</p>
           </div>
           <div class="mobile_nav_item">
-            <a><img class="linear_img" src="static/img/shops/nav_video.png"></a>
+            <a><i class="iconfont sb-icon-_h5_shop_video"></i></a>
             <p>工厂视频</p>
           </div>
           <div class="mobile_nav_item">
-            <a><img class="linear_img" src="static/img/shops/nav_bag.png"></a>
+            <a><i class="iconfont sb-icon-_h5_shop_activity"></i></a>
             <p>活动</p>
           </div>
         </div>
-        <div data-attr="大图轮播" class="pagetag mobile_switch">
+        <div data-attr="大图轮播" class="pagetag mobile_switch" :style="'margin-top:'+navHeight+'px;'">
           <div class="mobile_switch_box">
             <el-carousel :interval="4000" arrow="never" indicator-position="" height="100%">
               <el-carousel-item v-for="item in pageSwitch.dataList" :key="item.id" class="mobile_switch_item">
@@ -73,12 +73,9 @@
                 </a>
               </el-carousel-item>
             </el-carousel>
-            <!-- <a :href="pageWindow.link || null">
-              <img class="linear_img" :src="pageWindow.url">
-            </a> -->
           </div>
         </div>
-        <div data-attr="产品推荐" class="pagetag mobile_goods">
+        <div data-attr="产品推荐" class="pagetag mobile_goods" :class="{'hasSetMobileBottom': isSetMobileTag}">
           <div class="mobile_goods_title">
             <p>产品推荐</p>
           </div>
@@ -104,13 +101,15 @@
             </div>
           </div>
         </div>
-        <div data-attr="底部导航" class="pagetag mobile_footer">
+        <div data-attr="底部导航" class="pagetag mobile_footer" :class="{'hasSetMobile': isSetMobileTag}">
           <a>商品分类</a>
           <a>公司介绍</a>
-          <a>深度验厂</a>
+          <a class="mobile_footer_factory">深度验厂</a>
         </div>
       </div>
     </div>
+    <!-- 加载loading -->
+    <div class="loading_wrap" v-show="isLoading"><i class="el-icon-loading"></i></div>
   </div>
 </template>
 <script>
@@ -118,11 +117,14 @@ export default {
   data () {
     return {
       storeId: this.$route.query.storeId || '',
+      isSetMobileTag: this.$route.query.setmobiletag,
       sellerInfo: {},
       pageSign: {},
       pageSwitch: [],
       pageWindow: {},
-      pageGoods: {}
+      pageGoods: {},
+      navHeight: 0,
+      isLoading: true
     }
   },
   created () {
@@ -136,8 +138,10 @@ export default {
         Array.from(page).map(item => {
           pageTag.push({ height: item.offsetHeight, top: item.offsetTop })
         })
-        window.parent.getIframeInfo(pageTag, 'pageTag')
-        window.parent.getIframeInfo(document.documentElement.offsetHeight, 'autoHeight')
+        if (this.isSetMobileTag) {
+          window.parent.getIframeInfo(pageTag, 'pageTag')
+          window.parent.getIframeInfo(document.documentElement.offsetHeight, 'autoHeight')
+        }
       })
     }
   },
@@ -154,30 +158,51 @@ export default {
     window.getPageData = function (tagName) {
       this[tagName]()
     }.bind(this)
+    let navDom = document.getElementById('navTag').getBoundingClientRect()
+    document.addEventListener('scroll', () => {
+      if (navDom.top <= document.documentElement.scrollTop) {
+        this.$nextTick(() => {
+          this.navHeight = navDom.height
+        })
+      } else {
+        this.$nextTick(() => {
+          this.navHeight = 0
+        })
+      }
+    })
+    this.isLoading = false
   },
   methods: {
     getPageTag () {
       this.API.getAppSign().then(res => {
         this.pageSign = res.data
-        window.parent.getIframeInfo(this.pageSign, 'pageSign')
+        if (this.isSetMobileTag) {
+          window.parent.getIframeInfo(this.pageSign, 'pageSign')
+        }
       })
     },
     getPageSwitch () {
       this.API.getAppBanner().then(res => {
         this.pageSwitch = res.data
-        window.parent.getIframeInfo(this.pageSwitch, 'pageSwitch')
+        if (this.isSetMobileTag) {
+          window.parent.getIframeInfo(this.pageSwitch, 'pageSwitch')
+        }
       })
     },
     getPageWindow () {
       this.API.getAppWindow().then(res => {
         this.pageWindow = res.data
-        window.parent.getIframeInfo(this.pageWindow, 'pageWindow')
+        if (this.isSetMobileTag) {
+          window.parent.getIframeInfo(this.pageWindow, 'pageWindow')
+        }
       })
     },
     getPageGoods () {
       this.API.getAppProduct().then(res => {
         this.pageGoods = res.data
-        window.parent.getIframeInfo(this.pageGoods, 'pageGoods')
+        if (this.isSetMobileTag) {
+          window.parent.getIframeInfo(this.pageGoods, 'pageGoods')
+        }
       })
     },
     filterNum (data) {
@@ -235,13 +260,14 @@ export default {
           margin-right: 0.1rem;
           color: #ffffff;
           text-shadow: 0 0.02rem 0.01rem rgba(0, 0, 0, 1);
-          font-size: 0.32rem;
+          font-size: 0.28rem;
           display: flex;
           flex-direction: column;
           justify-content: center;
           p {
             overflow: hidden;
             white-space: nowrap;
+            text-overflow: ellipsis;
             width: 4rem;
           }
           .mobile_header_series_title {
@@ -297,6 +323,11 @@ export default {
     justify-content: space-between;
     padding: 0 0.2rem;
     background-color: #ffffff;
+    border-bottom: 0.3rem solid transparent;
+    z-index: 10;
+    left: 0;
+    right: 0;
+    top: 0;
     .mobile_nav_item {
       display: flex;
       flex-direction: column;
@@ -310,7 +341,11 @@ export default {
       width: 1.2rem;
       a {
         width: 0.6rem;
-        height: 0.6rem
+        height: 0.6rem;
+        line-height: 1;
+        i {
+          font-size: 0.6rem;
+        }
       }
       p {
         margin-top: 0.14rem;
@@ -321,9 +356,14 @@ export default {
       }
     }
   }
+  .scroll_top {
+    border-bottom: none;
+    position: fixed;
+    box-shadow: 0 1px 5px 2px rgba(0,0,0,0.08);
+  }
   .mobile_switch {
     background-color: #ffffff;
-    margin: 0.3rem 0;
+    margin-bottom: 0.3rem;
     .mobile_switch_box {
       width: 7.5rem;
       height: 3.75rem;
@@ -371,7 +411,7 @@ export default {
   .mobile_goods {
     background-color: #ffffff;
     padding: 0 0.16rem;
-    padding-bottom: 0.62rem;
+    padding-bottom: 1.2rem;
     .mobile_goods_title {
       font-size: 0.27rem;
       padding-top: 0.14rem;
@@ -433,8 +473,11 @@ export default {
       }
     }
   }
+  .hasSetMobileBottom {
+    padding-bottom: 0.2rem;
+  }
   .mobile_footer {
-    /* position: fixed; */
+    position: fixed;
     bottom: -0.02rem;
     left: 0;
     right: 0;
@@ -442,19 +485,31 @@ export default {
     background-color: #ffffff;
     border-top: 0.02rem solid #D7D7D7;
     display: flex;
-    a {
+    &>a {
       flex: 1;
       color: #5F5F5F;
       font-size: 0.28rem;
       text-align: center;
       height: 0.97rem;
       line-height: 1rem;
-      display: block;
       background-color: #ffffff;
+      position: relative;
       &+a {
         border-left: 0.02rem solid #D7D7D7;
       }
+      &.mobile_footer_factory:before {
+        position: absolute;
+        left: 50%;
+        top: 0.22rem;
+        transform: translate3d(-50%, -50%, 0);
+        content: '=';
+        line-height: 1;
+        color: #BDBDBD;
+      }
     }
+  }
+  .hasSetMobile {
+    position: initial;
   }
   .t3D_play {
     position: absolute;
@@ -477,5 +532,14 @@ export default {
       max-width: 100%;
       max-height: 100%;
     }
+  }
+  .loading_wrap {
+    position: fixed;
+    left: 50vw;
+    top: 50vh;
+    margin: auto;
+    font-size: 32px;
+    color: ef7026;
+    z-index: 10000;
   }
 </style>

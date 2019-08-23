@@ -5,7 +5,7 @@
         <div class="phone_handle_box" v-if="isPhoneHandle" :style="'top:'+pageTag[pageIndex].top+'px; height:'+pageTag[pageIndex].height+'px;'"></div>
         <div class="phone_wrap" ref="phoneWrap"></div>
       </div>
-      <iframe ref="iframe" :src="'/#/test?storeId='+storeId" scrolling="no" frameborder="0"></iframe>
+      <iframe ref="iframe" :src="'/#/test?setmobiletag=1&storeId='+storeId" scrolling="no" frameborder="0"></iframe>
     </div>
     <section class="handle_component_edit" v-show="isMobileEditPanel">
       <section class="edit_panel" :class="{'transform': isMobileEditPanel }">
@@ -317,7 +317,7 @@
     </div>
     <div class="publish_box">
       <div class="publish_item" @click="release()">发布</div>
-      <div class="publish_item">预览</div>
+      <!-- <div class="publish_item">预览</div> -->
     </div>
   </div>
 </template>
@@ -341,7 +341,7 @@ export default {
       pageSign: {},
       pageSwitch: {},
       isMobileEditPanel: '',
-      isLoading: false,
+      isLoading: true,
       currentComponent: {},
       // 弹框产品列表选择的数量
       pickNum: 12,
@@ -377,6 +377,7 @@ export default {
     }.bind(this)
 
     document.addEventListener('click', this.handleModule)
+    this.isLoading = false
   },
   destroyed () {
     document.removeEventListener('click', this.handleModule)
@@ -768,10 +769,11 @@ export default {
 <style scoped>
   .phone {
     width: 375px;
-    margin: auto;
+    margin: 0 auto;
     margin-top: 50px;
-    padding: 20px 0;
-    height: 100%;
+    margin-bottom: 40px;
+    border: 1px solid #e5e5e5;
+    min-height: 100%;
   }
   .phone_box {
     width: 100%;
@@ -810,10 +812,12 @@ export default {
     right: 40px;
     display: flex;
     align-items: center;
-    background-color: rgba(0,0,0,.1);
+    background-color: rgba(158, 158, 158, 0.1);
     height: 50px;
     color: #ef7026;
-    font-size: 14px;
+    font-size: 16px;
+    border-radius: 16px;
+    font-weight: 700;
   }
   .publish_item {
     width: 80px;
