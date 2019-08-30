@@ -432,8 +432,9 @@ export default {
               this.currentComponent = JSON.parse(JSON.stringify(this.pageGoods))
               this.isMobileEditPanel = this.pageGoods
             } else if (this.pageIndex === 1 || this.pageIndex === 5) {
-              this.$notify.warning({
-                message: '该模块不可操作'
+              this.$message.warning({
+                message: '该模块不可操作',
+                showClose: true
               })
             }
             break
@@ -779,6 +780,7 @@ export default {
     width: 100%;
     min-height: 100%;
     position: relative;
+    box-shadow: 0 0 10px 1px #9e9e9e;
   }
   .phone_shadow {
     position: absolute;

@@ -32,7 +32,7 @@
             </div>
           </div>
         </div>
-        <div data-attr="头部导航" class="pagetag mobile_nav" id="navTag" :class="{'scroll_top': navHeight}">
+        <div data-attr="头部导航" class="pagetag mobile_nav">
           <div class="mobile_nav_item active">
             <a><i class="iconfont sb-icon-_h5_shop_home"></i></a>
             <p>首页</p>
@@ -50,7 +50,7 @@
             <p>活动</p>
           </div>
         </div>
-        <div data-attr="大图轮播" class="pagetag mobile_switch" :style="'margin-top:'+navHeight+'px;'">
+        <div data-attr="大图轮播" class="pagetag mobile_switch">
           <div class="mobile_switch_box">
             <el-carousel :interval="4000" arrow="never" indicator-position="" height="100%">
               <el-carousel-item v-for="item in pageSwitch.dataList" :key="item.id" class="mobile_switch_item">
@@ -123,7 +123,6 @@ export default {
       pageSwitch: [],
       pageWindow: {},
       pageGoods: {},
-      navHeight: 0,
       isLoading: true
     }
   },
@@ -158,18 +157,6 @@ export default {
     window.getPageData = function (tagName) {
       this[tagName]()
     }.bind(this)
-    let navDom = document.getElementById('navTag').getBoundingClientRect()
-    document.addEventListener('scroll', () => {
-      if (navDom.top <= document.documentElement.scrollTop) {
-        this.$nextTick(() => {
-          this.navHeight = navDom.height
-        })
-      } else {
-        this.$nextTick(() => {
-          this.navHeight = 0
-        })
-      }
-    })
     this.isLoading = false
   },
   methods: {
@@ -323,11 +310,7 @@ export default {
     justify-content: space-between;
     padding: 0 0.2rem;
     background-color: #ffffff;
-    border-bottom: 0.3rem solid transparent;
-    z-index: 10;
-    left: 0;
-    right: 0;
-    top: 0;
+    border-bottom: 0.3rem solid #EDEDED;
     .mobile_nav_item {
       display: flex;
       flex-direction: column;
@@ -355,11 +338,6 @@ export default {
         border-bottom-color: #D62722;
       }
     }
-  }
-  .scroll_top {
-    border-bottom: none;
-    position: fixed;
-    box-shadow: 0 1px 5px 2px rgba(0,0,0,0.08);
   }
   .mobile_switch {
     background-color: #ffffff;
