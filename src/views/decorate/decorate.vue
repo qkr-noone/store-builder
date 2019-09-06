@@ -590,7 +590,7 @@
                   </div>
                 </div> -->
                 <div class="rec_goods_box hidden_border" v-if="currentComponent.isVideo">
-                  <button class="editor_btn_button set_button" @click="cropperVideo=isEditPanelId; videoBox()">选择视频</button>
+                  <button class="editor_btn_button set_button" @click="cropperVideo=isEditPanelId; getVideoData()">选择视频</button>
                   <p class="set_desc">请上传比例为16:9的高质量视频</p>
                 </div>
                 <!-- <div class="rec_goods_box bottom">
@@ -915,14 +915,30 @@
       <div class="set_con_banner">
         <div>
           <div class="set_con_banner_box">
-            <i class="el-icon-close" @click="cropperVideo=''"></i>
+            <i class="el-icon-close" @click="closeCroppVideo()"></i>
             <div class="set_con_banner_title">选择视频</div>
             <div class="set_con_banner_info set_con_banner_info_two">
               <div class="set_con_banner_row">
                 <!-- 后期分页查询操作 -->
-                <div class="set_con_banner_cell_img"></div>
+                <!-- <div class="set_con_banner_cell_img"></div> -->
+                <div class="set_con_banner_cell_img set_con_banner_info_two_filter">
+                  <div class="set_box_store_search">
+                    <input type="search" name="" placeholder="请输入视频名称" v-model="videoPick.titleName" @keyup.enter="videoPick.page=1;getVideoData()">
+                    <span class="set_box_search_btn" @click="videoPick.page=1;getVideoData()"><i class="el-icon-search"></i></span>
+                  </div>
+                </div>
                 <div class="set_con_banner_cell_url"></div>
-                <div class="set_con_banner_cell_set"></div>
+                <div class="set_con_banner_cell_set set_con_banner_info_two_sort">
+                  <el-pagination
+                    v-if="storeResVideo.total"
+                    small
+                    @current-change="getVideoData()"
+                    :current-page.sync="videoPick.page"
+                    :page-size="videoPick.rows"
+                    layout="prev, pager, next"
+                    :total="storeResVideo.total">
+                  </el-pagination>
+                </div>
               </div>
               <div class="pane-box pane_box_title">
               </div>
@@ -1085,7 +1101,12 @@ export default {
         rows: 21,
         page: 1
       },
-      isMobile: false
+      isMobile: false,
+      videoPick: {
+        titleName: '',
+        rows: 2,
+        page: 1
+      }
     }
   },
   components: {
@@ -1685,8 +1706,8 @@ export default {
     // 视频列表 1（相册） 2（3d文件） 3（视频)
     resourcesData (type) { this.API.getResources({ type: type }, { page: 1, rows: 1000 }).then(res => {}) },
     // 获取视频列表
-    videoBox () {
-      this.API.getVideoList({ page: 1, rows: 1000, title: '' }).then(res => {
+    getVideoData () {
+      this.API.getVideoList({ page: this.videoPick.page, rows: this.videoPick.rows, title: this.videoPick.titleName }).then(res => {
         this.storeResVideo = res.data
       })
     },
@@ -1694,6 +1715,12 @@ export default {
     selectVideo (item) {
       this.$set(this.currentComponent, 'data', item.url)
       this.$set(this.currentComponent, 'config', JSON.stringify({ videoCover: item.cover }))
+      this.closeCroppVideo()
+    },
+    // 关闭视频 列表弹框
+    closeCroppVideo () {
+      this.videoPick = { titleName: '', rows: 21, page: 1 }
+      this.markIndex = null
       this.cropperVideo = ''
     },
     // banner图片类别链接

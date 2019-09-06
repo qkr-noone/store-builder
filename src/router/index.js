@@ -39,7 +39,20 @@ router = new Router({
     {
       path: '/test',
       name: 'test',
-      component: resolve => require(['@/views/test/index'], resolve)
+      redirect: '/test/shop',
+      component: resolve => require(['@/views/test/index'], resolve),
+      children: [
+        {
+          path: 'shop',
+          name: 'shop',
+          component: resolve => require(['@/views/test/children/shop'], resolve)
+        },
+        {
+          path: 'shop_video',
+          name: 'shop_video',
+          component: resolve => require(['@/views/test/children/shop_video'], resolve)
+        }
+      ]
     }
   ]
 })

@@ -3,9 +3,10 @@
     <div class="phone_box" :style="'height:'+ autoHeight + 'px;'">
       <div class="phone_shadow" :style="'height:'+ autoHeight + 'px;'">
         <div class="phone_handle_box" v-if="isPhoneHandle" :style="'top:'+pageTag[pageIndex].top+'px; height:'+pageTag[pageIndex].height+'px;'"></div>
-        <div class="phone_wrap" ref="phoneWrap"></div>
+        <div class="phone_wrap" ref="phoneWrap" v-show="curIframePage==='shop'"></div>
+        <div class="phone_wrap" ref="phoneVideoWrap" v-show="curIframePage==='shop_video'"></div>
       </div>
-      <iframe ref="iframe" :src="'/#/test?setmobiletag=1&storeId='+storeId" scrolling="no" frameborder="0"></iframe>
+      <iframe ref="iframe" :src="'/#/test/'+curIframePage+'?setmobiletag=1&storeId='+storeId" scrolling="no" frameborder="0"></iframe>
     </div>
     <section class="handle_component_edit" v-show="isMobileEditPanel">
       <section class="edit_panel" :class="{'transform': isMobileEditPanel }">
@@ -45,6 +46,10 @@
                 <div class="set_img_show">
                   <img v-for="tip in currentComponent.dataList" :key="tip.id" :src="tip.url">
                 </div>
+              </div>
+              <div class="rec_goods_box hidden_border" v-if="currentComponent.isVideo">
+                <button class="editor_btn_button set_button" @click="cropperVideo=isMobileEditPanel; getVideoData()">选择视频</button>
+                <p class="set_desc">请上传比例为16:9的高质量视频</p>
               </div>
             </div>
           </div>
@@ -315,9 +320,65 @@
         </div>
       </div>
     </div>
+    <!-- 弹框视频列表 -->
+    <div v-if="cropperVideo">
+      <!-- 遮罩层 -->
+      <div class="wrapper"></div>
+      <div class="set_con_banner">
+        <div>
+          <div class="set_con_banner_box">
+            <i class="el-icon-close" @click="closeCroppVideo()"></i>
+            <div class="set_con_banner_title">选择视频</div>
+            <div class="set_con_banner_info set_con_banner_info_two">
+              <div class="set_con_banner_row">
+                <!-- 后期分页查询操作 -->
+                <div class="set_con_banner_cell_img set_con_banner_info_two_filter">
+                  <div class="set_box_store_search">
+                    <input type="search" name="" placeholder="请输入视频名称" v-model="videoPick.titleName" @keyup.enter="videoPick.page=1;getVideoData()">
+                    <span class="set_box_search_btn" @click="videoPick.page=1;getVideoData()"><i class="el-icon-search"></i></span>
+                  </div>
+                </div>
+                <div class="set_con_banner_cell_url"></div>
+                <div class="set_con_banner_cell_set set_con_banner_info_two_sort">
+                  <el-pagination
+                    v-if="storeResVideo.total"
+                    small
+                    @current-change="getVideoData()"
+                    :current-page.sync="videoPick.page"
+                    :page-size="videoPick.rows"
+                    layout="prev, pager, next"
+                    :total="storeResVideo.total">
+                  </el-pagination>
+                </div>
+              </div>
+              <div class="pane-box pane_box_title">
+              </div>
+              <div class="pane-box" style="border-bottom: 1px solid #663399;">
+                <ul class="pane_limit_height video_pane_limit_height" v-if="storeResVideo.total">
+                  <li class="video_li_pane_limit_height" v-for="list in storeResVideo.rows" :key="list.id">
+                    <div class="video_pane_box">
+                      <video preload="metadata" muted width="100%" height="100%" style="display: block; background-color: #000;" :src="list.url" controls></video>
+                    </div>
+                    <p class="video_pane_title">{{list.title}}</p>
+                    <div><button class="editor_btn_button" @click="selectVideo(list)">选用视频</button></div>
+                  </li>
+                </ul>
+                <div v-else class="set_con_banner_title set_con_banner_upload_tip">暂无视频，请在数字管理先添加视频~</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="publish_box">
       <div class="publish_item" @click="release()">发布</div>
       <!-- <div class="publish_item">预览</div> -->
+    </div>
+    <div class="decorate_app_page">
+      <a class="decorate_app_item" :class="{'decorate_app_item_active': curIframePage==='shop'}" @click="curIframePage='shop'">首页</a>
+      <!-- <a class="decorate_app_item" :class="{'decorate_app_item_active': curIframePage==='shop_auction'}" @click="curIframePage='shop_auction'">全部商品</a> -->
+      <a class="decorate_app_item" :class="{'decorate_app_item_active': curIframePage==='shop_video'}" @click="curIframePage='shop_video'">工厂视频</a>
+      <!-- <a class="decorate_app_item" :class="{'decorate_app_item_active': curIframePage==='shop_dynamic'}" @click="curIframePage='shop_dynamic'">活动</a> -->
     </div>
   </div>
 </template>
@@ -334,12 +395,15 @@ export default {
   data () {
     return {
       autoHeight: 0,
-      isPhoneHandle: false,
+      isPhoneHandle: 0, // 0.不是app 1.app 首页 2.视频
       getIframeInfo: '',
       pageTag: [],
       pageIndex: null,
       pageSign: {},
       pageSwitch: {},
+      pageWindow: {},
+      pageGoods: {},
+      pageVideo: {},
       isMobileEditPanel: '',
       isLoading: true,
       currentComponent: {},
@@ -354,9 +418,11 @@ export default {
       markImgSize: { width: 750, height: 375 },
       storeGoods: {},
       storeRes3D: {},
+      storeResVideo: {},
       cropperBanner: '',
       cropperGoods: '',
       cropperImg: '',
+      cropperVideo: '',
       cropper3D: '',
       storeId: this.$cookies.get('st_b_user'),
       searchGoodsName: '',
@@ -367,7 +433,14 @@ export default {
         goodsName: '',
         rows: 21,
         page: 1
-      }
+      },
+      curIframePage: 'shop',
+      videoPick: {
+        titleName: '',
+        rows: 21,
+        page: 1
+      },
+      appLoadingValve: false
     }
   },
   components: { draggable },
@@ -391,7 +464,20 @@ export default {
     autoHeight (val) {
       this.$nextTick(() => {
         this.$refs.iframe.style.height = val + 'px'
+        this.isLoading = false
+        this.appLoadingValve = false
       })
+    },
+    curIframePage (val) {
+      this.isLoading = true
+      this.initSwitchAppPage()
+      this.appLoadingValve = true
+      setTimeout(() => {
+        if (this.isLoading && this.appLoadingValve) {
+          this.isLoading = false
+          this.appLoadingValve = false
+        }
+      }, 10000)
     }
   },
   methods: {
@@ -406,9 +492,13 @@ export default {
       this.markList = []
       this.markImgSize = { width: 750, height: 375 }
     },
+    initSwitchAppPage () {
+      this.pageTag = [{ top: 0, height: 0 }]
+      this.pageIndex = 0
+    },
     handleModule (e) {
       if (this.$refs.phoneWrap.contains(e.target)) {
-        this.isPhoneHandle = true
+        this.isPhoneHandle = 1
         let { offsetY } = e
         for (let i = 0; i < this.pageTag.length; i++) {
           if ((i === this.pageTag.length - 1) || (this.pageTag[i].top <= offsetY && this.pageTag[i + 1].top > offsetY)) {
@@ -432,6 +522,33 @@ export default {
               this.currentComponent = JSON.parse(JSON.stringify(this.pageGoods))
               this.isMobileEditPanel = this.pageGoods
             } else if (this.pageIndex === 1 || this.pageIndex === 5) {
+              this.$message.warning({
+                message: '该模块不可操作',
+                showClose: true
+              })
+            }
+            break
+          }
+        }
+      } else if (this.$refs.phoneVideoWrap.contains(e.target)) {
+        this.isPhoneHandle = 2
+        let { offsetY } = e
+        for (let i = 0; i < this.pageTag.length; i++) {
+          if ((i === this.pageTag.length - 1) || (this.pageTag[i].top <= offsetY && this.pageTag[i + 1].top > offsetY)) {
+            this.pageIndex = i
+            if (this.pageIndex === 0) {
+              this.init()
+              this.currentComponent = JSON.parse(JSON.stringify(this.pageSign))
+              this.isMobileEditPanel = this.pageSign.id
+            } else if (this.pageIndex === 2) {
+              this.init()
+              this.currentComponent = JSON.parse(JSON.stringify(this.pageVideo))
+              this.isMobileEditPanel = this.pageVideo
+            } else if (this.pageIndex === 3) {
+              this.init()
+              this.currentComponent = JSON.parse(JSON.stringify(this.pageGoods))
+              this.isMobileEditPanel = this.pageGoods
+            } else if (this.pageIndex === 1 || this.pageIndex === 4) {
               this.$message.warning({
                 message: '该模块不可操作',
                 showClose: true
@@ -485,6 +602,14 @@ export default {
           id: this.currentComponent.decorationAppProduct.id
         }).then(res => {
           if (res.code === 2000) this.$refs.iframe.contentWindow.getPageData('getPageGoods')
+          this.currentComponent = {}
+          this.isMobileEditPanel = ''
+          this.isLoading = false
+        }).catch(() => { this.isLoading = false })
+      } else if (this.currentComponent.isVideo) {
+        this.isLoading = true
+        this.API.saveAppVideo(this.currentComponent).then(res => {
+          if (res.code === 2000) this.$refs.iframe.contentWindow.getPageData('getPageVideo')
           this.currentComponent = {}
           this.isMobileEditPanel = ''
           this.isLoading = false
@@ -763,6 +888,24 @@ export default {
     },
     cropperBannerLive (index) {
       this.markList[index].link = this.WEBSITE + '/#/live/factory?homeShops=' + this.storeId
+    },
+    // 获取视频列表
+    getVideoData () {
+      this.API.getVideoList({ page: this.videoPick.page, rows: this.videoPick.rows, title: this.videoPick.titleName }).then(res => {
+        this.storeResVideo = res.data
+      })
+    },
+    // 关闭视频 列表弹框
+    closeCroppVideo () {
+      this.videoPick = { titleName: '', rows: 21, page: 1 }
+      this.markIndex = null
+      this.cropperVideo = ''
+    },
+    // 选中视频
+    selectVideo (item) {
+      this.$set(this.currentComponent, 'url', item.url)
+      this.$set(this.currentComponent, 'pic', item.cover)
+      this.closeCroppVideo()
     }
   }
 }
@@ -831,6 +974,45 @@ export default {
   }
   .publish_item + .publish_item {
     border-left: 1px solid #aba2a2;
+  }
+  .decorate_app_page {
+    position: absolute;
+    top: 112px;
+    left: 1px;
+    display: flex;
+    border-radius: 4px;
+    align-items: center;
+    background-color: rgba(158, 158, 158, 0.1);
+    font-size: 16px;
+    display: flex;
+    flex-direction: column;
+    padding: 12px 0;
+    border-radius: 8px;
+  }
+  .decorate_app_item {
+    color: #666666;
+    writing-mode:vertical-lr;
+    margin: 16px 0;
+    padding: 0 16px;
+    cursor: pointer;
+    letter-spacing: 0.25em;
+    position: relative;
+  }
+  .decorate_app_item::before {
+    content: "";
+    position: absolute;
+    width: 4px;
+    top: 50%;
+    left: 0;
+    transition: all 0.3s ease-in;
+  }
+  .decorate_app_item.decorate_app_item_active::before {
+    background-color: #ef6a00;
+    top: 0;
+    height: 100%;
+  }
+  .decorate_app_item_active {
+    color: #EF7026;
   }
 </style>
 <style scoped lang="scss">
@@ -1007,6 +1189,13 @@ export default {
     width: 115px;
     height: 60px;
     margin-top: 10px;
+  }
+  .set_desc {
+    color: #999;
+    font-size: 14px;
+    line-height: 20px;
+    margin-bottom: 5px;
+    word-break: break-all;
   }
   .wrapper {
     background: #000;
@@ -1276,11 +1465,17 @@ export default {
 }
 .loading_wrap {
   position: fixed;
-  left: 50vw;
-  top: 50vh;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0,0,0,0.2);
   margin: auto;
   font-size: 32px;
-  color: $aside-theme-color;
+  color: #FF5722;
   z-index: 10000;
 }
 /* 弹框列表搜索框 */

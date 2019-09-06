@@ -90,5 +90,9 @@ export default {
   // 保存产品产品
   saveAppProduct: data => http.post('/shop/decoration/app/product/save', data),
   // 发布店铺装修app端
-  appOnlineVersion: () => http.get('/shop/decoration/app/online/releaseDecoration')
+  appOnlineVersion: () => http.get('/shop/decoration/app/online/releaseDecoration'),
+  // 获取 app 工厂视频
+  getAppVideo: () => http.get('/shop/decoration/app/video/findBySellerId'),
+  // 保存 app 工厂视频
+  saveAppVideo: data => http.post('/shop/decoration/app/video/save', data)
 }

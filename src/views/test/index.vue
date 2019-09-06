@@ -26,81 +26,33 @@
                 </a>
                 <a>
                   <img src="static/img/shops/star_black.png">
-                  <p>已收藏</p>
+                  <p>收藏</p>
                 </a>
               </div>
             </div>
           </div>
         </div>
         <div data-attr="头部导航" class="pagetag mobile_nav">
-          <div class="mobile_nav_item active">
+          <div class="mobile_nav_item" :class="{'active': navPath==='shop'}">
             <a><i class="iconfont sb-icon-_h5_shop_home"></i></a>
             <p>首页</p>
           </div>
-          <div class="mobile_nav_item">
+          <div class="mobile_nav_item" :class="{'active': navPath==='shop_auction'}">
             <a><i class="iconfont sb-icon-_h5_shop_all"></i></a>
             <p>全部商品</p>
           </div>
-          <div class="mobile_nav_item">
+          <div class="mobile_nav_item" :class="{'active': navPath==='shop_video'}">
             <a><i class="iconfont sb-icon-_h5_shop_video"></i></a>
             <p>工厂视频</p>
           </div>
-          <div class="mobile_nav_item">
+          <div class="mobile_nav_item" :class="{'active': navPath==='shop_dynamic'}">
             <a><i class="iconfont sb-icon-_h5_shop_activity"></i></a>
             <p>活动</p>
           </div>
         </div>
-        <div data-attr="大图轮播" class="pagetag mobile_switch">
-          <div class="mobile_switch_box">
-            <el-carousel :interval="4000" arrow="never" indicator-position="" height="100%">
-              <el-carousel-item v-for="item in pageSwitch.dataList" :key="item.id" class="mobile_switch_item">
-                <a :href="item.link || null">
-                  <img :src="item.url" class="linear_img">
-                </a>
-              </el-carousel-item>
-            </el-carousel>
-          </div>
-        </div>
-        <div data-attr="橱窗推荐" class="pagetag mobile_recom">
-          <div class="mobile_recom_title">
-            <p>橱窗推荐</p>
-          </div>
-          <div class="mobile_recom_con">
-            <el-carousel :interval="4000" arrow="never" indicator-position="none" height="100%">
-              <el-carousel-item v-for="item in pageWindow.dataList" :key="item.id">
-                <a :href="item.link || null">
-                  <img :src="item.url" class="linear_img">
-                </a>
-              </el-carousel-item>
-            </el-carousel>
-          </div>
-        </div>
-        <div data-attr="产品推荐" class="pagetag mobile_goods" :class="{'hasSetMobileBottom': isSetMobileTag}">
-          <div class="mobile_goods_title">
-            <p>产品推荐</p>
-          </div>
-          <div class="mobile_goods_con">
-            <div class="mobile_goods_con_box">
-              <ul>
-                <li v-for="item in pageGoods.dataList" :key="item.id">
-                  <a class="mobile_goods_con_a">
-                    <img class="linear_img" :src="item.smallPic">
-                    <a
-                      :to="{path: '/3D/3Dshow',query:{ id: item.threeId,homeShops: storeId,goodsId: item.id}}"
-                      v-if="item.threeId"
-                      target="_blank"
-                      class="t3D_play"
-                      title="商品支持3D展示">
-                      <img src="static/img/detail_play_3D.png">
-                    </a>
-                  </a>
-                  <p class="title">{{item.goodsName}}</p>
-                  <div class="tip"><span class="tip_price">￥{{item.priceShow}}</span><span>成交{{item.salesCount||0}}笔</span></div>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
+        <transition>
+          <router-view ref="shopPage"></router-view>
+        </transition>
         <div data-attr="底部导航" class="pagetag mobile_footer" :class="{'hasSetMobile': isSetMobileTag}">
           <a>商品分类</a>
           <a>公司介绍</a>
@@ -120,35 +72,15 @@ export default {
       isSetMobileTag: this.$route.query.setmobiletag,
       sellerInfo: {},
       pageSign: {},
-      pageSwitch: [],
-      pageWindow: {},
-      pageGoods: {},
-      isLoading: true
+      isLoading: true,
+      navPath: 'shop'
     }
   },
   created () {
     document.documentElement.style.fontSize = document.documentElement.clientWidth / 7.50 + 'px' // 设计稿 750 放大 100倍
   },
-  watch: {
-    pageGoods (val) {
-      this.$nextTick(() => {
-        let page = document.querySelectorAll('.pagetag')
-        let pageTag = []
-        Array.from(page).map(item => {
-          pageTag.push({ height: item.offsetHeight, top: item.offsetTop })
-        })
-        if (this.isSetMobileTag) {
-          window.parent.getIframeInfo(pageTag, 'pageTag')
-          window.parent.getIframeInfo(document.documentElement.offsetHeight, 'autoHeight')
-        }
-      })
-    }
-  },
   mounted () {
     this.getPageTag()
-    this.getPageSwitch()
-    this.getPageWindow()
-    this.getPageGoods()
     // 商家信息
     this.API.getSeller({ name: this.storeId }).then(res => {
       this.sellerInfo = res.data.seller
@@ -159,36 +91,17 @@ export default {
     }.bind(this)
     this.isLoading = false
   },
+  watch: {
+    $route (newV) {
+      this.navPath = newV.path.split('/')[2]
+    }
+  },
   methods: {
     getPageTag () {
       this.API.getAppSign().then(res => {
         this.pageSign = res.data
         if (this.isSetMobileTag) {
           window.parent.getIframeInfo(this.pageSign, 'pageSign')
-        }
-      })
-    },
-    getPageSwitch () {
-      this.API.getAppBanner().then(res => {
-        this.pageSwitch = res.data
-        if (this.isSetMobileTag) {
-          window.parent.getIframeInfo(this.pageSwitch, 'pageSwitch')
-        }
-      })
-    },
-    getPageWindow () {
-      this.API.getAppWindow().then(res => {
-        this.pageWindow = res.data
-        if (this.isSetMobileTag) {
-          window.parent.getIframeInfo(this.pageWindow, 'pageWindow')
-        }
-      })
-    },
-    getPageGoods () {
-      this.API.getAppProduct().then(res => {
-        this.pageGoods = res.data
-        if (this.isSetMobileTag) {
-          window.parent.getIframeInfo(this.pageGoods, 'pageGoods')
         }
       })
     },
@@ -203,6 +116,18 @@ export default {
       } else {
         return num
       }
+    },
+    getPageSwitch () {
+      this.$refs.shopPage.getPageSwitch()
+    },
+    getPageWindow () {
+      this.$refs.shopPage.getPageWindow()
+    },
+    getPageGoods () {
+      this.$refs.shopPage.getPageGoods()
+    },
+    getPageVideo () {
+      this.$refs.shopPage.getPageVideo()
     }
   }
 }
@@ -450,9 +375,6 @@ export default {
         }
       }
     }
-  }
-  .hasSetMobileBottom {
-    padding-bottom: 0.2rem;
   }
   .mobile_footer {
     position: fixed;
