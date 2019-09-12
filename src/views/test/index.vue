@@ -106,16 +106,7 @@ export default {
       })
     },
     filterNum (data) {
-      let num = data ? data + '' : ''
-      if (num.length > 8) {
-        return num.slice(0, -8)
-      } else if (num.length > 4) {
-        return num.slice(0, -4)
-      } else if (num.length > 3) {
-        return num.slice(0, -3)
-      } else {
-        return num
-      }
+      return (data > 10000 ** 2 && (data / 10000 ** 2).toFixed(1)) || (data > 10000 && (data / 10000).toFixed(1)) || data
     },
     getPageSwitch () {
       this.$refs.shopPage.getPageSwitch()
