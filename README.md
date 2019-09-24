@@ -1,21 +1,45 @@
 # store-builder
 
-> '店铺装修系统'
+> 基于 Vue 开发的店铺装修系统
+> APP 内嵌 H5 的店铺装修系统
 
-## Build Setup
+## 做了什么？
 
-``` bash
-# install dependencies
-npm install
+### PC 端
 
-# serve with hot reload at localhost:8080
-npm run dev
+#### 支持店铺首页的模块组件拖动装修
 
-# build for production with minification
-npm run build
+#### 支持组件模块数据的更改
 
-# build for production and view the bundle analyzer report
-npm run build --report
-```
+#### 支持组件模块的添加、移动、删除
 
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+#### 支持组件模块视频选择
+
+#### 支持组件模块商品数据选择
+
+#### 支持组件模块 3D 页面的选择
+
+#### 开发了 20 个组件可供装修
+
+### H5
+
+#### 设计了 H5 店铺的基础模块
+
+#### 支持店铺数据的更改
+
+#### 支持组件模块视频选择
+
+#### 支持组件模块商品选择
+
+#### 支持组件模块 3D 页面的选择
+
+
+## 还差什么？
+
+#### PC 和 H5 的侧边栏展示的可供拖动的组件还未添加上
+
+#### H5 组件模块不可拖动
+
+#### H5 还未设计可供选择组件
+
+#### PC 和 H5 还未支持非店铺首页装修
