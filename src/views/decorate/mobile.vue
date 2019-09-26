@@ -241,7 +241,7 @@
                     <span>{{formatDate(list.createTime)}}</span>
                   </li>
                 </ul>
-                <div v-if="!storeGoods.total" class="set_con_banner_title set_con_banner_upload_tip">暂无商品，请先相关添加商品~</div>
+                <div v-if="!storeGoods.total" class="set_con_banner_title set_con_banner_upload_tip">暂无商品，请先添加商品~</div>
               </div>
               <div class="set_con_banner_add_btn">
                 <span class="set_con_banner_upload_tip">拖动产品图片可调整顺序&nbsp;&nbsp;</span>
@@ -596,11 +596,12 @@ export default {
           return false
         }
         this.isLoading = true
-        this.API.saveAppProduct({
+        let goodObj = {
           goodsIds: this.currentComponent.dataList.map(item => item.id).join(','),
-          sellerId: this.storeId,
-          id: this.currentComponent.decorationAppProduct.id
-        }).then(res => {
+          sellerId: this.storeId
+        }
+        if (this.currentComponent.decorationAppProduct) Object.assign(goodObj, {id: this.currentComponent.decorationAppProduct.id})
+        this.API.saveAppProduct(goodObj).then(res => {
           if (res.code === 2000) this.$refs.iframe.contentWindow.getPageData('getPageGoods')
           this.currentComponent = {}
           this.isMobileEditPanel = ''

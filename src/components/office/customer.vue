@@ -26,7 +26,7 @@ export default {
   props: {
     dataUrl: {
       type: [String, Number],
-      defaul: null
+      default: ''
     },
     list: {
       type: [Object, Array]
@@ -84,6 +84,7 @@ export default {
   .customer_tip {
     font-size: 32px;
     color: #fff;
+    text-align: center;
   }
   .customer_tip span + span{
     margin-left: 30px;

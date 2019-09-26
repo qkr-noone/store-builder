@@ -9,8 +9,8 @@
             width="100%"
             height="100%"
             controls="controls"
-            :poster="pageVideo.pic"
-            :src="pageVideo.url">
+            :poster="pageVideo&&pageVideo.pic"
+            :src="pageVideo&&pageVideo.url">
           </video>
         </div>
         <p class="video_title">工厂及产品3D展示</p>
@@ -92,7 +92,7 @@ export default {
   },
   methods: {
     getPageGoods () {
-      this.API.getAppProduct({ sellerId: this.storeId }).then(res => {
+      this.API.getAppProduct().then(res => {
         this.pageGoods = res.data
         if (this.isSetMobileTag) {
           window.parent.getIframeInfo(this.pageGoods, 'pageGoods')
@@ -172,7 +172,7 @@ export default {
           li {
             width: calc(50% - 0.13rem);
             margin-bottom: 0.24rem;
-            border: 0.01rem solid rgba(220,220,220,1);
+            border: 0.02rem solid rgba(220,220,220,1);
             border-radius: 0.05rem;
             &:nth-child(odd) {
               margin-right: 0.13rem
@@ -207,7 +207,7 @@ export default {
               align-items: center;
               color: #5F5F5F;
               padding: 0.16rem 0.08rem 0.08rem 0.08rem;
-              border-top: 0.01rem dashed #bdbcbc;
+              border-top: 0.02rem dashed #bdbcbc;
               &>span {
               }
               .tip_price {

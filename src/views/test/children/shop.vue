@@ -189,7 +189,7 @@ export default {
           li {
             width: calc(50% - 0.13rem);
             margin-bottom: 0.24rem;
-            border: 0.01rem solid rgba(220,220,220,1);
+            border: 0.02rem solid rgba(220,220,220,1);
             border-radius: 0.05rem;
             &:nth-child(odd) {
               margin-right: 0.13rem
@@ -207,7 +207,7 @@ export default {
               background-size: contain;
             }
             .title {
-              line-height: 0.32rem;
+              line-height: 0.33rem;
               height: 0.64rem;
               overflow: hidden;
               font-size: 0.23rem;
@@ -224,7 +224,7 @@ export default {
               align-items: center;
               color: #5F5F5F;
               padding: 0.16rem 0.08rem 0.08rem 0.08rem;
-              border-top: 0.01rem dashed #bdbcbc;
+              border-top: 0.02rem dashed #bdbcbc;
               &>span {
               }
               .tip_price {

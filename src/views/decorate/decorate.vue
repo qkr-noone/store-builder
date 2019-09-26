@@ -522,7 +522,7 @@
                             :is="item.template"
                             :list="item.dataList"
                             :dataUrl="item.data"
-                            :videoCover="item.config"
+                            :videoCover="item.config||''"
                             :storeId="storeId">
                           </component>
                         </div>
@@ -1147,8 +1147,8 @@ export default {
     this.$cookies.set('st_token', this.$route.query.t)
     this.$cookies.set('st_b_user', this.$route.query.s)
     // 本地测试
-    // this.$cookies.set('st_b_user', 'fff')
-    // this.$cookies.set('st_token', 'MkTail-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJmZmYiLCJleHAiOjE1OTI2Mzk0MjYsImlhdCI6MTU2MTEwMzQyNn0.N0vlks1-hYSROJYfVABMDfq8cM1uv5H_e7hIU1SBY_Ilp4bE1tHbBXjc8if25trkj8In3VI-NhWArqXw7o1cXw')
+    // this.$cookies.set('st_b_user', 'zou123')
+    // this.$cookies.set('st_token', 'MkTail-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ6b3UxMjMiLCJleHAiOjE2MDEwMDYyNDIsImlhdCI6MTU2OTQ3MDI0Mn0.PLnvWZISit8N46knXPEpWrylZ1JrSAmKGxfcudSWELrEJX61oXGjTKlKoOQc83h-i0-T2YdviyaTSJcXxGCEIA')
   },
   mounted () {
     // if (!this.currentPageInfo.storePageId) this.$message.error('数据请求有误！') // this.$router.go(-1)
@@ -3143,7 +3143,6 @@ input:disabled {
           height: auto;
           z-index: 1;
           position: relative;
-          background-color: none;
 
           .pre_module_con {
             position: relative;

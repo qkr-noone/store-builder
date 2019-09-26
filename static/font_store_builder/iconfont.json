@@ -1,0 +1,240 @@
+{
+  "id": "1198390",
+  "name": "store-builder",
+  "font_family": "iconfont",
+  "css_prefix_text": "sb-icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "197443",
+      "name": "折扣",
+      "font_class": "zhekou",
+      "unicode": "e665",
+      "unicode_decimal": 58981
+    },
+    {
+      "icon_id": "623610",
+      "name": "海报",
+      "font_class": "haibao",
+      "unicode": "e636",
+      "unicode_decimal": 58934
+    },
+    {
+      "icon_id": "749659",
+      "name": "星星",
+      "font_class": "star",
+      "unicode": "e639",
+      "unicode_decimal": 58937
+    },
+    {
+      "icon_id": "1003006",
+      "name": "橱窗推荐-50",
+      "font_class": "chuchuang",
+      "unicode": "e64c",
+      "unicode_decimal": 58956
+    },
+    {
+      "icon_id": "1194171",
+      "name": "多语言",
+      "font_class": "duoyuyan",
+      "unicode": "e691",
+      "unicode_decimal": 59025
+    },
+    {
+      "icon_id": "1470926",
+      "name": "3d",
+      "font_class": "3d",
+      "unicode": "e612",
+      "unicode_decimal": 58898
+    },
+    {
+      "icon_id": "1474222",
+      "name": "优惠券",
+      "font_class": "quan",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "1474704",
+      "name": "视频",
+      "font_class": "shipin",
+      "unicode": "e685",
+      "unicode_decimal": 59013
+    },
+    {
+      "icon_id": "3417636",
+      "name": "名片",
+      "font_class": "mingpian",
+      "unicode": "e668",
+      "unicode_decimal": 58984
+    },
+    {
+      "icon_id": "3595078",
+      "name": "公司",
+      "font_class": "gongsi",
+      "unicode": "e657",
+      "unicode_decimal": 58967
+    },
+    {
+      "icon_id": "3817951",
+      "name": "单品",
+      "font_class": "danpin",
+      "unicode": "e762",
+      "unicode_decimal": 59234
+    },
+    {
+      "icon_id": "3856112",
+      "name": "视频文件",
+      "font_class": "shipinwj",
+      "unicode": "e71a",
+      "unicode_decimal": 59162
+    },
+    {
+      "icon_id": "5074780",
+      "name": "自定义",
+      "font_class": "zidingyi",
+      "unicode": "e63a",
+      "unicode_decimal": 58938
+    },
+    {
+      "icon_id": "5474213",
+      "name": "客服",
+      "font_class": "kefu",
+      "unicode": "e6da",
+      "unicode_decimal": 59098
+    },
+    {
+      "icon_id": "5699108",
+      "name": "通栏广告",
+      "font_class": "tonglang",
+      "unicode": "e611",
+      "unicode_decimal": 58897
+    },
+    {
+      "icon_id": "5741143",
+      "name": "主营业务收入",
+      "font_class": "zhuying",
+      "unicode": "e6a1",
+      "unicode_decimal": 59041
+    },
+    {
+      "icon_id": "5903457",
+      "name": "平铺",
+      "font_class": "pingpu",
+      "unicode": "e620",
+      "unicode_decimal": 58912
+    },
+    {
+      "icon_id": "6184289",
+      "name": "监控",
+      "font_class": "live",
+      "unicode": "e65a",
+      "unicode_decimal": 58970
+    },
+    {
+      "icon_id": "6864073",
+      "name": "类目",
+      "font_class": "leimu",
+      "unicode": "e649",
+      "unicode_decimal": 58953
+    },
+    {
+      "icon_id": "7019254",
+      "name": "banner",
+      "font_class": "banner",
+      "unicode": "e66a",
+      "unicode_decimal": 58986
+    },
+    {
+      "icon_id": "7032339",
+      "name": "tree",
+      "font_class": "tree",
+      "unicode": "e613",
+      "unicode_decimal": 58899
+    },
+    {
+      "icon_id": "7161957",
+      "name": "图片热区",
+      "font_class": "requ",
+      "unicode": "e61a",
+      "unicode_decimal": 58906
+    },
+    {
+      "icon_id": "7361696",
+      "name": "产品",
+      "font_class": "zhineng",
+      "unicode": "e689",
+      "unicode_decimal": 59017
+    },
+    {
+      "icon_id": "7900123",
+      "name": "产品",
+      "font_class": "chanpin",
+      "unicode": "e786",
+      "unicode_decimal": 59270
+    },
+    {
+      "icon_id": "8971354",
+      "name": "询盘信息",
+      "font_class": "xunpan",
+      "unicode": "e787",
+      "unicode_decimal": 59271
+    },
+    {
+      "icon_id": "10489998",
+      "name": "首页",
+      "font_class": "_h5_shop_home",
+      "unicode": "e601",
+      "unicode_decimal": 58881
+    },
+    {
+      "icon_id": "10489999",
+      "name": "全部商品",
+      "font_class": "_h5_shop_all",
+      "unicode": "e602",
+      "unicode_decimal": 58882
+    },
+    {
+      "icon_id": "10490000",
+      "name": "活动",
+      "font_class": "_h5_shop_activity",
+      "unicode": "e603",
+      "unicode_decimal": 58883
+    },
+    {
+      "icon_id": "10490001",
+      "name": "工厂视频",
+      "font_class": "_h5_shop_video",
+      "unicode": "e604",
+      "unicode_decimal": 58884
+    },
+    {
+      "icon_id": "11056927",
+      "name": "公司介绍",
+      "font_class": "_h5_company",
+      "unicode": "e614",
+      "unicode_decimal": 58900
+    },
+    {
+      "icon_id": "11056928",
+      "name": "商品分类",
+      "font_class": "_h5_category",
+      "unicode": "e615",
+      "unicode_decimal": 58901
+    },
+    {
+      "icon_id": "11056929",
+      "name": "客服",
+      "font_class": "_h5_sevices",
+      "unicode": "e616",
+      "unicode_decimal": 58902
+    },
+    {
+      "icon_id": "11056930",
+      "name": "深度验厂",
+      "font_class": "_h5_see_factory",
+      "unicode": "e617",
+      "unicode_decimal": 58903
+    }
+  ]
+}

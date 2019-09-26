@@ -22,7 +22,9 @@
               <div class="mobile_header_fans_star">
                 <a>
                   <span v-if="sellerInfo.sellerFans">{{filterNum(sellerInfo.sellerFans)}}</span>
-                  <p>{{((sellerInfo.sellerFans+'').length>8&&'亿')||((sellerInfo.sellerFans+'').length>4&&'万')||((sellerInfo.sellerFans+'').length>3&&'千')||''}}粉丝</p>
+                  <span v-else>0</span>
+                  <p v-if="sellerInfo.sellerFans">{{((sellerInfo.sellerFans+'').length>8&&'亿')||((sellerInfo.sellerFans+'').length>4&&'万')||((sellerInfo.sellerFans+'').length>3&&'千')||''}}粉丝</p>
+                  <p v-else>粉丝</p>
                 </a>
                 <a>
                   <img src="static/img/shops/star_black.png">
@@ -54,9 +56,10 @@
           <router-view ref="shopPage"></router-view>
         </transition>
         <div data-attr="底部导航" class="pagetag mobile_footer" :class="{'hasSetMobile': isSetMobileTag}">
-          <a>商品分类</a>
-          <a>公司介绍</a>
-          <a class="mobile_footer_factory">深度验厂</a>
+          <a><i class="iconfont sb-icon-_h5_category"></i><span>商品分类</span></a>
+          <a><i class="iconfont sb-icon-_h5_company"></i><span>公司介绍</span></a>
+          <a><i class="iconfont sb-icon-_h5_see_factory"></i><span>深度验厂</span></a>
+          <a><i class="iconfont sb-icon-_h5_sevices"></i><span>联系客服</span></a>
         </div>
       </div>
     </div>
@@ -377,25 +380,27 @@ export default {
     border-top: 0.02rem solid #D7D7D7;
     display: flex;
     &>a {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
       flex: 1;
       color: #5F5F5F;
-      font-size: 0.28rem;
+      font-size: 0.14rem;
       text-align: center;
       height: 0.97rem;
-      line-height: 1rem;
       background-color: #ffffff;
       position: relative;
+      i {
+        line-height: 1;
+        font-size: 0.44rem;
+      }
+      span {
+        margin-top: 0.04rem;
+        line-height: 1;
+      }
       &+a {
         border-left: 0.02rem solid #D7D7D7;
-      }
-      &.mobile_footer_factory:before {
-        position: absolute;
-        left: 50%;
-        top: 0.22rem;
-        transform: translate3d(-50%, -50%, 0);
-        content: '=';
-        line-height: 1;
-        color: #BDBDBD;
       }
     }
   }
