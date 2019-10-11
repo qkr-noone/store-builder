@@ -853,7 +853,7 @@ export default {
       }
       // banner 选产品链接
       if (this.cropperBanner && this.cropperGoods) {
-        this.markList[this.markIndex].link = this.WEBSITE + '/#/detail?goodsId=' + pickIdList[0]
+        this.markList[this.markIndex].link = this.WEBSITE + '/#/detail?goodsId=' + pickIdList[0] + '&appPageType=1'
       }
       this.initCropGoods()
     },
@@ -883,12 +883,12 @@ export default {
       this.cropper3D = ''
     },
     // 选择3D 展示
-    select3D (item) {
-      this.markList[this.markIndex].link = this.WEBSITE + '/#/3D/3DShow?homeShops=' + this.storeId + '&id=' + item.threeId + '&goodsId=' + item.id
+    select3D (item) { // app 页面前往  appPageType: 1.详情 2.3D 3. 直播
+      this.markList[this.markIndex].link = this.WEBSITE + '/#/3D/3DShow?homeShops=' + this.storeId + '&id=' + item.threeId + '&goodsId=' + item.id + '&skuId=' + item.skuId + '&appPageType=2'
       this.closeCropp3D()
     },
     cropperBannerLive (index) {
-      this.markList[index].link = this.WEBSITE + '/#/live/factory?homeShops=' + this.storeId
+      this.markList[index].link = this.WEBSITE + '/#/live/factory?homeShops=' + this.storeId + '&appPageType=3'
     },
     // 获取视频列表
     getVideoData () {

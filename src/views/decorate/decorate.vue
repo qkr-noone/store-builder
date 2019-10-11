@@ -908,6 +908,58 @@
         </div>
       </div>
     </div>
+    <!-- 弹框3D列表 -->
+    <div v-if="cropper3D">
+      <!-- 遮罩层 -->
+      <div class="wrapper"></div>
+      <div class="set_con_banner">
+        <div>
+          <div class="set_con_banner_box">
+            <i class="el-icon-close" @click="closeCropp3D()"></i>
+            <div class="set_con_banner_title">选择3D展示</div>
+            <div class="set_con_banner_info set_con_banner_info_two">
+              <div class="set_con_banner_row">
+                <!-- 后期分页查询操作 -->
+                <div class="set_con_banner_cell_img set_con_banner_info_two_filter">
+                  <div class="set_box_store_search">
+                    <input type="search" name="" placeholder="请输入产品名称" v-model="threeD.goodsName" @keyup.enter="threeD.page=1;get3DData()">
+                    <span class="set_box_search_btn" @click="threeD.page=1;get3DData()"><i class="el-icon-search"></i></span>
+                  </div>
+                </div>
+                <div class="set_con_banner_cell_url set_con_banner_info_two_other"></div>
+                <div class="set_con_banner_cell_set set_con_banner_info_two_sort">
+                  <el-pagination
+                    v-if="storeRes3D.total"
+                    small
+                    @current-change="get3DData()"
+                    :current-page.sync="threeD.page"
+                    :page-size="threeD.rows"
+                    layout="prev, pager, next"
+                    :total="storeRes3D.total">
+                  </el-pagination>
+                </div>
+              </div>
+              <div class="pane-box pane_box_title">
+              </div>
+              <div class="pane-box" style="border-bottom: 1px solid #663399;">
+                <ul class="pane_limit_height video_pane_limit_height" v-if="storeRes3D.total">
+                  <li class="video_li_pane_limit_height" v-for="list in storeRes3D.rows" :key="list.id">
+                    <div class="video_pane_box tD_item_box">
+                      <a class="video_pane_box_img_box">
+                        <img class="video_pane_box_img" style="display: block; background-color: #000;" :src="list.smallPic">
+                      </a>
+                    </div>
+                    <p class="video_pane_title">{{list.goodsName}}</p>
+                    <div><button class="editor_btn_button" @click="select3D(list)">选择</button></div>
+                  </li>
+                </ul>
+                <div v-else class="set_con_banner_title set_con_banner_upload_tip">暂无相关3D商品，请在数字管理先添加3D文件，并且绑定商品~</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <!-- 弹框视频列表 -->
     <div v-if="cropperVideo">
       <!-- 遮罩层 -->
@@ -1761,7 +1813,7 @@ export default {
     },
     // 选择3D 展示
     select3D (item) {
-      this.markList[this.markIndex].link = this.WEBSITE + '/#/3D/3DShow?homeShops=' + this.storeId + '&id=' + item.threeId + '&goodsId=' + item.id
+      this.markList[this.markIndex].link = this.WEBSITE + '/#/3D/3DShow?homeShops=' + this.storeId + '&id=' + item.threeId + '&goodsId=' + item.id + '&skuId=' + item.skuId
       this.closeCropp3D()
     },
     cropperBannerLive (index) {
