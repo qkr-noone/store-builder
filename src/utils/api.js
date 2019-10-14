@@ -66,7 +66,7 @@ export default {
   getVideoList: params => http.post('/shop/data/video/search?page=' + params.page + '&rows=' + params.rows + '&title=' + params.title),
 
   // 3D 商品全部列表
-  get3DList: data => http.get('/shop/goods/findThreeDGoodsByName', data),
+  get3DList: data => http.get('/shop/goods/findBindingThreePage', data),
 
   // 发布店铺装修
   onlineVersion: data => http.get('/shop/decoration/online/releaseDecoration', data),

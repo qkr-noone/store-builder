@@ -1198,9 +1198,9 @@ export default {
   created () {
     this.$cookies.set('st_token', this.$route.query.t)
     this.$cookies.set('st_b_user', this.$route.query.s)
-    // 本地测试
-    // this.$cookies.set('st_b_user', 'zou123')
-    // this.$cookies.set('st_token', 'MkTail-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ6b3UxMjMiLCJleHAiOjE2MDEwMDYyNDIsImlhdCI6MTU2OTQ3MDI0Mn0.PLnvWZISit8N46knXPEpWrylZ1JrSAmKGxfcudSWELrEJX61oXGjTKlKoOQc83h-i0-T2YdviyaTSJcXxGCEIA')
+    // 本地测试 zou123 zou123456
+    // this.$cookies.set('st_b_user', 'conghuaxinxing')
+    // this.$cookies.set('st_token', 'MkTail-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjb25naHVheGlueGluZyIsImV4cCI6MTYwMjU1Mzg1MSwiaWF0IjoxNTcxMDE3ODUxfQ.Rp-Dlv88vJ6gXcOe6vUR96SvEBu4Mjeoc2I80HF2Umz8b5uyrO2uEZfAWplJkjw52MGDaJPOhvtT_CifTiAgWA')
   },
   mounted () {
     // if (!this.currentPageInfo.storePageId) this.$message.error('数据请求有误！') // this.$router.go(-1)
@@ -1813,7 +1813,7 @@ export default {
     },
     // 选择3D 展示
     select3D (item) {
-      this.markList[this.markIndex].link = this.WEBSITE + '/#/3D/3DShow?homeShops=' + this.storeId + '&id=' + item.threeId + '&goodsId=' + item.id + '&skuId=' + item.skuId
+      this.markList[this.markIndex].link = this.WEBSITE + '/#/3D/3DShow?homeShops=' + this.storeId + '&id=' + item.threeId + '&goodsId=' + item.goodsId + '&skuId=' + item.id
       this.closeCropp3D()
     },
     cropperBannerLive (index) {

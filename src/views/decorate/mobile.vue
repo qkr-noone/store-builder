@@ -884,7 +884,7 @@ export default {
     },
     // 选择3D 展示
     select3D (item) { // app 页面前往  appPageType: 1.详情 2.3D 3. 直播
-      this.markList[this.markIndex].link = this.WEBSITE + '/#/3D/3DShow?homeShops=' + this.storeId + '&id=' + item.threeId + '&goodsId=' + item.id + '&skuId=' + item.skuId + '&appPageType=2'
+      this.markList[this.markIndex].link = this.WEBSITE + '/#/3D/3DShow?homeShops=' + this.storeId + '&id=' + item.threeId + '&goodsId=' + item.goodsId + '&skuId=' + item.id + '&appPageType=2'
       this.closeCropp3D()
     },
     cropperBannerLive (index) {
