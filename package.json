@@ -9,7 +9,8 @@
     "start": "npm run dev",
     "lint": "eslint --ext .js,.vue src",
     "build:prod": "cross-env NODE_ENV=production env_config=prod node build/build.js",
-    "build:inner": "cross-env NODE_ENV=production env_config=inner node build/build.js"
+    "build:inner": "cross-env NODE_ENV=production env_config=inner node build/build.js",
+    "build:pre": "cross-env NODE_ENV=production env_config=pre node build/build.js"
   },
   "dependencies": {
     "axios": "^0.18.0",
