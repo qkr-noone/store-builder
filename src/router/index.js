@@ -53,6 +53,29 @@ router = new Router({
           component: resolve => require(['@/views/test/children/shop_video'], resolve)
         }
       ]
+    },
+    {
+      path: '/global/mobile',
+      name: 'globalMobile',
+      component: resolve => require(['@/views/global/mobile'], resolve)
+    },
+    {
+      path: '/gstore',
+      name: 'gstore',
+      redirect: '/gstore/shop',
+      component: resolve => require(['@/views/gstore/index'], resolve),
+      children: [
+        {
+          path: 'shop',
+          name: 'gshop',
+          component: resolve => require(['@/views/gstore/children/shops'], resolve)
+        },
+        {
+          path: 'shop_video',
+          name: 'gshop_video',
+          component: resolve => require(['@/views/gstore/children/shops_video'], resolve)
+        }
+      ]
     }
   ]
 })
