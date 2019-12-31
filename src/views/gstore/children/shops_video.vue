@@ -13,19 +13,19 @@
             :src="pageVideo&&pageVideo.url">
           </video>
         </div>
-        <p class="video_title">工厂及产品3D展示</p>
+        <p class="video_title">Show factory and products 3D</p>
       </div>
     </div>
     <div data-attr="产品推荐" class="pagetag mobile_goods" :class="{'hasSetMobileBottom': isSetMobileTag}">
       <div class="mobile_goods_title">
-        <p>产品推荐</p>
+        <p>Product recommendation</p>
       </div>
       <div class="mobile_goods_con">
         <div class="mobile_goods_con_box">
           <ul>
             <li v-for="item in pageGoods.dataList" :key="item.id">
               <a class="mobile_goods_con_a">
-                <img class="linear_img" :src="item.smallPic">
+                <img class="linear_img" :src="item.imagesCover">
                 <a
                   v-if="item.threeId"
                   target="_blank"
@@ -35,10 +35,7 @@
                 </a>
               </a>
               <p class="title">{{item.goodsName}}</p>
-              <div class="tip">
-                <span><span class="tip_price">￥{{item.priceShow}}</span><span class="tip_sales">成交{{item.salesCount||0}}笔</span></span>
-                <div class="add_cart"><span>+</span></div>
-              </div>
+              <div class="tip"><p class="tip_price">{{item.priceUnit}}{{item.priceShow}}</p></div>
             </li>
           </ul>
         </div>
@@ -172,8 +169,6 @@ export default {
           li {
             width: calc(50% - 0.13rem);
             margin-bottom: 0.24rem;
-            border: 0.02rem solid rgba(220,220,220,1);
-            border-radius: 0.05rem;
             &:nth-child(odd) {
               margin-right: 0.13rem
             }
@@ -190,11 +185,11 @@ export default {
               background-size: contain;
             }
             .title {
-              line-height: 0.32rem;
+              line-height: 0.33rem;
               height: 0.64rem;
               overflow: hidden;
-              font-size: 0.23rem;
-              color: #5F5F5F;
+              font-size: 0.24rem;
+              color: #666666;
               width: 100%;
               display: block;
               padding: 0 0.1rem;
@@ -202,40 +197,11 @@ export default {
               margin-bottom: 0.09rem;
             }
             .tip {
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-              color: #5F5F5F;
-              padding: 0.16rem 0.08rem 0.08rem 0.08rem;
-              border-top: 0.02rem dashed #bdbcbc;
-              &>span {
-              }
+              color: #333333;
+              padding: 0.13rem 0.08rem 0.08rem;
               .tip_price {
-                color: #FF2F2F;
                 font-size: 0.3rem;
-                font-weight:bold;
-              }
-              .tip_sales {
-                margin-left: 0.1rem;
-                color: #B6B6B6;
-                font-size: 0.16rem;
-                line-height: 1;
-              }
-              .add_cart {
-                width: 0.3rem;
-                height: 0.3rem;
-                background-color: rgba(231,22,0,1);
-                border-radius: 50%;
-                color: #FFFFFF;
-                font-size: 0.31rem;
-                position: relative;
-                &>span {
-                  position: absolute;
-                  top: 50%;
-                  margin-left: 0.03rem;
-                  transform: translate3d(0, calc(-50% - 0.01rem), 0);
-                  line-height: 1;
-                }
+                margin-bottom: 0.04rem;
               }
             }
           }

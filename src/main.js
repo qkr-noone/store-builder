@@ -14,20 +14,26 @@ import API from './utils/api'
 import APIG from './utils/apiG'
 import VueCropper from 'vue-cropper'
 
+import i18n from './lang' // Internationalization
+
 Vue.prototype.API = API
 Vue.prototype.APIG = APIG
 Vue.config.productionTip = false
 Vue.prototype.WEBSITE = process.env.BASE_FRONT
 
-Vue.use(ElementUI)
 Vue.use(VueCookies)
 Vue.use(VueCropper)
-// 上传文件 或者需要在页面中拿到全部的接口  也可以放到页面js中
-// console.log(process.env.BASE_API)
+
+Vue.use(ElementUI, {
+  size: VueCookies.get('size') || 'medium', // set element-ui default size
+  i18n: (key, value) => i18n.t(key, value)
+})
+
 let vueDom = new Vue({
   el: '#app',
   router,
   store,
+  i18n,
   components: { App },
   template: '<App/>'
 })

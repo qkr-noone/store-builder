@@ -62,9 +62,6 @@ export default {
       navPath: 'shop'
     }
   },
-  created () {
-    document.documentElement.style.fontSize = document.documentElement.clientWidth / 7.50 + 'px' // 设计稿 750 放大 100倍
-  },
   mounted () {
     this.getPageTag()
     // 商家信息
@@ -109,6 +106,11 @@ export default {
   }
 }
 </script>
+<style>
+  html {
+    font-size: calc(100vw / 7.5);
+  }
+</style>
 <style scoped lang="scss">
   .container {
     width: 100%;

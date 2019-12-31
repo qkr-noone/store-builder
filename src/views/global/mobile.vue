@@ -57,8 +57,8 @@
           </div>
           <div class="editor_panel_booth"></div>
           <div class="editor_panel_btn">
-            <button class="editor_btn_button" @click="cancle()">取消</button>
-            <button class="editor_btn_button" @click="save()">保存</button>
+            <button class="editor_btn_button" @click="cancle()">{{$t('home.cancel')}}</button>
+            <button class="editor_btn_button" @click="save()">{{$t('home.save')}}</button>
           </div>
         </div>
       </section>
@@ -133,14 +133,14 @@
                 </div>
               </div>
               <div class="set_con_banner_add_btn">
-                <button class="editor_btn_button" @click="addCropBanner()" :class="{disabled: markList.length===markNum}">新增</button>
+                <button class="editor_btn_button" @click="addCropBanner()" :class="{disabled: markList.length===markNum}">{{$t('home.add')}}</button>
                 <span class="set_con_banner_upload_tip">{{markList.length}}/{{markNum}}</span>
               </div>
               <span class="set_con_banner_upload_tip">图片建议上传尺寸&nbsp;≧&nbsp;{{markImgSize.width}}X{{markImgSize.height}}像素，仅支持JPG/JPEG/PNG格式。</span>
             </div>
             <div class="set_con_banner_handle">
-              <button class="editor_btn_button" @click="cancleCropperBanner()">取消</button>
-              <button class="editor_btn_button" @click="btnCropperBanner()">确定</button>
+              <button class="editor_btn_button" @click="cancleCropperBanner()">{{$t('home.cancel')}}</button>
+              <button class="editor_btn_button" @click="btnCropperBanner()">{{$t('home.confirm')}}</button>
             </div>
           </div>
         </div>
@@ -373,13 +373,20 @@
       </div>
     </div>
     <div class="publish_box">
-      <div class="publish_item" @click="release()">发布</div>
-      <!-- <div class="publish_item">预览</div> -->
+      <el-select class="arrow_lang" v-model="language" placeholder="select language" size="small">
+        <el-option
+          v-for="item in langType"
+          :key="item.type"
+          :label="item.label"
+          :value="item.type">
+        </el-option>
+      </el-select>
+      <div class="publish_item" @click="release()">{{$t('home.release')}}</div>
     </div>
     <div class="decorate_app_page">
-      <a class="decorate_app_item" :class="{'decorate_app_item_active': curIframePage==='shop'}" @click="curIframePage='shop'">首页</a>
+      <a class="decorate_app_item" :class="{'decorate_app_item_active': curIframePage==='shop'}" @click="curIframePage='shop'">{{$t('home.home')}}</a>
       <!-- <a class="decorate_app_item" :class="{'decorate_app_item_active': curIframePage==='shop_auction'}" @click="curIframePage='shop_auction'">全部商品</a> -->
-      <a class="decorate_app_item" :class="{'decorate_app_item_active': curIframePage==='shop_video'}" @click="curIframePage='shop_video'">工厂视频</a>
+      <a class="decorate_app_item" :class="{'decorate_app_item_active': curIframePage==='shop_video'}" @click="curIframePage='shop_video'">{{$t('home.video')}}</a>
       <!-- <a class="decorate_app_item" :class="{'decorate_app_item_active': curIframePage==='shop_dynamic'}" @click="curIframePage='shop_dynamic'">活动</a> -->
     </div>
     </div>
@@ -440,11 +447,15 @@ export default {
         rows: 21,
         page: 1
       },
-      appLoadingValve: false
+      appLoadingValve: false,
+      langType: [{type: 'zh', label: '简体中文'}, {type: 'en', label: 'English'}],
+      language: ''
     }
   },
   components: { draggable },
   mounted () {
+    this.language = this.$cookies.get('language') || 'zh'
+    this.$i18n.locale = this.language
     this.APIG.getTypeList().then(res => {
       this.menuCate = res.data
     })
@@ -481,6 +492,13 @@ export default {
           this.appLoadingValve = false
         }
       }, 10000)
+    },
+    language (val) {
+      if (val) {
+        console.log(90)
+        this.$cookies.set('language', val)
+        this.$i18n.locale = val
+      }
     }
   },
   methods: {
@@ -862,6 +880,7 @@ export default {
     },
     // 选择商品变化
     goodsChange (event) {
+      console.log(this.pickList.length, 10, this.pickNum)
       if (this.pickList.length > this.pickNum) {
         this.pickList.splice(this.pickNum, 1)
         event.target.checked = false
@@ -979,6 +998,12 @@ export default {
     border-radius: 16px;
     font-weight: 700;
   }
+  .arrow_lang {
+    position: absolute;
+    right: calc(100% + 20px);
+    bottom: 2px;
+    width: 150px;
+  }
   .publish_item {
     width: 80px;
     height: 30px;
@@ -992,25 +1017,22 @@ export default {
   }
   .decorate_app_page {
     position: absolute;
-    top: 112px;
-    left: 1px;
+    top: 6px;
+    left: 12px;
     display: flex;
     border-radius: 4px;
     align-items: center;
     background-color: rgba(158, 158, 158, 0.1);
     font-size: 16px;
     display: flex;
-    flex-direction: column;
-    padding: 12px 0;
+    padding: 0;
     border-radius: 8px;
   }
   .decorate_app_item {
     color: #666666;
-    writing-mode:vertical-lr;
     margin: 16px 0;
     padding: 0 16px;
     cursor: pointer;
-    letter-spacing: 0.25em;
     position: relative;
   }
   .decorate_app_item::before {
