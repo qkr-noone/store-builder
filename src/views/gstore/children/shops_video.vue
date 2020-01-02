@@ -30,7 +30,7 @@
                   v-if="item.threeId"
                   target="_blank"
                   class="t3D_play"
-                  title="商品支持3D展示">
+                  :title="$t('home.productSupportsDisplay')">
                   <img src="static/img/detail_play_3D.png">
                 </a>
               </a>

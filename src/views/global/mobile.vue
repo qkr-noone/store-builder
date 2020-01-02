@@ -14,17 +14,17 @@
       <section class="edit_panel" :class="{'transform': isMobileEditPanel }">
         <div class="editor_panel_container">
           <div class="editor_panel_title">
-            <span class="editor_title">信息配置</span>
+            <span class="editor_title">{{$t('home.inforConfig')}}</span>
             <!-- <span class="editor_second_title">{{currentComponent.templateName || ''}}</span> -->
           </div>
           <div class="editor_panel_con">
             <div>
               <div v-if="currentComponent.isSign">
                 <div class="rec_goods_box hidden_border">
-                  <p class="set_desc">背景图片建议设置为750 * 375, 仅支持 jpg/png/jpeg 格式</p>
+                  <p class="set_desc">{{$t('home.imageBgFormat375')}}</p>
                 </div>
                 <div class="rec_goods_box hidden_border">
-                  <div>设置背景图片<sup class="set_sup">*</sup></div>
+                  <div>{{$t('home.setBgImage')}}<sup class="set_sup">*</sup></div>
                   <div class="set_con_banner_cell_img_upload">
                     <input type="file" id="uploadBg" ref="uploadBg" accept="image/png, image/jpeg, image/jpg" style="position: absolute; left: -9999px;"  @change="uploadBgFile()" value="">
                     <div v-if="currentComponent.image" class="set_con_banner_cell_img_upload_con">
@@ -40,18 +40,18 @@
                 </div>
               </div>
               <div class="rec_goods_box hidden_border" v-if="currentComponent.isGoods">
-                <button class="editor_btn_button set_button select_goods" @click="cropperGoods=isMobileEditPanel; goodsData()">选择商品 {{!Object.keys(currentComponent).length || currentComponent.dataList.length || 0}}/12</button>
+                <button class="editor_btn_button set_button select_goods" @click="cropperGoods=isMobileEditPanel; goodsData()">{{$t('home.selectProduct')}} {{!Object.keys(currentComponent).length || currentComponent.dataList.length || 0}}/12</button>
               </div>
               <div class="rec_goods_box hidden_border" v-if="currentComponent.isBanner">
-                <div>图片设置<sup class="set_sup">*</sup></div>
-                <button class="editor_btn_button set_button select_goods set_banner" @click="frontBanner()">上传并编辑图片</button>
+                <div>{{$t('home.pictureSettings')}}<sup class="set_sup">*</sup></div>
+                <button class="editor_btn_button set_button select_goods set_banner" @click="frontBanner()">{{$t('home.uploadEditPictures')}}</button>
                 <div class="set_img_show">
                   <img v-for="tip in currentComponent.dataList" :key="tip.id" :src="tip.url">
                 </div>
               </div>
               <div class="rec_goods_box hidden_border" v-if="currentComponent.isVideo">
-                <button class="editor_btn_button set_button" @click="cropperVideo=isMobileEditPanel; getVideoData()">选择视频</button>
-                <p class="set_desc">请上传比例为16:9的高质量视频</p>
+                <button class="editor_btn_button set_button" @click="cropperVideo=isMobileEditPanel; getVideoData()">{{$t('home.selectVideo')}}</button>
+                <p class="set_desc">{{$t('home.video16Ratio9')}}</p>
               </div>
             </div>
           </div>
@@ -73,12 +73,12 @@
         <div>
           <div class="set_con_banner_box">
             <i class="el-icon-close" @click="cancleCropperBanner()"></i>
-            <div class="set_con_banner_title">上传/编辑图片</div>
+            <div class="set_con_banner_title">{{$t('home.uploadAEditPicture')}}</div>
             <div class="set_con_banner_info">
               <div class="set_con_banner_row">
-                <div class="set_con_banner_cell_img">图片缩略图</div>
-                <div class="set_con_banner_cell_url">设置链接</div>
-                <div class="set_con_banner_cell_set">操作</div>
+                <div class="set_con_banner_cell_img">{{$t('home.pictureThumbnail')}}</div>
+                <div class="set_con_banner_cell_url">{{$t('home.setLink')}}</div>
+                <div class="set_con_banner_cell_set">{{$t('home.operating')}}</div>
               </div>
               <input type="file" id="uploadID" ref="uploadID" accept="image/png, image/jpeg, image/jpg" style="position: absolute; left: -9999999px;"  @change="handleFilesUpload()" value="">
               <div class="set_con_banner_row set_con_banner_row_con" v-for="(tip, index) in markList" :key="tip.id">
@@ -102,22 +102,22 @@
                     <span class="set_con_banner_cell_url_con"><input type="text" :data-title="tip.link" disabled :value="tip.link"></span>
                     <el-popover
                       placement="bottom"
-                      title="选择链接页面类型"
+                      :title="$t('home.selectLinkPageType')"
                       width="250"
                       trigger="hover"
                       class="set_con_banner_cell_url_popper">
                       <ul>
                         <li>
-                          <a class="set_con_banner_cell_url_popper_a" href="javascript:;" @click="cropperBannerGoods(index)">商品详情页</a>
+                          <a class="set_con_banner_cell_url_popper_a" href="javascript:;" @click="cropperBannerGoods(index)">{{$t('home.productDetailsPage')}}</a>
                         </li>
                         <!-- <li>
                           <a class="set_con_banner_cell_url_popper_a" href="javascript:;" @click="cropperBannerCate(index)">店内类目商品列表页</a>
                         </li> -->
                         <li>
-                          <a class="set_con_banner_cell_url_popper_a" href="javascript:;" @click="cropperBanner3D(index)">店内3D页面</a>
+                          <a class="set_con_banner_cell_url_popper_a" href="javascript:;" @click="cropperBanner3D(index)">{{$t('home.store3DPage')}}</a>
                         </li>
                         <li>
-                          <a class="set_con_banner_cell_url_popper_a" href="javascript:;" @click="cropperBannerLive(index)">店内直播页面</a>
+                          <a class="set_con_banner_cell_url_popper_a" href="javascript:;" @click="cropperBannerLive(index)">{{$t('home.storeLivePage')}}</a>
                         </li>
                       </ul>
                       <el-button slot="reference" size="mini"><i class="el-icon-menu"></i></el-button>
@@ -136,7 +136,8 @@
                 <button class="editor_btn_button" @click="addCropBanner()" :class="{disabled: markList.length===markNum}">{{$t('home.add')}}</button>
                 <span class="set_con_banner_upload_tip">{{markList.length}}/{{markNum}}</span>
               </div>
-              <span class="set_con_banner_upload_tip">图片建议上传尺寸&nbsp;≧&nbsp;{{markImgSize.width}}X{{markImgSize.height}}像素，仅支持JPG/JPEG/PNG格式。</span>
+              <span class="set_con_banner_upload_tip">
+                {{$t('home.imageFormat375One')}}&nbsp;≧&nbsp;{{markImgSize.width}}X{{markImgSize.height}}{{$t('home.imageFormat375Two')}}</span>
             </div>
             <div class="set_con_banner_handle">
               <button class="editor_btn_button" @click="cancleCropperBanner()">{{$t('home.cancel')}}</button>
@@ -150,7 +151,7 @@
         <div>
           <div class="set_con_banner_box">
             <i class="el-icon-close" @click="cropperImg = ''"></i>
-            <div class="set_con_banner_title">上传<span class="set_con_banner_title_tip">拖动选框选择具体图片<sup>*</sup></span></div>
+            <div class="set_con_banner_title">{{$t('home.upload')}}<span class="set_con_banner_title_tip">{{$t('home.dragSpecificPictures')}}<sup>*</sup></span></div>
             <div class="set_con_cropper_con">
               <div class="set_con_cropper_box">
                 <VueCropper
@@ -169,9 +170,9 @@
                   :info="false">
                 </VueCropper>
               </div>
-              <label for="uploadID" class="set_con_cropper_reset"><i class="el-icon-plus"></i><span>重新选择</span></label>
+              <label for="uploadID" class="set_con_cropper_reset"><i class="el-icon-plus"></i><span>{{$t('home.reselect')}}</span></label>
             </div>
-            <div class="set_con_cropper_btn"><button class="editor_btn_button" @click="saveCropImg()">保存并关闭</button></div>
+            <div class="set_con_cropper_btn"><button class="editor_btn_button" @click="saveCropImg()">{{$t('home.saveAndClose')}}</button></div>
           </div>
         </div>
       </div>
@@ -184,17 +185,17 @@
         <div>
           <div class="set_con_banner_box">
             <i class="el-icon-close" @click="closeCropGoods()"></i>
-            <div class="set_con_banner_title">选择商品详情页</div>
+            <div class="set_con_banner_title">{{$t('home.selectDetailsPage')}}</div>
             <div class="set_con_banner_info set_con_banner_info_two">
               <div class="set_con_banner_row">
                 <!-- 后期分页查询操作 -->
                 <div class="set_con_banner_cell_img set_con_banner_info_two_filter">
-                  <select v-model="currentCate" placehlder="所有分类" class="set_con_banner_info_two_select">
-                    <option value="">所有分类</option>
+                  <select v-model="currentCate" :placehlder="$t('home.allcategories')" class="set_con_banner_info_two_select">
+                    <option value="">{{$t('home.allcategories')}}</option>
                     <option :value="cate.id" v-for="cate in menuCate" :key="cate.id">{{cate.name}}</option>
                   </select>
                   <div class="set_box_store_search">
-                    <input type="search" name="" placeholder="请输入产品名称" v-model="searchGoodsName" @keyup.enter="page=1;goodsResetData()">
+                    <input type="search" name="" :placeholder="$t('home.inputProductName')" v-model="searchGoodsName" @keyup.enter="page=1;goodsResetData()">
                     <span class="set_box_search_btn" @click="page=1;goodsResetData()"><i class="el-icon-search"></i></span>
                   </div>
                 </div>
@@ -215,10 +216,10 @@
                 <ul>
                   <li>
                     <span></span>
-                    <span>产品图片</span>
-                    <span>产品名称</span>
-                    <span>产品价格</span>
-                    <span>更新时间</span>
+                    <span>{{$t('home.productImage')}}</span>
+                    <span>{{$t('home.productName')}}</span>
+                    <span>{{$t('home.productPrice')}}</span>
+                    <span>{{$t('home.updateTime')}}</span>
                   </li>
                 </ul>
               </div>
@@ -232,7 +233,7 @@
                         v-if="list.threeId"
                         target="_blank"
                         class="t3D_play"
-                        title="商品支持3D展示">
+                        :title="$t('home.productSupportsDisplay')">
                         <img src="static/img/detail_play_3D.png"><!-- @click="goPage(WEBSITE,'/3D/3Dshow',{ id: list.threeId,homeShops:storeId,goodsId: list.id})" -->
                       </a>
                     </span>
@@ -243,11 +244,11 @@
                     <span>{{formatDate(list.createTime)}}</span>
                   </li>
                 </ul>
-                <div v-if="!storeGoods.total" class="set_con_banner_title set_con_banner_upload_tip">暂无商品，请先添加商品~</div>
+                <div v-if="!storeGoods.total" class="set_con_banner_title set_con_banner_upload_tip">{{$t('home.noProductsAddProducts')}}</div>
               </div>
               <div class="set_con_banner_add_btn">
-                <span class="set_con_banner_upload_tip">拖动产品图片可调整顺序&nbsp;&nbsp;</span>
-                <span class="set_con_banner_upload_tip">已选择的产品:</span>
+                <span class="set_con_banner_upload_tip">{{$t('home.dragImageAdjust')}}&nbsp;&nbsp;</span>
+                <span class="set_con_banner_upload_tip">{{$t('home.selectedProducts')}}:</span>
                 <span class="set_con_banner_upload_tip">{{pickList.length}}/{{pickNum}}</span>
               </div>
               <span class="set_select_order">
@@ -263,8 +264,8 @@
               </span>
             </div>
             <div class="set_con_banner_handle">
-              <button class="editor_btn_button" @click="closeCropGoods()">取消</button>
-              <button class="editor_btn_button" @click="btnCropGoods()">确定</button>
+              <button class="editor_btn_button" @click="closeCropGoods()">{{$t('home.cancel')}}</button>
+              <button class="editor_btn_button" @click="btnCropGoods()">{{$t('home.confirm')}}</button>
             </div>
           </div>
         </div>
@@ -278,13 +279,13 @@
         <div>
           <div class="set_con_banner_box">
             <i class="el-icon-close" @click="closeCropp3D()"></i>
-            <div class="set_con_banner_title">选择3D展示</div>
+            <div class="set_con_banner_title">{{$t('home.select3DDisplay')}}</div>
             <div class="set_con_banner_info set_con_banner_info_two">
               <div class="set_con_banner_row">
                 <!-- 后期分页查询操作 -->
                 <div class="set_con_banner_cell_img set_con_banner_info_two_filter">
                   <div class="set_box_store_search">
-                    <input type="search" name="" placeholder="请输入产品名称" v-model="threeD.goodsName" @keyup.enter="threeD.page=1;get3DData()">
+                    <input type="search" name="" :placeholder="$t('home.inputProductName')" v-model="threeD.goodsName" @keyup.enter="threeD.page=1;get3DData()">
                     <span class="set_box_search_btn" @click="threeD.page=1;get3DData()"><i class="el-icon-search"></i></span>
                   </div>
                 </div>
@@ -312,10 +313,10 @@
                       </a>
                     </div>
                     <p class="video_pane_title">{{list.title}}</p>
-                    <div><button class="editor_btn_button" @click="select3D(list)">选择</button></div>
+                    <div><button class="editor_btn_button" @click="select3D(list)">{{$t('home.select')}}</button></div>
                   </li>
                 </ul>
-                <div v-else class="set_con_banner_title set_con_banner_upload_tip">暂无相关3D商品，请在数字管理先添加3D文件，并且绑定商品~</div>
+                <div v-else class="set_con_banner_title set_con_banner_upload_tip">{{$t('home.add3DFilesBindProducts')}}</div>
               </div>
             </div>
           </div>
@@ -330,13 +331,13 @@
         <div>
           <div class="set_con_banner_box">
             <i class="el-icon-close" @click="closeCroppVideo()"></i>
-            <div class="set_con_banner_title">选择视频</div>
+            <div class="set_con_banner_title">{{$t('home.selectVideo')}}</div>
             <div class="set_con_banner_info set_con_banner_info_two">
               <div class="set_con_banner_row">
                 <!-- 后期分页查询操作 -->
                 <div class="set_con_banner_cell_img set_con_banner_info_two_filter">
                   <div class="set_box_store_search">
-                    <input type="search" name="" placeholder="请输入视频名称" v-model="videoPick.titleName" @keyup.enter="videoPick.page=1;getVideoData()">
+                    <input type="search" name="" :placeholder="$t('home.videoName')" v-model="videoPick.titleName" @keyup.enter="videoPick.page=1;getVideoData()">
                     <span class="set_box_search_btn" @click="videoPick.page=1;getVideoData()"><i class="el-icon-search"></i></span>
                   </div>
                 </div>
@@ -362,10 +363,10 @@
                       <video preload="metadata" muted width="100%" height="100%" style="display: block; background-color: #000;" :src="list.url" controls></video>
                     </div>
                     <p class="video_pane_title">{{list.title}}</p>
-                    <div><button class="editor_btn_button" @click="selectVideo(list)">选用视频</button></div>
+                    <div><button class="editor_btn_button" @click="selectVideo(list)">{{$t('home.selectUsedVideo')}}</button></div>
                   </li>
                 </ul>
-                <div v-else class="set_con_banner_title set_con_banner_upload_tip">暂无视频，请在数字管理先添加视频~</div>
+                <div v-else class="set_con_banner_title set_con_banner_upload_tip">{{$t('home.addDigitalVideo')}}</div>
               </div>
             </div>
           </div>
@@ -544,7 +545,7 @@ export default {
               this.isMobileEditPanel = this.pageGoods
             } else if (this.pageIndex === 1 || this.pageIndex === 5) {
               this.$message.warning({
-                message: '该模块不可操作',
+                message: this.$t('home.moduleNotOperational'),
                 showClose: true
               })
             }
@@ -571,7 +572,7 @@ export default {
               this.isMobileEditPanel = this.pageGoods
             } else if (this.pageIndex === 1 || this.pageIndex === 4) {
               this.$message.warning({
-                message: '该模块不可操作',
+                message: this.$t('home.moduleNotOperational'),
                 showClose: true
               })
             }
@@ -612,7 +613,7 @@ export default {
       } else if (this.currentComponent.isGoods) {
         if (!this.currentComponent.dataList.length) {
           this.$notify.warning({
-            message: '当前选择商品数据为空，请填写完整'
+            message: this.$t('home.selectedProductDataEmpty')
           })
           return false
         }
@@ -639,17 +640,17 @@ export default {
       }
     },
     release () {
-      this.$confirm('是否发布当前手机店铺版本?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('home.storeVersionReleased'), this.$t('home.warning'), {
+        confirmButtonText: this.$t('home.confirm'),
+        cancelButtonText: this.$t('home.cancel'),
         type: 'warning'
       }).then(() => {
         this.isLoading = true
         this.APIG.appOnlineVersion().then(res => {
           if (res.code === 2000) {
-            this.$notify.success({ title: '成功', message: '发布成功' })
+            this.$notify.success({ title: this.$t('home.success'), message: this.$t('home.publishedSuccessfully') })
           } else {
-            this.$notify.error({ title: '失败', message: res.message || '发布失败' })
+            this.$notify.error({ title: this.$t('home.fail'), message: res.message || this.$t('home.publishingFailed') })
           }
           this.isLoading = false
         }).catch(() => { this.isLoading = false })
@@ -662,8 +663,8 @@ export default {
       let typeList = ['jpg', 'jpeg', 'png']
       if (typeList.length > 0 && typeList.indexOf(uploadFiles[0].type.split('/')[1]) < 0) {
         this.$notify.warning({
-          title: '提示',
-          message: '只支持jpg、jpeg、png图片格式'
+          title: this.$t('home.warning'),
+          message: this.$t('home.onlySupportsFormats')
         })
         uploadDom.value = ''
         return
@@ -684,8 +685,8 @@ export default {
           this.currentComponent.image = res.data.data
         } else {
           this.$notify.error({
-            title: '提示',
-            message: '上传图片失败请重新上传~~'
+            title: this.$t('home.warning'),
+            message: this.$t('home.uploadFailedUploadAgain')
           })
         }
         this.isLoading = false
@@ -703,8 +704,8 @@ export default {
       let typeList = ['jpg', 'jpeg', 'png']
       if (typeList.length > 0 && typeList.indexOf(uploadFiles[0].type.split('/')[1]) < 0) {
         this.$notify.warning({
-          title: '提示',
-          message: '只支持jpg、jpeg、png图片格式'
+          title: this.$t('home.warning'),
+          message: this.$t('home.onlySupportsFormats')
         })
         uploadDom.value = ''
         return
@@ -713,8 +714,8 @@ export default {
         uploadDom.value = ''
         if (!res) {
           this.$notify.warning({
-            title: '提示',
-            message: '您上传的图片尺寸不符合要求，请重新上传'
+            title: this.$t('home.warning'),
+            message: this.$t('home.sizeNotRequirements')
           })
           return false
         } else {
@@ -760,8 +761,8 @@ export default {
             this.markList[this.markIndex].url = res.data.data
           } else {
             this.$notify.error({
-              title: '提示',
-              message: '上传图片失败请重新上传~~'
+              title: this.$t('home.warning'),
+              message: this.$t('home.uploadFailedUploadAgain')
             })
           }
           this.isLoading = false
@@ -800,7 +801,7 @@ export default {
       for (let val of this.markList) {
         if (!val.url) {
           this.$message.error({
-            message: '请上传图片'
+            message: this.$t('home.uploadPicture')
           })
           return
         }
@@ -860,7 +861,7 @@ export default {
     btnCropGoods () {
       if (!this.pickList.length) {
         this.$notify.warning({
-          message: '当前选择数据为空，请填写完整'
+          message: this.$t('home.selectionDataEmpty')
         })
         return false
       }
@@ -1612,6 +1613,7 @@ export default {
           height: initial;
           border: none;
           cursor: initial;
+          white-space: nowrap;
         }
       }
     }
