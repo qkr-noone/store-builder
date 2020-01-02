@@ -1196,11 +1196,11 @@ export default {
     })
   },
   created () {
-    // this.$cookies.set('st_token', this.$route.query.t)
-    // this.$cookies.set('st_b_user', this.$route.query.s)
+    this.$cookies.set('st_token', this.$route.query.t)
+    this.$cookies.set('st_b_user', this.$route.query.s)
     // 本地测试 zou123 zou123456
-    this.$cookies.set('st_b_user', 'conghuaxinxing')
-    this.$cookies.set('st_token', 'MkTail-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjb25naHVheGlueGluZyIsImV4cCI6MTYwMjU1Mzg1MSwiaWF0IjoxNTcxMDE3ODUxfQ.Rp-Dlv88vJ6gXcOe6vUR96SvEBu4Mjeoc2I80HF2Umz8b5uyrO2uEZfAWplJkjw52MGDaJPOhvtT_CifTiAgWA')
+    // this.$cookies.set('st_b_user', 'conghuaxinxing')
+    // this.$cookies.set('st_token', 'MkTail-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjb25naHVheGlueGluZyIsImV4cCI6MTYwMjU1Mzg1MSwiaWF0IjoxNTcxMDE3ODUxfQ.Rp-Dlv88vJ6gXcOe6vUR96SvEBu4Mjeoc2I80HF2Umz8b5uyrO2uEZfAWplJkjw52MGDaJPOhvtT_CifTiAgWA')
   },
   mounted () {
     // if (!this.currentPageInfo.storePageId) this.$message.error('数据请求有误！') // this.$router.go(-1)
