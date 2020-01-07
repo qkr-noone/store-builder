@@ -454,8 +454,13 @@ export default {
     }
   },
   components: { draggable },
+  created () {
+    console.log(this.$route.query.s, 9)
+    this.$cookies.set('st_token', this.$route.query.t)
+    this.$cookies.set('st_b_user', this.$route.query.s)
+  },
   mounted () {
-    this.language = this.$cookies.get('language') || 'zh'
+    this.language = this.$cookies.get('store_language') || 'zh'
     this.$i18n.locale = this.language
     this.APIG.getTypeList().then(res => {
       this.menuCate = res.data
@@ -496,8 +501,7 @@ export default {
     },
     language (val) {
       if (val) {
-        console.log(90)
-        this.$cookies.set('language', val)
+        this.$cookies.set('store_language', val)
         this.$i18n.locale = val
       }
     }
