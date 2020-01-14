@@ -455,7 +455,6 @@ export default {
   },
   components: { draggable },
   created () {
-    console.log(this.$route.query.s, 9)
     this.$cookies.set('st_token', this.$route.query.t)
     this.$cookies.set('st_b_user', this.$route.query.s)
   },

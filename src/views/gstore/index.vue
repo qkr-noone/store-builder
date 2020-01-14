@@ -15,7 +15,7 @@
               </div>
             </div>
             <div class="mobile_header_star">
-              <a>follow</a>
+              <a>Follow</a>
             </div>
           </div>
         </div>
@@ -88,9 +88,6 @@ export default {
         }
       })
     },
-    filterNum (data) {
-      return (data > 10000 ** 2 && (data / 10000 ** 2).toFixed(1)) || (data > 10000 && (data / 10000).toFixed(1)) || data
-    },
     getPageSwitch () {
       this.$refs.shopPage.getPageSwitch()
     },
@@ -124,6 +121,7 @@ export default {
   .linear_img {
     width: 100%;
     height: 100%;
+    background-color: #ffffff;
   }
   .mobile_header {
     position: relative;
@@ -390,7 +388,7 @@ export default {
     top: 50vh;
     margin: auto;
     font-size: 32px;
-    color: ef7026;
+    color: #ef7026;
     z-index: 10000;
   }
 </style>

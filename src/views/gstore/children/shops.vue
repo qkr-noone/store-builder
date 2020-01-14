@@ -4,7 +4,7 @@
       <div class="mobile_switch_box">
         <el-carousel :interval="4000" arrow="never" indicator-position="" height="100%">
           <el-carousel-item v-for="item in pageSwitch.dataList" :key="item.id" class="mobile_switch_item">
-            <a :href="item.link || null">
+            <a>
               <img :src="item.url" class="linear_img">
             </a>
           </el-carousel-item>
@@ -18,7 +18,7 @@
       <div class="mobile_recom_con">
         <el-carousel :interval="4000" arrow="never" indicator-position="none" height="100%">
           <el-carousel-item v-for="item in pageWindow.dataList" :key="item.id">
-            <a :href="item.link || null">
+            <a>
               <img :src="item.url" class="linear_img">
             </a>
           </el-carousel-item>
