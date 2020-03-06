@@ -116,8 +116,11 @@
                         <li>
                           <a class="set_con_banner_cell_url_popper_a" href="javascript:;" @click="cropperBanner3D(index)">{{$t('home.store3DPage')}}</a>
                         </li>
-                        <li>
+                        <!-- <li>
                           <a class="set_con_banner_cell_url_popper_a" href="javascript:;" @click="cropperBannerLive(index)">{{$t('home.storeLivePage')}}</a>
+                        </li> -->
+                        <li>
+                          <a class="set_con_banner_cell_url_popper_a" href="javascript:;" @click="cropper3DStore(index)">{{$t('home.store3DUnityPage')}}</a>
                         </li>
                       </ul>
                       <el-button slot="reference" size="mini"><i class="el-icon-menu"></i></el-button>
@@ -909,12 +912,15 @@ export default {
       this.cropper3D = ''
     },
     // 选择3D 展示
-    select3D (item) { // app 页面前往  appPageType: 1.详情 2.3D 3. 直播
+    select3D (item) { // app 页面前往  appPageType: 1.详情 2.3D 3. 直播  4. 3D旺铺
       this.markList[this.markIndex].link = this.WEBSITE + '/#/3D/3DShow?homeShops=' + this.storeId + '&id=' + item.threeId + '&goodsId=' + item.goodsId + '&skuId=' + item.id + '&appPageType=2'
       this.closeCropp3D()
     },
     cropperBannerLive (index) {
       this.markList[index].link = this.WEBSITE + '/#/live/factory?homeShops=' + this.storeId + '&appPageType=3'
+    },
+    cropper3DStore (index) {
+      this.markList[index].link = this.WEBSITE + '/#/3D/3DStore??homeShops=' + this.storeId + '&appPageType=4'
     },
     // 获取视频列表
     getVideoData () {
