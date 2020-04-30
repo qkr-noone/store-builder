@@ -2,6 +2,7 @@ import axios from 'axios'
 import qs from 'qs'
 import VueCookies from 'vue-cookies'
 import {Message} from 'element-ui' // Loading
+let jwtDecode = require('jwt-decode')
 
 const service = axios.create({
   baseURL: process.env.BASE_API, // api 的 base_url
@@ -17,7 +18,20 @@ const service = axios.create({
 service.interceptors.request.use(request => {
   // 若有做鉴权token，需要请求头自动加上token
   if (VueCookies.get('st_token')) {
-    request.headers.Authorization = VueCookies.get('st_token')
+    let obj = jwtDecode(VueCookies.get('st_token')) || null
+    let expire = obj && obj.exp
+    if (expire * 1000 > new Date().getTime()) {
+      request.headers.Authorization = VueCookies.get('st_token')
+    } else {
+      VueCookies.remove('st_token')
+      VueCookies.remove('st_b_user')
+      Message({
+        showClose: true,
+        center: true,
+        message: '登陆已过期',
+        type: 'error'
+      })
+    }
   }
   if (request.data && (request.headers['Content-Type'].indexOf('application/x-www-form-urlencoded') !== -1)) {
     request.data = qs.stringify(request.data)
