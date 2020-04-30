@@ -3,6 +3,8 @@
 > 基于 Vue 开发的店铺装修系统
 > APP 内嵌 H5 的店铺装修系统
 
+[登陆过期或无效?](https://github.com/qkr-noone/store-builder/issues/7)
+
 ## 做了什么？
 
 ### PC 端
@@ -43,5 +45,3 @@
 #### H5 还未设计可供选择组件
 
 #### PC 和 H5 还未支持非店铺首页装修
-
-[登陆过期或无效](https://github.com/qkr-noone/store-builder/issues/7)
