@@ -43,3 +43,5 @@
 #### H5 还未设计可供选择组件
 
 #### PC 和 H5 还未支持非店铺首页装修
+
+[登陆过期或无效](https://github.com/qkr-noone/store-builder/issues/7)
